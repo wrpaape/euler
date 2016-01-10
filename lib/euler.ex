@@ -1,0 +1,2 @@
+defmodule Euler do
+end

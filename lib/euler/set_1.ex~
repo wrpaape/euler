@@ -3,6 +3,7 @@ defmodule Euler.Set1 do
   Set1 holds solutions to problems 1 - 25.
   """
 
+
   @doc """
   1) Multiples of 3 and 5
 
@@ -18,6 +19,7 @@ defmodule Euler.Set1 do
     |> Enum.filter(&(rem(&1, 3) == 0 or rem(&1, 5) == 0))
     |> Enum.sum
   end
+
 
   @doc """
   2) Even Fibonacci Numbers
@@ -45,7 +47,7 @@ defmodule Euler.Set1 do
     |> Enum.sum
   end
 
-  @x 600851475143
+
   @doc """
   3) Largest Prime Factor
 
@@ -57,6 +59,7 @@ defmodule Euler.Set1 do
 
   Answer: 6857
   """
+  @x 600851475143
   def problem_3(last_smallest_factor \\ 2) do
     smallest_factor =
       last_smallest_factor..@x - 1
@@ -68,16 +71,15 @@ defmodule Euler.Set1 do
 
     2..div(largest_factor, 2) + 1
     |> Enum.any?(&(rem(largest_factor, &1) == 0))
-    |> case do
-      true ->
-        smallest_factor
-        |> + 1
-        |> problem_3
-
-      ___ ->
-        largest_factor
+    |> if do
+      smallest_factor
+      |> + 1
+      |> problem_3
+    else
+      largest_factor
     end
   end
+
   @doc """
   4) Largest Palindrome Product 
 
@@ -87,7 +89,7 @@ defmodule Euler.Set1 do
 
   1/11/16
 
-  Answer:
+  Answer: 906609
   """
   def problem_4 do
     999..100

@@ -78,4 +78,41 @@ defmodule Euler.Set1 do
         largest_factor
     end
   end
+  @doc """
+  4) Largest Palindrome Product 
+
+  A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+
+  Find the largest palindrome made from the product of two 3-digit numbers.
+
+  1/11/16
+
+  Answer:
+  """
+  def problem_4 do
+    999..100
+    |> Enum.reduce(0, fn(x, max_palindrome_product) ->
+      x..100
+      |> Enum.find_value(fn(y) ->
+        product = 
+          x * y
+          |> Integer.digits
+
+        product
+        |> Enum.reverse
+        |> case do
+          ^product -> Integer.undigits(product)
+          ________ -> nil
+        end
+      end)
+      |> case do
+        nil ->
+          max_palindrome_product
+
+        palindrome_product ->
+          max_palindrome_product
+          |> max(palindrome_product)
+      end
+    end)
+  end
 end

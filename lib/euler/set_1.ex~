@@ -12,7 +12,8 @@ defmodule Euler.Set1 do
 
   1/10/16
 
-  Answer: 233168
+  iex> Euler.Set1.problem_1
+  233168
   """
   def problem_1 do
     1..999
@@ -30,7 +31,8 @@ defmodule Euler.Set1 do
 
   1/10/16
 
-  Answer: 4612732
+  iex> Euler.Set1.problem_2
+  4613732
   """
   def problem_2 do
     {0, 1}
@@ -57,7 +59,8 @@ defmodule Euler.Set1 do
 
   1/11/16
 
-  Answer: 6857
+  iex> Euler.Set1.problem_3
+  6857
   """
   @x 600851475143
   def problem_3(last_smallest_factor \\ 2) do
@@ -89,7 +92,8 @@ defmodule Euler.Set1 do
 
   1/11/16
 
-  Answer: 906609
+  iex> Euler.Set1.problem_4
+  906609
   """
   def problem_4 do
     999..100
@@ -116,5 +120,17 @@ defmodule Euler.Set1 do
           |> max(palindrome_product)
       end
     end)
+  end
+
+
+  @doc """
+  5) Smallest Multiple
+
+  2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+
+  What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+  """
+  def problem_5 do
+
   end
 end

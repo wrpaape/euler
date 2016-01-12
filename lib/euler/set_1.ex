@@ -129,8 +129,32 @@ defmodule Euler.Set1 do
   2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
 
   What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
-  """
-  def problem_5 do
 
+  iex> Euler.Set1.problem_5
+  232792560
+  """
+  @fact_twenty Enum.reduce(2..20, &*/2)
+  def problem_5(last_smallest \\ @fact_twenty) do
+    2..20
+    |> Enum.reduce(last_smallest, fn(x, last_smallest) ->
+      last_smallest
+      |> div(x)
+      |> case do
+        next_smallest when next_smallest == last_smallest / x ->
+          20..2
+          |> Enum.all?(&(rem(next_smallest, &1) == 0))
+          |> if do
+            next_smallest
+          else
+            last_smallest
+          end
+        _____________________________________________________ ->
+          last_smallest
+      end
+    end)
+    |> case do
+      ^last_smallest -> last_smallest
+      next_smallest  -> problem_5(next_smallest)
+    end
   end
 end

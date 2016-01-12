@@ -82,9 +82,9 @@ defmodule Euler do
     end)
   end
 
-  def format_time(time) when time < 1_000,     do: [ANSI.green,  format_float(time),             " µs"]
-  def format_time(time) when time < 1_000_000, do: [ANSI.yellow, format_float(time / 1_000),     " ms"]
-  def format_time(time),                       do: [ANSI.red,    format_float(time / 1_000_000), " s" ]
+  defp format_time(time) when time < 1_000,     do: [ANSI.green,  format_float(time),             " µs"]
+  defp format_time(time) when time < 1_000_000, do: [ANSI.yellow, format_float(time / 1_000),     " ms"]
+  defp format_time(time),                       do: [ANSI.red,    format_float(time / 1_000_000), " s" ]
 
-  def format_float(float), do: :io_lib.format("~.4g", [float])
+  defp format_float(float), do: :io_lib.format("~.4g", [float])
 end

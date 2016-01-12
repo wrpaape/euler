@@ -10,23 +10,47 @@ defmodule Euler do
   @problems_per_module Application.get_env(:euler, :problems_per_module)
   @solution_colors     ANSI.cyan_background  <> ANSI.magenta
   @default_colors      ANSI.white_background <> ANSI.black
+  @parse_opts [strict:  [help: :boolean, all: :boolean, latest: :boolean],
+               aliases: [h:    :help,    a:   :all,     l:      :latest]]
 
   def main(argv) do
     argv
-    |> Enum.each(fn(problem_number_string) ->
-      problem_number_string
-      |> Integer.parse
-      |> process(problem_number_string)
-    end)
+    |> OptionParser.parse(@parse_opts)
+    |> handle_parse
+    |> Enum.each(&process/1)
   end
 
-  def process(:error, arg_string) do
-   arg_string
-   |> format_error
-   |> IO.puts
+  def handle_parse({[], problem_number_strings, []}) do
+    problem_number_strings
+    |> Enum.map(&{Integer.parse(&1), &1})
+  end
+  def handle_parse({opts, _, []}),                    do: opts
+  def handle_parse({_, _, invalids}),                 do: invalids
+
+  def process({invalid_opt, nil}) do
+    invalid_opt
+    |> format_error("Invalid option")
+    |> IO.puts
   end
 
-  def process({problem_number, _}, problem_number_string) do
+  def process({:help, :true}) do
+    "euler [<problem numbers> | --latest/-l | --all/-a | --help/-h]"
+    |> IO.puts
+  end
+
+  def process({:all, true}) do
+  end
+
+  def process({:latest, true}) do
+  end
+
+  def process({:error, arg_string}) do
+    arg_string
+    |> format_error("Failed to parse problem number from")
+    |> IO.puts
+  end
+
+  def process({{problem_number, _}, problem_number_string}) do
     set_module =
       problem_number
       |> parse_set_module
@@ -52,11 +76,12 @@ defmodule Euler do
     |> IO.write
   end
 
-  defp format_error(arg_string) do
+  defp format_error(arg_string, msg) do
     [ANSI.bright,
      ANSI.red,
      ANSI.blink_slow,
-     "Failed to parse problem number from:\n  ",
+     msg,
+     ":\n  ",
      ANSI.blink_off,
      {inspect(arg_string), ANSI.red}
      |> frame]

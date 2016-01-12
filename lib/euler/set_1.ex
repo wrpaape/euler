@@ -10,7 +10,7 @@ defmodule Euler.Set1 do
   If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
   Find the sum of all the multiples of 3 or 5 below 1000.
 
-  1/10/16
+  01/10/16
 
   iex> Euler.Set1.problem_1
   233168
@@ -57,7 +57,7 @@ defmodule Euler.Set1 do
 
   What is the largest prime factor of the number 600851475143 
 
-  1/11/16
+  01/11/16
 
   iex> Euler.Set1.problem_3
   6857
@@ -90,7 +90,7 @@ defmodule Euler.Set1 do
 
   Find the largest palindrome made from the product of two 3-digit numbers.
 
-  1/11/16
+  01/11/16
 
   iex> Euler.Set1.problem_4
   906609
@@ -129,6 +129,8 @@ defmodule Euler.Set1 do
   2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
 
   What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+
+  01/11/16
 
   iex> Euler.Set1.problem_5
   232792560
@@ -169,6 +171,11 @@ defmodule Euler.Set1 do
   Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is 3025 − 385 = 2640.
 
   Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
+
+  01/12/16
+
+  iex> Euler.Set1.problem_6
+  25164150
   """
   def problem_6 do
     {sum_of_squares, sum} =
@@ -181,5 +188,42 @@ defmodule Euler.Set1 do
     |> :math.pow(2)
     |> - sum_of_squares
     |> trunc
+  end
+
+  @doc """
+  10001st Prime
+  By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
+
+  What is the 10 001st prime number?
+
+  01/12/16
+
+  iex> Euler.Set1.problem7
+  104743
+  """
+  def problem_7 do
+    3
+    |> Stream.iterate(&(&1 + 2))
+    |> Enum.reduce_while({[], 1}, fn
+      (_, {acc_primes, 10_001}) ->
+        {:halt, List.last(acc_primes)}
+
+      (x, {acc_primes, count}) -> 
+        next_acc = 
+          acc_primes
+          |> Enum.reduce_while({[], acc_primes}, fn(_, {behind, [next | ahead]}) ->
+            if rem(x, next) == 0 do
+              {:halt, {acc_primes, count}}
+            else
+              {:cont, {[next | behind], ahead}}
+            end
+          end)
+          |> case do
+            {rev_acc_primes, []} -> {Enum.reverse([x | rev_acc_primes]), count + 1}
+            last_acc             -> last_acc
+          end
+
+        {:cont, next_acc}
+    end)
   end
 end

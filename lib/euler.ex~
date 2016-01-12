@@ -81,7 +81,7 @@ defmodule Euler do
 
     row_length =
       string
-      |> byte_size
+      |> String.length
       |> min(contents_colspan)
 
     horiz = String.duplicate("═", row_length + 2)
@@ -95,8 +95,7 @@ defmodule Euler do
           |> String.split_at(row_length)
           |> case do
             {last_row, ""} ->
-              pad_len = row_length - byte_size(last_row)
-              {last_row <> String.duplicate(" ", pad_len), :halt} 
+              {String.ljust(last_row, row_length), :halt} 
 
             next_tup ->
               next_tup

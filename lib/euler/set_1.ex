@@ -325,13 +325,41 @@ defmodule Euler.Set1 do
 
   A Pythagorean triplet is a set of three natural numbers, a < b < c, for which,
 
-  a2 + b2 = c2
+  a^2 + b^2 = c^2
   For example, 32 + 42 = 9 + 16 = 25 = 52.
 
   There exists exactly one Pythagorean triplet for which a + b + c = 1000.
   Find the product abc.
+
+  01/12/16
+
+  iex> Euler.Set1.problem_9
+  31875000
   """
   def problem_9 do
-    
+    0..998
+    |> Enum.find_value(fn(a) ->
+      a_sq   = a * a
+      b_init = a + 1
+      c_init = 1_000 - a - b_init
+      b_last = b_init + div(c_init - b_init, 2) - 1
+
+      b_init..b_last
+      |> Enum.reduce_while(c_init, fn(b, c) ->
+          b_sq = b * b
+          c_sq = c * c
+
+          a_sq + b_sq
+          |> case do
+            ^c_sq               -> {:halt, {:done, [a, b, c]}}
+            lhs when lhs < c_sq -> {:cont, c - 1}
+            ___________________ -> {:halt, false}
+          end
+      end)
+      |> case do
+        {:done, triple} -> Enum.reduce(triple, &*/2)
+        _______________ -> false
+      end
+    end)
   end
 end

@@ -1,6 +1,6 @@
 defmodule Euler.Set1 do
   @moduledoc """
-  Set1 holds solutions to problems 1 - 25.
+  Set1 holds solutions to problems 1 - 10.
   """
 
 
@@ -362,4 +362,76 @@ defmodule Euler.Set1 do
       end
     end)
   end
+
+  @doc """
+  10) Summation of Primes
+
+  The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+
+  Find the sum of all the primes below two million.
+  """
+  @results [2, 3, 5]
+  @sieve   Enum.map(3..1_999_999, &{false, rem(&1, 60), &1})
+  def problem_10 do
+    sieve =
+      |> Enum.map(fn({is_prime, })
+  end
+
+  def flip(is_prime, coeff_x, n) do
+    :math.pow(x, 0.5) |> trunc
+  end
+
+  def flip({is_prime, r, n}) when r in [1, 13, 17, 29, 37, 41, 49, 53] do
+    lim_x = sqrt_trunc((n - 1) / 4)
+
+    next_is_prime =
+      1..lim_x
+      |> Enum.reduce(is_prime, fn(x, is_prime) ->
+        y = :math.pow(4 * x * x - n, 0.5)
+
+        if y == trunc(y), do: not is_prime, else: is_prime
+        end)
+      end)
+
+    {next_is_prime, n}
+  end
+
+  def flip({is_prime, r, n}) when r in [7, 19, 31, 43]                 do
+    lim_x = sqrt_trunc((n - 1) / 3)
+
+    next_is_prime =
+      1..lim_x
+      |> Enum.reduce(is_prime, fn(x, is_prime) ->
+        y = :math.pow(4 * x * x - n, 0.5)
+
+        if y == trunc(y), do: not is_prime, else: is_prime
+        end)
+      end)
+
+    {next_is_prime, n}
+  end
+
+  def flip({is_prime, r, n}) when r in [11, 23, 47, 59]                do
+  end
+
+  def flip ({is_prime, _, n}), do: {is_prime, n}
+  # def problem_10
+  #   |> Stream.take_every(2)
+  #   |> Enum.reduce({2, []}, fn(x, acc_tup = {acc_sum, acc_primes}) ->
+  #     acc_primes
+  #     |> Enum.reduce_while({[], acc_primes}, fn(_, {behind, [next | ahead]}) ->
+  #       if rem(x, next) == 0 do
+  #         IO.inspect({x, next, next/x, length(acc_primes), length(behind)})
+  #         {:halt, :not_prime}
+  #       else
+  #         {:cont, {[next | behind], ahead}}
+  #       end
+  #     end)
+  #     |> case do
+  #       :not_prime           -> acc_tup
+  #       {rev_acc_primes, []} -> {acc_sum + x, Enum.reverse([x | rev_acc_primes])}
+  #       # {rev_acc_primes, []} -> {acc_sum + x, [x | rev_acc_primes]}
+  #     end
+  #   end)
+  # end
 end

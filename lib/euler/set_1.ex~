@@ -373,159 +373,185 @@ defmodule Euler.Set1 do
   @max   1_999_999
   @procs 4
   def problem_10 do
-    results = [2, 3, 5]
     max_square_factor =
       @max
       |> :math.pow(0.5)
       |> trunc
 
-    sum_sup =
+    primes_sup_pid =
       __MODULE__
-      |> spawn(:init_sum_sup, [self])
-
-    prime_sup =
-      __MODULE__
-      |> spawn(:init_primes_sup, [sum_sup])
+      |> spawn(:init_sups, [self])
 
     __MODULE__
-    |> spawn(:base_primes, [7, max_square_factor, prime_sup])
+    |> spawn(:base_process, [max_square_factor, primes_sup_pid])
 
     delta =
       @max
       |> - max_square_factor
       |> div(@procs)
 
-    last_first =
-      1..@procs - 1
-      |> Enum.reduce(max_square_factor + 1, fn(first) ->
-        last = first + delta
-        __MODULE__
-        |> spawn(:first_pass, [first, last, prime_sup])
+    1..@procs
+    |> Enum.reduce(max_square_factor + 1, fn(proc, first) ->
+      last = if proc === @procs, do: @max, else: first + delta
+        # |> case do
+        #   ^@procs -> @max
+        #   _______ -> first + delta
+        # end
 
-        last + 1
-      end)
+      __MODULE__
+      |> spawn(:filter_first_pass, [last, first, primes_sup_pid])
 
-    __MODULE__
-    |> spawn(:first_pass, [last_first, @max, prime_sup])
+      last + 1
+    end)
 
     receive do
       sum_primes -> sum_primes
     end
   end
 
-  def init_sum_sup(root_pid) do
+  def init_sups(root_pid) do
     receive do
-      base_sum ->
+      {base_sum, base_squares} ->
+        sum_sup_pid =
+          __MODULE__
+          |> spawn(:await_sums, [@procs, root_pid, base_sum])
+
         @procs
-        |> await_sums(root_pid, base_sum)
+        |> await_primes(sum_sup_pid, base_squares)
     end
   end
 
-  def init_primes_sup(sum_sup_pid) do
+  def await_sums(0, root_pid, sum),        do: send_to(sum, root_pid)
+  def await_sums(rem_procs, root_pid, sum) do
     receive do
-      {base_sum, base_primes} ->
-        sum_sup_pid
-        |> send(base_sum)
+      next_sum ->
+        rem_procs - 1
+        |> await_sums(root_pid, sum + next_sum)
     end
-
-
   end
 
-  def await_sums(0, root_pid, sum) do
-    root_pid
-    |> send(sum)
+  def await_primes(0, _, _),               do: exit(:kill)
+  def await_primes(rem_procs, sum_sup_pid, base_squares) do
+    receive do
+      next_primes = [largest | _] ->
+        squares =
+          base_squares
+          |> range_squares(largest)
+
+        __MODULE__
+        |> spawn(:filter_square_factors_and_sum, [next_primes, squares, sum_sup_pid])
+
+      [] ->
+        sum_sup_pid
+        |> send(0)
+    end
+
+    rem_procs - 1
+    |> await_primes(sum_sup_pid, base_squares) 
+  end
+
+  def base_process(last_base, primes_sup_pid) do
+    __MODULE__
+    |> spawn(:filter_first_pass, [7, last_base, self])
+
+    receive do
+      first_primes ->
+        first_primes
+        |> base_sum_squares(2 + 3 + 5, [])
+        |> send_to(primes_sup_pid)
+    end
+  end
+
+  def range_squares([next_sq | rem_sqs], largest) when next_sq > largest, do: range_squares(rem_sqs, largest)
+  def range_squares(squares, _),                                          do: Enum.reverse(squares) 
+
+
+  def base_sum_squares([next_prime | rem_primes], base_sum, base_squares) do
+    next_square = next_prime * next_prime
+    rem_primes
+    |> Enum.reject(&(rem(&1, next_square) == 0))
+    |> base_sum_squares(base_sum + next_prime, [next_square | base_squares])
+  end
+
+  def base_sum_squares([], base_sum, base_squares), do: {base_sum, base_squares}
+
+
+  def filter_square_factors_and_sum(primes, squares, sum_sup_pid) do
+    primes
+    |> Enum.reduce(0, fn(prime, sum) ->
+      squares
+      |> Enum.any?(&(rem(prime, &1) == 0))
+      |> if(do: sum, else: sum + prime)
+    end)
+    |> send_to(sum_sup_pid)
+  end
+
+  def sqrt(x), do: :math.pow(x, 0.5)
+
+  def send_to(msg, pid) do
+    pid
+    |> send(msg)
 
     exit(:kill)
   end
 
-  def await_sums(sum, rem_procs) do
-    receive do
-      next_sum ->
-        sum + next_sum
-        |> await_sums(rem_procs - 1)
-    end
+  def filter_first_pass(last, first, parent_pid) do
+    require Integer
+
+    last
+    |> Integer.is_even
+    |> if(do: last + 1, else: last)
+    |> Range.new(first)
+    |> Enum.take_every(2)
+    |> Enum.filter(fn(n) ->
+      n
+      |> rem(60)
+      |> case do
+        r when r in [1, 13, 17, 29, 37, 41, 49, 53] ->
+          (n - 1) / 4
+          |> sqrt
+          |> trunc
+          |> Range.new(1)
+          |> Enum.reduce(false, fn(x, is_prime) ->
+            n - 4 * x * x
+            |> :math.pow(0.5)
+            |> case do
+              y when y == trunc(y) -> not is_prime
+              ____________________ -> is_prime
+            end
+          end)
+
+        r when r in [7, 19, 31, 43]                 ->
+          (n - 1) / 3
+          |> sqrt
+          |> trunc
+          |> Range.new(1)
+          |> Enum.reduce(false, fn(x, is_prime) ->
+            n - 3 * x * x
+            |> :math.pow(0.5)
+            |> case do
+              y when y == trunc(y) -> not is_prime
+              ____________________ -> is_prime
+            end
+          end)
+
+        r when r in [11, 23, 47, 59]                ->
+          (sqrt(2 * n + 3) - 1) / 2
+          |> trunc
+          |> Range.new(sqrt((n + 1) / 3) |> trunc |> + 1) 
+          |> Enum.reduce(false, fn(x, is_prime) ->
+            3 * x * x - n
+            |> :math.pow(0.5)
+            |> case do
+              y when y == trunc(y) -> not is_prime
+              ____________________ -> is_prime
+            end
+          end)
+
+        ___________________________________________ ->
+          false
+      end
+    end)
+    |> send_to(parent_pid)
   end
-
-  def await_primes(_, 0),                  do: sum
-  def await_primes(base_primes, rem_procs) do
-    receive do
-      next_primes ->
-        __MODULE__
-        |> spawn(:filter_square_factors, [next_primes, base_primes])
-        
-
-    end
-
-  end
-
-  def sqrt(x), do: :math.pow(x, 0.5)
-  def first_pass(n) do
-    n
-    |> rem(60)
-    |> case do
-      r when r in [1, 13, 17, 29, 37, 41, 49, 53] ->
-        (n - 1) / 4
-        |> sqrt
-        |> trunc
-        |> Range.new(1)
-        |> Enum.reduce(false, fn(x, is_prime) ->
-          n - 4 * x * x
-          |> :math.pow(0.5)
-          |> case do
-            y when y == trunc(y) -> not is_prime
-            ____________________ -> is_prime
-          end
-        end)
-
-      r when r in [7, 19, 31, 43]                 ->
-        (n - 1) / 3
-        |> sqrt
-        |> trunc
-        |> Range.new(1)
-        |> Enum.reduce(false, fn(x, is_prime) ->
-          n - 3 * x * x
-          |> :math.pow(0.5)
-          |> case do
-            y when y == trunc(y) -> not is_prime
-            ____________________ -> is_prime
-          end
-        end)
-
-      r when r in [11, 23, 47, 59]                ->
-        (sqrt(2 * n + 3) - 1) / 2
-        |> trunc
-        |> Range.new(sqrt((n + 1) / 3) |> trunc |> + 1) 
-        |> Enum.reduce(false, fn(x, is_prime) ->
-          3 * x * x - n
-          |> :math.pow(0.5)
-          |> case do
-            y when y == trunc(y) -> not is_prime
-            ____________________ -> is_prime
-          end
-        end)
-
-      ___________________________________________ ->
-        false
-    end
-  end
-
-# def problem_10
-  #   |> Stream.take_every(2)
-  #   |> Enum.reduce({2, []}, fn(x, acc_tup = {acc_sum, acc_primes}) ->
-  #     acc_primes
-  #     |> Enum.reduce_while({[], acc_primes}, fn(_, {behind, [next | ahead]}) ->
-  #       if rem(x, next) == 0 do
-  #         IO.inspect({x, next, next/x, length(acc_primes), length(behind)})
-  #         {:halt, :not_prime}
-  #       else
-  #         {:cont, {[next | behind], ahead}}
-  #       end
-  #     end)
-  #     |> case do
-  #       :not_prime           -> acc_tup
-  #       {rev_acc_primes, []} -> {acc_sum + x, Enum.reverse([x | rev_acc_primes])}
-  #       # {rev_acc_primes, []} -> {acc_sum + x, [x | rev_acc_primes]}
-  #     end
-  #   end)
-  # end
 end

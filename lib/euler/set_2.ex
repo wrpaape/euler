@@ -95,7 +95,7 @@ defmodule Euler.Set2 do
   def do_vert({rem_grid, max_prod})  do
     rem_grid
     |> Enum.reduce({{[], max_prod}, 1, 1, []}, fn
-      ([0 | rem_row], {{rem_grid, max_prod}, _, _}) ->
+      ([0 | rem_row], {{rem_grid, max_prod}, _, _, _}) ->
         {{[rem_row | rem_grid], max_prod}, 1, 1, []}
 
 
@@ -108,7 +108,7 @@ defmodule Euler.Set2 do
         {{[rem_row | rem_grid], max_prod}, @adj_count, next_tail_prod, next_tail}
 
 
-      (cell, {{rem_grid, max_prod}, counter, tail_prod, [tail_hd | tail_tl]}) ->
+      ([cell | rem_row], {{rem_grid, max_prod}, counter, tail_prod, tail}) ->
         next_tail =
           counter
           |> case do
@@ -116,9 +116,7 @@ defmodule Euler.Set2 do
             ______________ -> [cell | tail]
           end
 
-          {{[rem_row | rem_grid], max_prod}, counter + 1, tail_prod * cell, next_tail}
-
-
+        {{[rem_row | rem_grid], max_prod}, counter + 1, tail_prod * cell, next_tail}
     end)
     |> elem(0)
     |> do_vert

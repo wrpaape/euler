@@ -369,6 +369,9 @@ defmodule Euler.Set1 do
   The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
 
   Find the sum of all the primes below two million.
+
+  iex> Euler.Set1.problem_10
+  142913828922
   """
   @max   1_999_999
   @procs 4
@@ -508,14 +511,10 @@ defmodule Euler.Set1 do
       |> rem(60)
       |> case do
         r when r in [1, 13, 17, 29, 37, 41, 49, 53] ->
-          (n - 1) / 4
-          |> sqrt
-          |> flip(1, &(n - 4 * &1 * &1))
+          flip(n, 4)
 
         r when r in [7, 19, 31, 43]                 ->
-          (n - 1) / 3
-          |> sqrt
-          |> flip(1, &(n - 3 * &1 * &1))
+          flip(n, 3)
 
         r when r in [11, 23, 47, 59]                ->
           sqrt((2 * n + 3) - 1) / 2
@@ -526,6 +525,12 @@ defmodule Euler.Set1 do
       end
     end)
     |> send_to(parent_pid)
+  end
+
+  def flip(n, x_coeff) do
+    (n - 1) / x_coeff
+    |> sqrt
+    |> flip(1, &(n - x_coeff * &1 * &1))
   end
 
   def flip(x_max, x_min, y_sq) do

@@ -393,10 +393,6 @@ defmodule Euler.Set1 do
     1..@procs
     |> Enum.reduce(max_square_factor + 1, fn(proc, first) ->
       last = if proc === @procs, do: @max, else: first + delta
-        # |> case do
-        #   ^@procs -> @max
-        #   _______ -> first + delta
-        # end
 
       __MODULE__
       |> spawn(:filter_first_pass, [last, first, primes_sup_pid])
@@ -412,6 +408,11 @@ defmodule Euler.Set1 do
   def init_sups(root_pid) do
     receive do
       {base_sum, base_squares} ->
+        base_squares
+        |> Enum.reverse
+        |> Enum.map(&:math.pow(&1, 0.5))
+        |> IO.inspect
+
         sum_sup_pid =
           __MODULE__
           |> spawn(:await_sums, [@procs, root_pid, base_sum])
@@ -538,7 +539,7 @@ defmodule Euler.Set1 do
         r when r in [11, 23, 47, 59]                ->
           (sqrt(2 * n + 3) - 1) / 2
           |> trunc
-          |> Range.new(sqrt((n + 1) / 3) |> trunc |> + 1) 
+          |> Range.new(sqrt((n + 1) / 3) |> Float.ceil |> trunc) 
           |> Enum.reduce(false, fn(x, is_prime) ->
             3 * x * x - n
             |> :math.pow(0.5)

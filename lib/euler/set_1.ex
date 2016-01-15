@@ -408,6 +408,10 @@ defmodule Euler.Set1 do
   def init_sups(root_pid) do
     receive do
       {base_sum, base_squares} ->
+        base_squares
+        |> Enum.reverse
+        |> Enum.map(&:math.pow(&1, 0.5))
+
         sum_sup_pid =
           __MODULE__
           |> spawn(:await_sums, [@procs, root_pid, base_sum])
@@ -534,7 +538,7 @@ defmodule Euler.Set1 do
         r when r in [11, 23, 47, 59]                ->
           (sqrt(2 * n + 3) - 1) / 2
           |> trunc
-          |> Range.new(sqrt((n + 1) / 3) |> trunc |> + 1) 
+          |> Range.new(sqrt((n + 1) / 3) |> Float.ceil |> trunc) 
           |> Enum.reduce(false, fn(x, is_prime) ->
             3 * x * x - n
             |> :math.pow(0.5)

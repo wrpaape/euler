@@ -5,7 +5,6 @@ defmodule Euler.Set2 do
 
   alias IO.ANSI
 
-
   @grid """
   08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
   49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
@@ -37,24 +36,112 @@ defmodule Euler.Set2 do
 
   What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
   """
-  @grid String.replace(@grid, [ANSI.red, ANSI.reset], "")
-  def problem_11 do
-    grid_map =
-      @grid
-      |> String.split("\n", trim: true)
-      |> Enum.reduce({Map.new, 1}, fn(row_str, {grid_map, row_index}) ->
-        row_map =
-          row_str
-          |> String.split(" ")
-          |> Enum.reduce({Map.new, 1}, fn(col_str, {row_map, col_index}) ->
-            {Map.put(row_map, col_index, String.to_integer(col_str)), col_index + 1}
-          end)
-          |> elem(0)
+  @adj_count 4
+  @grid_size 20
+  @grid_list String.replace(@grid, [ANSI.red, ANSI.reset], "")
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn(row_str) ->
+      row_str
+      |> String.split(" ")
+      |> Enum.map(&String.to_integer/1)
+    end)
 
-        {Map.put(grid_map, row_index, row_map), row_index + 1}
-      end)
-      |> elem(0)
+  def problem_11 do
+    0
+    |> horiz
+    |> vert
+    # |> vert_tb
+    # |> vert_bt
+    # |> diag_bl_tr
+    # |> diag_br_tl
+    # |> diag_tl_br
+    # |> diag_tr_bl
   end
+
+  def horiz(max_prod), do: Enum.reduce(@grid_list, max_prod, &do_horiz(&1, &2, 1, 1, []))
+
+  def do_horiz([0 | rem_row], max_prod, _, _, _) do
+    rem_row
+    |> do_horiz(max_prod, 1, 1, [])
+  end
+
+  def do_horiz([cell | rem_row], max_prod, @adj_count, tail_prod, [tail_hd | tail_tl]) do
+    next_prod      = cell * tail_prod
+    next_max_prod  = max(max_prod, next_prod)
+    next_tail_prod = div(next_prod, tail_hd)
+    next_tail      = List.insert_at(tail_tl, @adj_count - 2, cell)
+
+    rem_row
+    |> do_horiz(next_max_prod, @adj_count, next_tail_prod, next_tail)
+  end
+
+  def do_horiz([cell | rem_row], max_prod, counter, tail_prod, tail) do
+    next_tail =
+      counter
+      |> case do
+        @adj_count - 1 -> Enum.reverse([cell | tail])
+        ______________ -> [cell | tail]
+      end
+
+    rem_row
+    |> do_horiz(max_prod, counter + 1, tail_prod * cell, next_tail)
+  end
+
+  def do_horiz([], max_prod, _, _, _), do: max_prod
+
+  def vert(max_prod), do: do_vert({@grid_list, max_prod})
+
+  def do_vert({[[] | _], max_prod}), do: max_prod
+  def do_vert({rem_grid, max_prod})  do
+    rem_grid
+    |> Enum.reduce({{[], max_prod}, 1, 1, []}, fn
+      ([0 | rem_row], {{rem_grid, max_prod}, _, _}) ->
+        {{[rem_row | rem_grid], max_prod}, 1, 1, []}
+
+
+      ([cell | rem_row], {{rem_grid, max_prod}, @adj_count, tail_prod, [tail_hd | tail_tl]}) ->
+        next_prod      = cell * tail_prod
+        next_max_prod  = max(max_prod, next_prod)
+        next_tail_prod = div(next_prod, tail_hd)
+        next_tail      = List.insert_at(tail_tl, @adj_count - 2, cell)
+
+        {{[rem_row | rem_grid], max_prod}, @adj_count, next_tail_prod, next_tail}
+
+
+      (cell, {{rem_grid, max_prod}, counter, tail_prod, [tail_hd | tail_tl]}) ->
+        next_tail =
+          counter
+          |> case do
+            @adj_count - 1 -> Enum.reverse([cell | tail])
+            ______________ -> [cell | tail]
+          end
+
+          {{[rem_row | rem_grid], max_prod}, counter + 1, tail_prod * cell, next_tail}
+
+
+    end)
+    |> elem(0)
+    |> do_vert
+  end
+  # def horiz(max_product) do
+  #   1..@grid_size
+  #   |> Enum.reduce({max_product, @grid_map}, fn(row, {max_product, grid_map}) ->
+  #     {row_map, rem_grid_map} = Map.pop(grid_map, row)
+  #     vals = row_map
+
+  #     next_max_product =
+  #       1..@grid_size - @adj_count
+  #       |> Enum.reduce(max_product, fn(col, max_product) ->
+  #           col..col + @adj_count - 1
+  #           |> Enum.reduce(1, &(Map.get(row_map, &1) * &2))
+  #           |> max(max_product)
+  #       end)
+  #       |> elem(0)
+
+  #     {next_max_product, rem_grid_map}
+  #   end)
+  #   |> elem(0)
+  # end
 
 
 

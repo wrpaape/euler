@@ -411,7 +411,6 @@ defmodule Euler.Set1 do
         base_squares
         |> Enum.reverse
         |> Enum.map(&:math.pow(&1, 0.5))
-        |> IO.inspect
 
         sum_sup_pid =
           __MODULE__
@@ -487,14 +486,14 @@ defmodule Euler.Set1 do
     |> send_to(sum_sup_pid)
   end
 
-  def sqrt(x), do: :math.pow(x, 0.5)
-
   def send_to(msg, pid) do
     pid
     |> send(msg)
 
     exit(:kill)
   end
+
+  def sqrt(x), do: :math.pow(x, 0.5)
 
   def filter_first_pass(last, first, parent_pid) do
     require Integer
@@ -511,48 +510,38 @@ defmodule Euler.Set1 do
         r when r in [1, 13, 17, 29, 37, 41, 49, 53] ->
           (n - 1) / 4
           |> sqrt
-          |> trunc
-          |> Range.new(1)
-          |> Enum.reduce(false, fn(x, is_prime) ->
-            n - 4 * x * x
-            |> :math.pow(0.5)
-            |> case do
-              y when y == trunc(y) -> not is_prime
-              ____________________ -> is_prime
-            end
-          end)
+          |> flip(1, &(n - 4 * &1 * &1))
 
         r when r in [7, 19, 31, 43]                 ->
           (n - 1) / 3
           |> sqrt
-          |> trunc
-          |> Range.new(1)
-          |> Enum.reduce(false, fn(x, is_prime) ->
-            n - 3 * x * x
-            |> :math.pow(0.5)
-            |> case do
-              y when y == trunc(y) -> not is_prime
-              ____________________ -> is_prime
-            end
-          end)
+          |> flip(1, &(n - 3 * &1 * &1))
 
         r when r in [11, 23, 47, 59]                ->
-          (sqrt(2 * n + 3) - 1) / 2
-          |> trunc
-          |> Range.new(sqrt((n + 1) / 3) |> Float.ceil |> trunc) 
-          |> Enum.reduce(false, fn(x, is_prime) ->
-            3 * x * x - n
-            |> :math.pow(0.5)
-            |> case do
-              y when y == trunc(y) -> not is_prime
-              ____________________ -> is_prime
-            end
-          end)
+          sqrt((2 * n + 3) - 1) / 2
+          |> flip(sqrt((n + 1) / 3), &(3 * &1 * &1 - n))
 
         ___________________________________________ ->
           false
       end
     end)
     |> send_to(parent_pid)
+  end
+
+  def flip(x_max, x_min, y_sq) do
+    false
+    |> check_next(trunc(x_max), x_min, y_sq)
+  end
+
+  def check_next(is_prime, x, x_min, _) when x < x_min, do: is_prime
+  def check_next(is_prime, x, x_min, y_sq)              do
+    y_sq
+    |> apply([x])
+    |> sqrt
+    |> case do
+      y when y == trunc(y) -> not is_prime
+      ____________________ -> is_prime
+    end
+    |> check_next(x - 1, x_min, y_sq)
   end
 end

@@ -370,52 +370,149 @@ defmodule Euler.Set1 do
 
   Find the sum of all the primes below two million.
   """
-  @results [2, 3, 5]
-  @sieve   Enum.map(3..1_999_999, &{false, rem(&1, 60), &1})
-  def problem_10(sieve \\ @sieve, results \\ @results) do
-    sieve =
-      |> Enum.map(fn({is_prime, })
-  end
+  @max   1_999_999
+  @procs 4
+  def problem_10 do
+    results = [2, 3, 5]
+    max_square_factor =
+      @max
+      |> :math.pow(0.5)
+      |> trunc
 
-  def flip(is_prime, coeff_x, n) do
-    :math.pow(x, 0.5) |> trunc
-  end
+    sum_sup =
+      __MODULE__
+      |> spawn(:init_sum_sup, [self])
 
-  def flip({is_prime, r, n}) when r in [1, 13, 17, 29, 37, 41, 49, 53] do
-    lim_x = sqrt_trunc((n - 1) / 4)
+    prime_sup =
+      __MODULE__
+      |> spawn(:init_primes_sup, [sum_sup])
 
-    next_is_prime =
-      1..lim_x
-      |> Enum.reduce(is_prime, fn(x, is_prime) ->
-        y = :math.pow(4 * x * x - n, 0.5)
+    __MODULE__
+    |> spawn(:base_primes, [7, max_square_factor, prime_sup])
 
-        if y == trunc(y), do: not is_prime, else: is_prime
-        end)
+    delta =
+      @max
+      |> - max_square_factor
+      |> div(@procs)
+
+    last_first =
+      1..@procs - 1
+      |> Enum.reduce(max_square_factor + 1, fn(first) ->
+        last = first + delta
+        __MODULE__
+        |> spawn(:first_pass, [first, last, prime_sup])
+
+        last + 1
       end)
 
-    {next_is_prime, n}
+    __MODULE__
+    |> spawn(:first_pass, [last_first, @max, prime_sup])
+
+    receive do
+      sum_primes -> sum_primes
+    end
   end
 
-  def flip({is_prime, r, n}) when r in [7, 19, 31, 43]                 do
-    lim_x = sqrt_trunc((n - 1) / 3)
+  def init_sum_sup(root_pid) do
+    receive do
+      base_sum ->
+        @procs
+        |> await_sums(root_pid, base_sum)
+    end
+  end
 
-    next_is_prime =
-      1..lim_x
-      |> Enum.reduce(is_prime, fn(x, is_prime) ->
-        y = :math.pow(4 * x * x - n, 0.5)
+  def init_primes_sup(sum_sup_pid) do
+    receive do
+      {base_sum, base_primes} ->
+        sum_sup_pid
+        |> send(base_sum)
 
-        if y == trunc(y), do: not is_prime, else: is_prime
+        @procs
+        |> await_primes(base_sum)
+    end
+
+
+  end
+
+  def await_sums(0, root_pid, sum) do
+    root_pid
+    |> send(sum)
+
+    exit(:kill)
+  end
+
+  def await_sums(sum, rem_procs) do
+    receive do
+      next_sum ->
+        sum + next_sum
+        |> await_sums(rem_procs - 1)
+    end
+  end
+
+  def await_primes(_, 0),                  do: sum
+  def await_primes(base_primes, rem_procs) do
+    receive do
+      next_primes ->
+        __MODULE__
+        |> spawn(:filter_square_factors, [next_primes, base_primes])
+        
+
+    end
+
+  end
+
+  def sqrt(x), do: :math.pow(x, 0.5)
+  def first_pass(n) do
+    n
+    |> rem(60)
+    |> case do
+      r when r in [1, 13, 17, 29, 37, 41, 49, 53] ->
+        (n - 1) / 4
+        |> sqrt
+        |> trunc
+        |> Range.new(1)
+        |> Enum.reduce(false, fn(x, is_prime) ->
+          n - 4 * x * x
+          |> :math.pow(0.5)
+          |> case do
+            y when y == trunc(y) -> not is_prime
+            ____________________ -> is_prime
+          end
         end)
-      end)
 
-    {next_is_prime, n}
+      r when r in [7, 19, 31, 43]                 ->
+        (n - 1) / 3
+        |> sqrt
+        |> trunc
+        |> Range.new(1)
+        |> Enum.reduce(false, fn(x, is_prime) ->
+          n - 3 * x * x
+          |> :math.pow(0.5)
+          |> case do
+            y when y == trunc(y) -> not is_prime
+            ____________________ -> is_prime
+          end
+        end)
+
+      r when r in [11, 23, 47, 59]                ->
+        (sqrt(2 * n + 3) - 1) / 2
+        |> trunc
+        |> Range.new(sqrt((n + 1) / 3) |> trunc |> + 1) 
+        |> Enum.reduce(false, fn(x, is_prime) ->
+          3 * x * x - n
+          |> :math.pow(0.5)
+          |> case do
+            y when y == trunc(y) -> not is_prime
+            ____________________ -> is_prime
+          end
+        end)
+
+      ___________________________________________ ->
+        false
+    end
   end
 
-  def flip({is_prime, r, n}) when r in [11, 23, 47, 59]                do
-  end
-
-  def flip ({is_prime, _, n}), do: {is_prime, n}
-  # def problem_10
+# def problem_10
   #   |> Stream.take_every(2)
   #   |> Enum.reduce({2, []}, fn(x, acc_tup = {acc_sum, acc_primes}) ->
   #     acc_primes

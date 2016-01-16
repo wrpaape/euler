@@ -50,12 +50,7 @@ defmodule Euler.Set2 do
     0
     |> horiz
     |> vert
-    # |> vert_tb
-    # |> vert_bt
-    # |> diag_bl_tr
-    # |> diag_br_tl
-    # |> diag_tl_br
-    # |> diag_tr_bl
+    |> diag
   end
 
   def horiz(max_prod), do: Enum.reduce(@grid_list, max_prod, &do_horiz(&1, &2, 1, 1, []))
@@ -105,9 +100,7 @@ defmodule Euler.Set2 do
         next_tail_prod = div(next_prod, tail_hd)
         next_tail      = List.insert_at(tail_tl, @adj_count - 2, cell)
 
-        IO.inspect(next_prod)
-
-        {{[rem_row | rem_grid], max_prod}, @adj_count, next_tail_prod, next_tail}
+        {{[rem_row | rem_grid], next_max_prod}, @adj_count, next_tail_prod, next_tail}
 
 
       ([cell | rem_row], {{rem_grid, max_prod}, counter, tail_prod, tail}) ->
@@ -122,6 +115,31 @@ defmodule Euler.Set2 do
     end)
     |> elem(0)
     |> do_vert
+  end
+
+  def diag(max_prod), do: do_diag(max_prod, @grid_list)
+
+  def do_diag(max_prod, []),      do: max_prod
+  def do_diag(max_prod, rem_grid) do
+    rem_grid
+    |> Enum.reduce_while([{0, []}, {@adj_count - 1, []}], fn
+      (_, [{@adj_count, diag1}, {-1, diag2}]) ->
+        {:halt, [diag1, diag2]}
+        |> IO.inspect
+
+      (row, diag_tups) ->
+        next_diag_tups =
+          diag_tups
+          |> Enum.map_reduce(1, fn({offset, diag}, inc) ->
+            {{offset + inc, [Enum.slice(row, offset, @grid_size - @adj_count) | diag]}, inc * -1}
+          end)
+          |> elem(0)
+
+        {:cont, next_diag_tups}
+    end)
+    |> Enum.reduce(max_prod, &do_vert({&1, &2}))
+    # |> Enum.reduce(max_prod, fn(diag, max_prod) -> do_vert({diag, max_prod}) end)
+    |> do_diag(tl(rem_grid))
   end
   # def horiz(max_product) do
   #   1..@grid_size
@@ -142,8 +160,4 @@ defmodule Euler.Set2 do
   #   end)
   #   |> elem(0)
   # end
-
-
-
-  
 end

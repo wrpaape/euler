@@ -141,7 +141,7 @@ defmodule Euler.Set2 do
     next_tail      = List.insert_at(tail_tl, @adj_count - 2, cell)
 
     rem_diag
-    |> do_diag(next_max_prod, @adj_count, next_tail_prod, next_tail, [rem_row | next_diag])
+    |> do_diag([rem_row | next_diag], next_max_prod, @adj_count, next_tail_prod, next_tail)
   end
 
   def do_diag([[cell | rem_row] | rem_diag], next_diag, max_prod, counter, tail_prod, tail) do
@@ -152,8 +152,13 @@ defmodule Euler.Set2 do
         ______________ -> [cell | tail]
       end
 
-    {{[rem_row | rem_grid], max_prod}, counter + 1, tail_prod * cell, next_tail}
+    rem_diag
+    |> do_diag([rem_row | next_diag], max_prod, counter + 1, tail_prod * cell, next_tail)
   end
+
+  def do_diag([[] | rem_diag], next_diag, max_prod, _, _, _), do: do_diag(rem_diag, next_diag, max_prod, 1, 1, [])
+  def do_diag([], [], max_prod, _, _, _),                     do: max_prod
+  def do_diag([], next_diag, max_prod, _, _, _),              do: do_diag(next_diag, [], max_prod, 1, 1, [])
 
   # 08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
   # 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00

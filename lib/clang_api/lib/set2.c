@@ -26,8 +26,10 @@ int main(int argc, char *argv[])
  ************************************************************************************/
 char *problem_12(void)
 {
-  char result[RES_SIZE];
+  char result[MAX_RESULT_SIZE];
 
+
+  return result;
 }
 
 

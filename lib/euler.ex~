@@ -138,7 +138,7 @@ defmodule Euler do
 
   defp parse_problem_set(problem_number) do
     problem_number
-    |> div(@problems_per_module - 1)
+    |> div(@problems_per_module + 1)
     |> + 1
     |> Integer.to_string
   end

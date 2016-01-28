@@ -1,4 +1,6 @@
 defmodule Euler.Set2 do
+  alias Euler.ClangAPI
+
   @moduledoc """
   Set2 holds solutions to problems 11 - 20.
   """
@@ -178,16 +180,17 @@ defmodule Euler.Set2 do
 
   What is the value of the first triangle number to have over five hundred divisors?
   """
-  def problem_12 do
-    1..1000
-    |> Enum.map_reduce(0, fn(n, last_tri) ->
-      tri = last_tri + n
-      {Enum.join([tri, ": ", Enum.filter(1..tri, &(rem(tri, &1) == 0)) |> Enum.join(", ") ]), tri}
-    end)
-    |> elem(0)
-    |> Enum.join("\n")
-    |> IO.write
-    # |> Enum.max_by(&length(elem(&1, 2)))
-  end
+  def problem_12, do: ClangAPI.call(~w(2 12))
+  # def problem_12 do
+  #   1..1000
+  #   |> Enum.map_reduce(0, fn(n, last_tri) ->
+  #     tri = last_tri + n
+  #     {Enum.join([tri, ": ", Enum.filter(1..tri, &(rem(tri, &1) == 0)) |> Enum.join(", ") ]), tri}
+  #   end)
+  #   |> elem(0)
+  #   |> Enum.join("\n")
+  #   |> IO.write
+  #   # |> Enum.max_by(&length(elem(&1, 2)))
+  # end
 end
 

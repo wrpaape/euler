@@ -67,7 +67,8 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
-void arg_error(void) {
+void arg_error(void)
+{
   fprintf(stderr, FORMAT_ERROR(incorrect number of arguments));
   exit(1);
 }

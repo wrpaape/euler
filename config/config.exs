@@ -2,7 +2,10 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :euler, [problems_per_module: 10]
+config :euler, [problems_per_module: 10,
+                clang_api_dir: ~w(.. .. lib euler clang_api)
+                               |> Path.join
+                               |> Path.expand(Mix.Project.build_path)]
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

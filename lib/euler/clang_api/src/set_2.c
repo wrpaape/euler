@@ -36,32 +36,42 @@
  ************************************************************************************/
 void problem_12(void)
 {
-	const unsigned int N = 100;
+	const unsigned int N = 10; /* max number of iterations */
 
-	unsigned int n;						  /* counter for calculating triangule number 'tri' */
-	unsigned int tri;					  /* triangle number corresponding to counter 'n' */
-	unsigned int num_divs;		  /* number of divisors for 'tri' */
-	unsigned int max_divs;      /* current max number of divisors */
-	unsigned int max_divs_tri;  /* triangle number corresponding to 'max_divs' */
-	unsigned int lower_div;     /* smaller of two divisors whose product is 'tri' */
-	unsigned int min_upper_div; /* current smallest larger divisor */
+	unsigned int n;						 /* counter for calculating triangule number 'tri' */
+	unsigned int tri;					 /* triangle number corresponding to counter 'n' */
+	unsigned int num_divs;		 /* number of divisors for 'tri' */
+	unsigned int max_divs;     /* current max number of divisors */
+	unsigned int max_divs_tri; /* triangle number corresponding to 'max_divs' */
+	unsigned int smaller_div;  /* smaller of two divisors whose product is 'tri' */
+	unsigned int min_big_div;  /* current smallest larger divisor */
 
-	for (n = 0; n < N; ++n) {
-		tri = n * (n + 1) / 2;
-		min_upper_div = tri;
-    lower_div = 2;
-		num_divs = 2;
+  n   = 0;
+  tri = 0;
+
+  while (max_divs < 500) {
+		/* tri = n * (n + 1) / 2; /1* calculate next triangle number *1/ */
+    tri = tri + n;         /* calculate next triangle number */
+		num_divs = 2;          /* corresponds to 1 and 'tri' */
+    smaller_div = 1;
+		min_big_div = tri;
+
+    while (smaller_div <= min_big_div) {
+      ++smaller_div;
+
+      if (tri % smaller_div == 0) {
+        min_big_div = tri / smaller_div;
+        num_divs += 2;
+      }
+    }
+
+    if (num_divs > max_divs) {
+      max_divs = num_divs;
+      max_divs_tri = tri;
+    }
+
+    ++n;
 	}
 
-		
-
-		
-
-
-
-  char result[MAX_RESULT_SIZE];
-
-  strcpy(result, "FOO");
-
-	printf("%u: %u divisors", max_divs_tri[1], max_divs_tri[0]);
+	printf("%u: %u divisors", max_divs_tri, max_divs);
 }

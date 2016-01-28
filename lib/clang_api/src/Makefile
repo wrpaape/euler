@@ -1,26 +1,8 @@
-IDIR    = ../include
-ODIR	 = obj
-LDIR 	 = ../lib
-CC		  = gcc
-DEBUG = -g
-CFLAGS  =-Wall -c $(DEBUG) -D__USE_FIXED_PROTOTYPES__ -ansi -I$(IDIR)
-LFLAGS = -Wall $(DEBUG)
+clang_api : clang_api.o set_2.o
 
-
-_DEPS  = clang_api.h
-DEPS   = $(patsubst %,$(IDIR)/%,$(_DEPS))
-
-_OBJ   = clang_api.o
-OBJ    = $(patsubst %,$(ODIR)/%,$(_OBJ))
-
-
-$(ODIR)/%.o: $(LDIR)/%.c $(DEPS)
-		$(CC) -c -o $@ $< $(CFLAGS)
-
-prob_set: $(OBJ)
-		$(CC) -o $@ $^ $(CFLAGS)
-
-.PHONY: clean
-
-clean:
-		\rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ 
+clang_api.o : clang_api.c clang_api.h sets.h set_2.h
+				gcc -c clang_api.c
+set_2.o : set_2.c sets.h set_2.h
+				gcc -c set_2.c
+clean :
+				rm clang_api clang_api.o set_2.o

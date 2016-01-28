@@ -13,31 +13,35 @@
  ************************************************************************************/
 int main(int argc, char *argv[])
 {
+  if (argc != 3) {
+    arg_error();
+  }
+
   unsigned int prob_num;
-  unsigned int succ_convs;
   unsigned int set_num;
 
-  while (argc > 1) {
-    --argc;
-    ++argv;
+  parse_num(argv[1], &set_num);
+  parse_num(argv[2], &prob_num);
 
-    succ_convs = sscanf(*argv, "%u", &prob_num);
-
-    if (succ_convs != 1) {
-      parse_error(*argv);
-      continue;
-    }
-
-    set_num = prob_num / (PROBLEMS_PER_SET + 1) + 1;
-
-    dispatch(set_num, prob_num);
-  }
+  dispatch(set_num, prob_num);
   
   return 0;
 }
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
+void parse_num(char *arg, unsigned int *num_ptr)
+{
+  unsigned int succ_convs;
+
+  succ_convs = sscanf(arg, "%u", num_ptr);
+
+  if (succ_convs != 1) {
+    parse_error(arg);
+  }
+}
+
+
 void dispatch(const unsigned int set_num, const unsigned int prob_num)
 {
   switch (set_num) {
@@ -63,17 +67,25 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
+void arg_error(void) {
+  fprintf(stderr, FORMAT_ERROR(incorrect number of arguments));
+  exit(1);
+}
+
 void parse_error(const char *arg)
 {
   fprintf(stderr, FORMAT_ERROR(failed to parse problem number from argument "%s"), arg);
+  exit(1);
 }
 
 void missing_set_error(const unsigned int set_num, const unsigned int prob_num)
 {
   fprintf(stderr, FORMAT_ERROR(problem set %u housing problem number %u not found), set_num, prob_num);
+  exit(1);
 }
 
 void missing_prob_error(const unsigned int prob_num, const unsigned int set_num)
 {
   fprintf(stderr, FORMAT_ERROR(problem number %u not found in problem set %u), prob_num, set_num);
+  exit(1);
 }

@@ -36,9 +36,32 @@
  ************************************************************************************/
 void problem_12(void)
 {
+	const unsigned int N = 100;
+
+	unsigned int n;						  /* counter for calculating triangule number 'tri' */
+	unsigned int tri;					  /* triangle number corresponding to counter 'n' */
+	unsigned int num_divs;		  /* number of divisors for 'tri' */
+	unsigned int max_divs;      /* current max number of divisors */
+	unsigned int max_divs_tri;  /* triangle number corresponding to 'max_divs' */
+	unsigned int lower_div;     /* smaller of two divisors whose product is 'tri' */
+	unsigned int min_upper_div; /* current smallest larger divisor */
+
+	for (n = 0; n < N; ++n) {
+		tri = n * (n + 1) / 2;
+		min_upper_div = tri;
+    lower_div = 2;
+		num_divs = 2;
+	}
+
+		
+
+		
+
+
+
   char result[MAX_RESULT_SIZE];
 
   strcpy(result, "FOO");
 
-  puts(result);
+	printf("%u: %u divisors", max_divs_tri[1], max_divs_tri[0]);
 }

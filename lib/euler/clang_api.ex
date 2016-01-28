@@ -11,13 +11,6 @@ defmodule Euler.ClangAPI do
 
       {error_msg, status} -> 
         Ticker.stop
-      :timer.sleep 1000
-
-      IO.puts "ooga booga"
-
-      IO.puts status
-
-      IO.inspect error_msg
 
         error_msg
         |> IO.write

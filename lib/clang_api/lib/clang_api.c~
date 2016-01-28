@@ -20,6 +20,7 @@
 int main(int argc, char *argv[])
 {
   unsigned int prob_num;
+  unsigned int set_num;
   unsigned int succ_convs;
 
   while (argc > 1) {
@@ -29,7 +30,8 @@ int main(int argc, char *argv[])
     succ_convs = sscanf(*argv, "%u", &prob_num);
 
     if (succ_convs == 1) {
-      process(prob_num);
+      set_num = prob_num / (PROBLEMS_PER_SET + 1) + 1;
+      /* process(prob_num); */
     }
   }
   
@@ -40,10 +42,10 @@ int main(int argc, char *argv[])
  ************************************************************************************/
 void process(const unsigned int prob_num)
 {
-  SetType *set_ptr;
+  /* SetType *set_ptr; */
   unsigned int set_num;
 
-  set_ptr = PROB_SET;
+  /* set_ptr = PROB_SET; */
   set_num = prob_num / (PROBLEMS_PER_SET + 1) + 1;
   
   while (*set_ptr != NULL) {

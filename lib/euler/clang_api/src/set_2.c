@@ -41,16 +41,15 @@ void problem_12(void)
 	unsigned int n;						 /* counter for calculating triangule number 'tri' */
 	unsigned int tri;					 /* triangle number corresponding to counter 'n' */
 	unsigned int num_divs;		 /* number of divisors for 'tri' */
-	unsigned int max_divs;     /* current max number of divisors */
-	unsigned int max_divs_tri; /* triangle number corresponding to 'max_divs' */
 	unsigned int smaller_div;  /* smaller of two divisors whose product is 'tri' */
 	unsigned int min_big_div;  /* current smallest larger divisor */
 
-  n   = 0;
-  tri = 0;
+  n   = 0;      /* zeroth counter */
+  tri = 0;      /* zeroth triangle number */
+  num_divs = 1; /* corresponds to 0 */ 
 
-  while (max_divs < 500) {
-		/* tri = n * (n + 1) / 2; /1* calculate next triangle number *1/ */
+  while (num_divs < 500) {
+    ++n;
     tri = tri + n;         /* calculate next triangle number */
 		num_divs = 2;          /* corresponds to 1 and 'tri' */
     smaller_div = 1;
@@ -64,14 +63,14 @@ void problem_12(void)
         num_divs += 2;
       }
     }
-
-    if (num_divs > max_divs) {
-      max_divs = num_divs;
-      max_divs_tri = tri;
-    }
-
-    ++n;
 	}
 
-	printf("%u: %u divisors", max_divs_tri, max_divs);
+	printf("%u", tri);
+}
+
+const unsigned int DIG_MAT[100][50] = DIGITS;
+
+void problem_13(void)
+{
+	printf("%u", DIG_MAT[50][30]);
 }

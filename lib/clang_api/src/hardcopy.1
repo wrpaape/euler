@@ -1,0 +1,42 @@
+
+lib/clang_api/src  master                                      6h22m  ‘ Ò  I
+¶ make prob_set
+gcc -c -o obj/prob_set.o ../lib/prob_set.c -Wall -c -g -D__USE_FIXED_PROTOTYPES
+__ -ansi -I../include
+In file included from ../lib/prob_set.c:9:
+../include/prob_set.h:13:3: error: type name does not allow storage class to be
+      specified
+  static unsigned int num;    /* problem number identifier */
+  ^
+../include/prob_set.h:15:3: error: type name does not allow storage class to be
+      specified
+  extern char *(*func)(void); /* pointer to problem function */
+  ^
+../include/prob_set.h:19:3: error: type name does not allow storage class to be
+      specified
+  static unsigned int num;    /* problem set number identifier */
+  ^
+../lib/prob_set.c:14:51: error: use of undeclared identifier 'SetNodeType'
+static const unsigned int SET_NODE_SIZE  = sizeof(SetNodeType);
+                                                  ^
+../lib/prob_set.c:15:51: error: use of undeclared identifier 'ProbNodeType'
+static const unsigned int PROB_NODE_SIZE = sizeof(ProbNodeType);
+                                                  ^
+../lib/prob_set.c:38:24: warning: incompatible pointer types assigning to
+      'struct SetNode *' from 'ProbType *' (aka 'struct ProbNode *')
+      [-Wincompatible-pointer-types]
+  prob_ptr -> next_ptr = next_prob_ptr;
+                       ^ ~~~~~~~~~~~~~
+../lib/prob_set.c:39:15: error: no member named 'func' in 'struct SetNode'
+  prob_ptr -> func = prob_func;
+  ~~~~~~~~    ^
+../lib/prob_set.c:41:10: warning: incompatible pointer types returning
+      'SetType *' (aka 'struct SetNode *') from a function with result type
+      'ProbType *' (aka 'struct ProbNode *') [-Wincompatible-pointer-types]
+  return prob_ptr;
+         ^~~~~~~~
+2 warnings and 6 errors generated.
+make: *** [obj/prob_set.o] Error 1
+
+lib/clang_api/src  master                                      6h24m  ‘ Ò  I
+¶

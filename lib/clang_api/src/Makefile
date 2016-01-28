@@ -1,26 +1,27 @@
-IDIR   = ../include
-CC		 = gcc
-CFLAGS = -I$(IDIR)
-
+IDIR    = ../include
 ODIR	 = obj
 LDIR 	 = ../lib
+CC		  = gcc
+DEBUG = -g
+CFLAGS  =-Wall -c $(DEBUG) -D__USE_FIXED_PROTOTYPES__ -ansi -I$(IDIR)
+LFLAGS = -Wall $(DEBUG)
 
-LIBS	 = -lm
+# SOURCES = clang_api.c prob_set.c set2.c
 
-_DEPS  = hellomake.h
+_DEPS  = prob_set.h
 DEPS   = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ   = hellomake.o hellofunc.o 
+_OBJ   = prob_set.o
 OBJ    = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
-$(ODIR)/%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+$(ODIR)/%.o: $(LDIR)/%.c $(DEPS)
+		$(CC) -c -o $@ $< $(CFLAGS)
 
-hellomake: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+prob_set: $(OBJ)
+		$(CC) -o $@ $^ $(CFLAGS)
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+		\rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ 

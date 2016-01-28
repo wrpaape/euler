@@ -3,7 +3,7 @@
 use Mix.Config
 
 config :euler, [problems_per_module: 10,
-                clang_api_dir: ~w(.. .. clang_api)
+                clang_api_cmd: ~w(.. .. lib euler clang_api clang_api)
                                |> Path.join
                                |> Path.expand(Mix.Project.build_path)]
 

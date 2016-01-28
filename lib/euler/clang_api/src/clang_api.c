@@ -54,7 +54,7 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
           break;
 
         default:
-          missing_prob_error(prob_num, 12);
+          missing_prob_error(prob_num, 2);
       }
       break;
     /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
@@ -69,24 +69,24 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
  ************************************************************************************/
 void arg_error(void)
 {
-  fprintf(stderr, FORMAT_ERROR(incorrect number of arguments));
+  printf(FORMAT_ERROR(incorrect number of arguments));
   exit(1);
 }
 
 void parse_error(const char *arg)
 {
-  fprintf(stderr, FORMAT_ERROR(failed to parse problem number from argument "%s"), arg);
+  printf(FORMAT_ERROR(failed to parse problem number from argument "%s"), arg);
   exit(1);
 }
 
 void missing_set_error(const unsigned int set_num, const unsigned int prob_num)
 {
-  fprintf(stderr, FORMAT_ERROR(problem set %u housing problem number %u not found), set_num, prob_num);
+  printf(FORMAT_ERROR(problem set %u housing problem number %u not found), set_num, prob_num);
   exit(1);
 }
 
 void missing_prob_error(const unsigned int prob_num, const unsigned int set_num)
 {
-  fprintf(stderr, FORMAT_ERROR(problem number %u not found in problem set %u), prob_num, set_num);
+  printf(FORMAT_ERROR(problem number %u not found in problem set %u), prob_num, set_num);
   exit(1);
 }

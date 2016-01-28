@@ -1,6 +1,26 @@
 defmodule Euler.ClangAPI do
-  @clang_api_dir Application.get_env(:euler, :clang_api_dir)
-  @clang_api_cmd Path.join(@clang_api_dir, "clang_api")
+  alias Euler.Ticker
+
+  @clang_api_cmd Application.get_env(:euler, :clang_api_cmd)
   
-  def call(set_num, prob_num), do: System.cmd(@clang_api_cmd, [set_num, prob_num])
+  def call(argv) do
+    System.cmd(@clang_api_cmd, argv)
+    |> case do
+      {result,    0}      ->
+        result
+
+      {error_msg, status} -> 
+        Ticker.stop
+      :timer.sleep 1000
+
+      IO.puts "ooga booga"
+
+      IO.puts status
+
+        error_msg
+        |> IO.write
+
+        System.halt(status)
+    end
+  end
 end

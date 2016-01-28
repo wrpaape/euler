@@ -180,7 +180,8 @@ defmodule Euler.Set2 do
 
   What is the value of the first triangle number to have over five hundred divisors?
   """
-  def problem_12, do: ClangAPI.call(~w(2 12))
+  # def problem_12, do: System.cmd(@clang_api_cmd, ~w(2 12))
+  def problem_12, do: ClangAPI.call(~w(2 14))
   # def problem_12 do
   #   1..1000
   #   |> Enum.map_reduce(0, fn(n, last_tri) ->

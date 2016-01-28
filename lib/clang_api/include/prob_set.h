@@ -4,19 +4,26 @@
  * Defines types 'ProbType' and 'SetType' that compose the problem set structure.   *
  ************************************************************************************/
 /************************************************************************************
+ *                             PREPROCESSOR DIRECTIVES                              *
+ ************************************************************************************/
+#include "set_2.h"
+/************************************************************************************
  *                               INITIAL DECLARATIONS                               *
  ************************************************************************************/
 typedef struct ProbNode {
-  static unsigned int num;    /* problem number identifier */
-  struct *ProbNode next_ptr;  /* points to next problem in set */
-  extern char *(*func)(void); /* pointer to problem function */
+  unsigned int num;    /* problem number identifier */
+  struct ProbNode *next_ptr;  /* points to next problem in set */
+  char *(*func)(void); /* pointer to problem function */
 } ProbType;
 
 typedef struct SetNode {
-  static unsigned int num;    /* problem set number identifier */
-  struct *SetNode next_ptr;   /* points to next problem set */
-  struct *ProbNode prob_ptr;  /* points to first problem in set */
+  unsigned int num;           /* problem set number identifier */
+  struct SetNode *next_ptr;   /* points to next problem set */
+  struct ProbNode *prob_ptr;  /* points to first problem in set */
 } SetType;
+
+static const unsigned int SET_SIZE  = sizeof(SetType);
+static const unsigned int PROB_SIZE = sizeof(ProbType);
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/

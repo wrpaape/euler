@@ -1,18 +1,23 @@
-
 /************************************************************************************
- *                                      set.h                                       *
+ *                                   clang_api.h                                    *
  *                                                                                  *
- * Defines constants and includes libraries shared among set modules                *
+ * Declares problem set structure 'PROB_SET' along with function prototypes and     *
+ * preprocessor directives                                                          *
  ************************************************************************************/
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
 #include <stdio.h>
-#define MAX_RESULT_SIZE 100
+#include "prob_set.h"
+
+#define PROBLEMS_PER_SET 10
 /************************************************************************************
  *                               INITIAL DECLARATIONS                               *
  ************************************************************************************/
+SetType *PROB_SET = init_prob_set();
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-extern char *problem_12(void);
+void process(const unsigned int prob_num);
+void solve(ProbType *prob_ptr, const unsigned int prob_num);
+

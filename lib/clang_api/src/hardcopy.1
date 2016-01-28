@@ -1,42 +1,42 @@
+      (aka 'struct SetNode *') from 'const SetType *' (aka
+      'const struct SetNode *') discards qualifiers
+      [-Wincompatible-pointer-types-discards-qualifiers]
+  set_ptr = PROB_SET;
+          ^ ~~~~~~~~
+../lib/clang_api.c:49:19: error: invalid operands to binary expression
+      ('SetType' (aka 'struct SetNode') and 'void *')
+  while (*set_ptr != NULL) {
+         ~~~~~~~~ ^  ~~~~
+../lib/clang_api.c:51:13: warning: passing 'const struct ProbNode *' to
+      parameter of type 'ProbType *' (aka 'struct ProbNode *') discards
+      qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+      solve(set_ptr -> prob_ptr, prob_num);
+            ^~~~~~~~~~~~~~~~~~~
+../include/clang_api.h:22:22: note: passing argument to parameter 'prob_ptr'
+      here
+void solve(ProbType *prob_ptr, const unsigned int prob_num);
+                     ^
+../lib/clang_api.c:55:13: warning: assigning to 'SetType *'
+      (aka 'struct SetNode *') from 'const struct SetNode *' discards
+      qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    set_ptr = set_ptr -> next_ptr;
+            ^ ~~~~~~~~~~~~~~~~~~~
+../lib/clang_api.c:66:20: error: invalid operands to binary expression
+      ('ProbType' (aka 'struct ProbNode') and 'void *')
+  while (*prob_ptr != NULL) {
+         ~~~~~~~~~ ^  ~~~~
+../lib/clang_api.c:71:14: warning: assigning to 'ProbType *'
+      (aka 'struct ProbNode *') from 'const struct ProbNode *' discards
+      qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    prob_ptr = prob_ptr -> next_ptr;
+             ^ ~~~~~~~~~~~~~~~~~~~~
+warning: format specifies type 'unsigned int' but the argument has type
+      '<dependent type>' [-Wformat]
+../lib/clang_api.c:74:79: error: use of undeclared identifier 'set_num'
+  ...problem number %u not found in problem set %u!", prob_num, set_num);
+                                                                ^
+5 warnings and 4 errors generated.
+make: *** [obj/clang_api.o] Error 1
 
-lib/clang_api/src  master                                      6h22m  ‘ Ò  I
-¶ make prob_set
-gcc -c -o obj/prob_set.o ../lib/prob_set.c -Wall -c -g -D__USE_FIXED_PROTOTYPES
-__ -ansi -I../include
-In file included from ../lib/prob_set.c:9:
-../include/prob_set.h:13:3: error: type name does not allow storage class to be
-      specified
-  static unsigned int num;    /* problem number identifier */
-  ^
-../include/prob_set.h:15:3: error: type name does not allow storage class to be
-      specified
-  extern char *(*func)(void); /* pointer to problem function */
-  ^
-../include/prob_set.h:19:3: error: type name does not allow storage class to be
-      specified
-  static unsigned int num;    /* problem set number identifier */
-  ^
-../lib/prob_set.c:14:51: error: use of undeclared identifier 'SetNodeType'
-static const unsigned int SET_NODE_SIZE  = sizeof(SetNodeType);
-                                                  ^
-../lib/prob_set.c:15:51: error: use of undeclared identifier 'ProbNodeType'
-static const unsigned int PROB_NODE_SIZE = sizeof(ProbNodeType);
-                                                  ^
-../lib/prob_set.c:38:24: warning: incompatible pointer types assigning to
-      'struct SetNode *' from 'ProbType *' (aka 'struct ProbNode *')
-      [-Wincompatible-pointer-types]
-  prob_ptr -> next_ptr = next_prob_ptr;
-                       ^ ~~~~~~~~~~~~~
-../lib/prob_set.c:39:15: error: no member named 'func' in 'struct SetNode'
-  prob_ptr -> func = prob_func;
-  ~~~~~~~~    ^
-../lib/prob_set.c:41:10: warning: incompatible pointer types returning
-      'SetType *' (aka 'struct SetNode *') from a function with result type
-      'ProbType *' (aka 'struct ProbNode *') [-Wincompatible-pointer-types]
-  return prob_ptr;
-         ^~~~~~~~
-2 warnings and 6 errors generated.
-make: *** [obj/prob_set.o] Error 1
-
-lib/clang_api/src  master                                      6h24m  ‘ Ò  I
+lib/clang_api/src  master                                        23m  ‘ Ò  I
 ¶

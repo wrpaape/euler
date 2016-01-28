@@ -12,7 +12,7 @@
 #include "set_2.h"
 
 #define PROBLEMS_PER_SET 10
-#define FORMAT_ERROR(msg) "\e[31m\e[5mERROR:\e[25m\n  " #msg "\e[0m"
+#define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " ## MSG ## "\e[0m\n"
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/

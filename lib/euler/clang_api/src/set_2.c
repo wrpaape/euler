@@ -140,8 +140,8 @@ void problem_14(void)
   unsigned int max_count;    /* length of longest sequence */
   unsigned int n0_max_count; /* starting number that produces 'max_count' */
 
-  n0 = 1e6;
-  max_count = 0;
+  n0           = 1e6;
+  max_count    = 0;
   n0_max_count = 0;
 
   while (n0 > 1) {
@@ -164,5 +164,5 @@ void problem_14(void)
     }
   }
 
-  printf("n0_max_count: %u\nmax_count: %u\n", n0_max_count, max_count);
+  printf("%u", n0_max_count);
 }

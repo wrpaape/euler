@@ -9,6 +9,10 @@
 #include "sets.h"
 #include "set_2.h"
 /************************************************************************************
+ *                               INTIAL DECLARATIONS                                *
+ ************************************************************************************/
+const unsigned int DIG_MAT[100][50] = DIGITS;
+/************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
 /************************************************************************************
@@ -68,9 +72,97 @@ void problem_12(void)
 	printf("%u", tri);
 }
 
-const unsigned int DIG_MAT[100][50] = DIGITS;
 
+
+/************************************************************************************
+ *                                  - problem_13 -                                  *
+ * 																																									*
+ * Work out the first ten digits of the sum of the following one-hundred 50-digit   *
+ * numbers. (DIG_MAT)                                                               *
+ ************************************************************************************/
 void problem_13(void)
 {
-	printf("%u", DIG_MAT[50][30]);
+  unsigned int result[52]; /* digits of total sum (extra digits for overflow) */
+  unsigned int off_num;    /* number position counter (x-coordinate) */
+  unsigned int off_dig;    /* digit place counter (y-coordinate) */
+  unsigned int off_ten;    /* index of tenth sig digit in final result */
+
+  memset(result, 0, sizeof(result)); /* initialize all digits to 0 */
+
+  for (off_dig = 51; off_dig > 1; --off_dig) {
+    for (off_num = 0; off_num < 100; ++off_num) {
+      result[off_dig] += DIG_MAT[off_num][off_dig - 2]; /* sum column of digits */
+    }
+
+    result[off_dig - 1] += (result[off_dig] / 10);      /* shift overflow left */
+    result[off_dig]     %= 10;                          /* set digit to remainder */
+  }
+
+  while (result[off_dig] > 9) {
+    result[off_dig - 1] += (result[off_dig] / 10);      /* shift overflow left */
+    result[off_dig]     %= 10;                          /* set digit to remainder */
+    --off_dig;
+  }
+
+  off_ten = off_dig + 10;
+
+  while (off_dig < off_ten) {
+    printf("%u", result[off_dig]); /* print first ten significant digits */
+    ++off_dig;
+  }
+}
+
+
+/************************************************************************************
+ *                                  - problem_14 -                                  *
+ * 																																									*
+ * The following iterative sequence is defined for the set of positive integers:    *
+ *                                                                                  *
+ * n → n/2 (n is even)                                                              *
+ * n → 3n + 1 (n is odd)                                                            *
+ *                                                                                  *
+ * Using the rule above and starting with 13, we generate the following sequence:   *
+ *                                                                                  *
+ * 13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1                                       *
+ * It can be seen that this sequence (starting at 13 and finishing at 1) contains   *
+ * 10 terms. Although it has not been proved yet (Collatz Problem), it is thought   *
+ * that all starting numbers finish at 1.                                           *
+ *                                                                                  *
+ * Which starting number, under one million, produces the longest chain?            *
+ *                                                                                  *
+ * NOTE: Once the chain starts the terms are allowed to go above one million.       *
+ ************************************************************************************/
+void problem_14(void)
+{
+  unsigned int n0;           /* number at start of sequence defined above */
+  unsigned int n;            /* current number in sequence defined above */
+  unsigned int count;        /* length of current sequence */
+  unsigned int max_count;    /* length of longest sequence */
+  unsigned int n0_max_count; /* starting number that produces 'max_count' */
+
+  n0 = 1e6;
+  max_count = 0;
+  n0_max_count = 0;
+
+  while (n0 > 2) {
+    --n0;       /* decrement n0 */
+    n     = n0; /* initialize n */
+    count = 2;  /* including initial and final values */
+
+    while (n > 1) {
+      if ((n & 1) == 1) {  /* n is odd */
+        n = 3 * n + 1;
+      } else {             /* n is even */
+        n = n / 2;
+      }
+      ++count;
+    }
+
+    if (count > max_count) {
+      max_count    = count;
+      n0_max_count = n0;
+    }
+  }
+
+  printf("n0_max_count: %u\nmax_count: %u\n", n0_max_count, max_count);
 }

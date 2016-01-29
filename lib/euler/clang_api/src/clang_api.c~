@@ -57,6 +57,10 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
           problem_13();
           break;
 
+        case 14:
+          problem_14();
+          break;
+
         default:
           missing_prob_error(prob_num, 2);
       }

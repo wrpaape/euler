@@ -166,3 +166,63 @@ void problem_14(void)
 
   printf("%u", n0_max_count);
 }
+
+
+/************************************************************************************
+ *                                  - problem_15 -                                  *
+ * 																																									*
+ * Starting in the top left corner of a 2×2 grid, and only being able to move to    *
+ * the right and down, there are exactly 6 routes to the bottom right corner.       *
+ * 																																									*
+ * How many such routes are there through a 20×20 grid?                             *
+ ************************************************************************************/
+void problem_15(void)
+{
+  const unsigned int size_bit_route = (unsigned int) ceil(20.0 / 8.0);
+
+  char bit_route[size_bit_route]; /* make array of (at least) 20 bits */
+
+  /* memset(bit_route, 0, size_bit_route); */
+
+  unsigned int route_index;
+
+  unsigned int bit_index = 0;
+  char bit_reg           = 0xFF;
+  unsigned int rem_bits = 10;
+
+
+  while (rem_bits > 0) {
+    route_index = (10 - rem_bits) / 8;
+
+    if (rem_bits < 8) {
+      printf("bit_reg (shifted): %x\n", bit_reg << (8 - rem_bits));
+
+      bit_route[route_index] = (bit_reg << (8 - rem_bits));
+
+      ++route_index;
+
+      while (route_index < size_bit_route) {
+        bit_route[route_index] = 0;
+        ++route_index;
+      }
+
+      break;
+    }
+
+    printf("bit_reg: %x\n", bit_reg);
+
+    bit_route[route_index] = bit_reg; 
+
+    rem_bits -= 8;
+  }
+
+
+
+  for (unsigned int i = 0; i < (size_bit_route * 8); ++i) {
+    printf("i: %u, bit_route: %u\n", i, bit_route[i / 8] & (0x80 >> (i % 8)));
+  }
+
+  for (unsigned int i = 0; i < size_bit_route; ++i) {
+    printf("i: %u, bit_route[i]: %u\n", i, bit_route[i]);
+  }
+}

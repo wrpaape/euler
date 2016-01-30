@@ -178,27 +178,32 @@ void problem_14(void)
  ************************************************************************************/
 void problem_15(void)
 {
-  long long unsigned int num_routes;             /* running total of viable routes */
-  num_routes = 0;             /* initialize counter to 0 */
-  branch(0, 34, &num_routes); /* must make 40 turns to completely traverse grid */
+  pthread_t left_thread_id;
+  /* pthread_t right_thread_id; */
+
+  long long unsigned int num_routes; /* running total of viable routes */
+  num_routes = 0;                    /* initialize counter to 0 */
+
+  pthread_create(&left_thread_id, NULL, branch, 0, 4, &num_routes);
+
+  /* branch(0, 40, &num_routes);        /1* must make 40 turns to traverse grid *1/ */
 
   printf("total routes: %llu\n", num_routes);
 }
-  /* turn_value:     current node turn value (+/-1 corresponds to right/left turn)
-   * rem_turns:      remaining turns at current node 
-   * num_routes_ptr: points to running total of viable routes across all nodes */
+
+/***********************************************************************************
+ *                                   - branch -                                    *
+ * turn_value:     current node turn value (+/-1 corresponds to right/left turn)   *
+ * rem_turns:      remaining turns at current node                                 *
+ * num_routes_ptr: points to running total of viable routes across all nodes       *
+ ***********************************************************************************/
 void branch(int turn_value, int rem_turns, long long unsigned int *num_routes_ptr)
 {
-  if (rem_turns == 0) {
-    ++(*num_routes_ptr); /* grid traversed, increment counter */
+  if ((turn_value <= -rem_turns) || (turn_value >= rem_turns)) {
+    ++(*num_routes_ptr); /* grid traversed or hit a wall, increment counter */
     return;
   }
 
-  if (turn_value > -rem_turns) {
-    branch(turn_value - 1, rem_turns - 1, num_routes_ptr);
-  }
-
-  if (turn_value < rem_turns) {
-    branch(turn_value + 1, rem_turns - 1, num_routes_ptr);
-  }
+  branch(turn_value - 1, rem_turns - 1, num_routes_ptr);
+  branch(turn_value + 1, rem_turns - 1, num_routes_ptr);
 }

@@ -176,53 +176,63 @@ void problem_14(void)
  * 																																									*
  * How many such routes are there through a 20×20 grid?                             *
  ************************************************************************************/
+/* void problem_15(void) */
+/* { */
+/*   const unsigned int size_bit_route = (unsigned int) ceil(20.0 / 8.0); */
+
+/*   char bit_route[size_bit_route]; /1* make array of (at least) 20 bits *1/ */
+
+/*   /1* memset(bit_route, 0, size_bit_route); *1/ */
+
+/*   unsigned int route_index; */
+
+/*   unsigned int bit_index = 0; */
+/*   char bit_reg           = 0xFF; */
+/*   unsigned int rem_bits = 10; */
+
+
+/*   while (rem_bits > 0) { */
+/*     route_index = (10 - rem_bits) / 8; */
+
+/*     if (rem_bits < 8) { */
+/*       printf("bit_reg (shifted): %x\n", bit_reg << (8 - rem_bits)); */
+
+/*       bit_route[route_index] = (bit_reg << (8 - rem_bits)); */
+
+/*       ++route_index; */
+
+/*       while (route_index < size_bit_route) { */
+/*         bit_route[route_index] = 0; */
+/*         ++route_index; */
+/*       } */
+
+/*       break; */
+/*     } */
+
+/*     bit_route[route_index] = bit_reg; */ 
+
+/*     rem_bits -= 8; */
+/*   } */
+
+/*   branch() */
+/* } */
+
 void problem_15(void)
 {
-  const unsigned int size_bit_route = (unsigned int) ceil(20.0 / 8.0);
+  int num_routes;  /* running total of viable routes */
+  int num_turns_taken; /* total number of turns take at current node */
+  int turn_value;
 
-  char bit_route[size_bit_route]; /* make array of (at least) 20 bits */
+}
 
-  /* memset(bit_route, 0, size_bit_route); */
+void branch(int turn_value, int turns_taken, int num_routes)
+{
+  if (num_right_turns == 10) {
+    ++num_routes;
 
-  unsigned int route_index;
-
-  unsigned int bit_index = 0;
-  char bit_reg           = 0xFF;
-  unsigned int rem_bits = 10;
-
-
-  while (rem_bits > 0) {
-    route_index = (10 - rem_bits) / 8;
-
-    if (rem_bits < 8) {
-      printf("bit_reg (shifted): %x\n", bit_reg << (8 - rem_bits));
-
-      bit_route[route_index] = (bit_reg << (8 - rem_bits));
-
-      ++route_index;
-
-      while (route_index < size_bit_route) {
-        bit_route[route_index] = 0;
-        ++route_index;
-      }
-
-      break;
-    }
-
-    printf("bit_reg: %x\n", bit_reg);
-
-    bit_route[route_index] = bit_reg; 
-
-    rem_bits -= 8;
+    return;
   }
 
-
-
-  for (unsigned int i = 0; i < (size_bit_route * 8); ++i) {
-    printf("i: %u, bit_route: %u\n", i, bit_route[i / 8] & (0x80 >> (i % 8)));
-  }
-
-  for (unsigned int i = 0; i < size_bit_route; ++i) {
-    printf("i: %u, bit_route[i]: %u\n", i, bit_route[i]);
-  }
+  branch(num_right_turns, );
+  branch(num_right_turns + 1, );
 }

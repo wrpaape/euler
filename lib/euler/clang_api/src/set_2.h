@@ -117,3 +117,4 @@ void problem_12(void);
 void problem_13(void);
 void problem_14(void);
 void problem_15(void);
+void branch(int turn_value, int num_turns_taken, int *num_routes);

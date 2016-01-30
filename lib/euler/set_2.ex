@@ -305,4 +305,13 @@ defmodule Euler.Set2 do
   NOTE: Once the chain starts the terms are allowed to go above one million.
   """
   def problem_14, do: ClangAPI.call(~w(2 14))
+
+
+  @doc """
+  Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
+
+
+  How many such routes are there through a 20×20 grid?
+  """
+  def problem_15, do: ClangAPI.call(~w(2 15))
 end

@@ -176,63 +176,29 @@ void problem_14(void)
  * 																																									*
  * How many such routes are there through a 20×20 grid?                             *
  ************************************************************************************/
-/* void problem_15(void) */
-/* { */
-/*   const unsigned int size_bit_route = (unsigned int) ceil(20.0 / 8.0); */
-
-/*   char bit_route[size_bit_route]; /1* make array of (at least) 20 bits *1/ */
-
-/*   /1* memset(bit_route, 0, size_bit_route); *1/ */
-
-/*   unsigned int route_index; */
-
-/*   unsigned int bit_index = 0; */
-/*   char bit_reg           = 0xFF; */
-/*   unsigned int rem_bits = 10; */
-
-
-/*   while (rem_bits > 0) { */
-/*     route_index = (10 - rem_bits) / 8; */
-
-/*     if (rem_bits < 8) { */
-/*       printf("bit_reg (shifted): %x\n", bit_reg << (8 - rem_bits)); */
-
-/*       bit_route[route_index] = (bit_reg << (8 - rem_bits)); */
-
-/*       ++route_index; */
-
-/*       while (route_index < size_bit_route) { */
-/*         bit_route[route_index] = 0; */
-/*         ++route_index; */
-/*       } */
-
-/*       break; */
-/*     } */
-
-/*     bit_route[route_index] = bit_reg; */ 
-
-/*     rem_bits -= 8; */
-/*   } */
-
-/*   branch() */
-/* } */
-
 void problem_15(void)
 {
-  int num_routes;  /* running total of viable routes */
-  int num_turns_taken; /*
-  int turn_value;
+  long long unsigned int num_routes;             /* running total of viable routes */
+  num_routes = 0;             /* initialize counter to 0 */
+  branch(0, 34, &num_routes); /* must make 40 turns to completely traverse grid */
 
+  printf("total routes: %i\n", num_routes);
 }
-
-void branch(int turn_value, int turns_taken, int num_routes)
+  /* turn_value:     current node turn value (+/-1 corresponds to right/left turn)
+   * rem_turns:      remaining turns at current node 
+   * num_routes_ptr: points to running total of viable routes across all nodes */
+void branch(int turn_value, int rem_turns, long long unsigned int *num_routes_ptr)
 {
-  if (num_right_turns == 10) {
-    ++num_routes;
-
+  if (rem_turns == 0) {
+    ++(*num_routes_ptr); /* grid traversed, increment counter */
     return;
   }
 
-  branch(num_right_turns, );
-  branch(num_right_turns + 1, );
+  if (turn_value > -rem_turns) {
+    branch(turn_value - 1, rem_turns - 1, num_routes_ptr);
+  }
+
+  if (turn_value < rem_turns) {
+    branch(turn_value + 1, rem_turns - 1, num_routes_ptr);
+  }
 }

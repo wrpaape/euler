@@ -178,18 +178,52 @@ void problem_14(void)
  ************************************************************************************/
 void problem_15(void)
 {
-  pthread_t left_thread_id;
-  /* pthread_t right_thread_id; */
-
   long long unsigned int num_routes; /* running total of viable routes */
+
+  pthread_t left_thread_id;
+  pthread_t right_thread_id;
+
+  struct branch_args left_thread_args_ptr = {
+    .turn_value     = -1,
+    .rem_turns      = 29,
+    .num_routes_ptr = &num_routes
+  };
+
+  struct branch_args right_thread_args_ptr = {
+    .turn_value     = 1,
+    .rem_turns      = 29,
+    .num_routes_ptr = &num_routes
+  };
+
   num_routes = 0;                    /* initialize counter to 0 */
 
-  pthread_create(&left_thread_id, NULL, branch, 0, 8, &num_routes);
+  /* left_thread_args.turn_value     = 0; */
+  /* left_thread_args.rem_turns      = 35; */
+  /* left_thread_args.num_routes_ptr = &num_routes; */
+
+  pthread_create(&left_thread_id,  NULL, branch_thread, left_thread_args_ptr);
+  pthread_create(&right_thread_id, NULL, branch_thread, right_thread_args_ptr);
 
   /* branch(0, 40, &num_routes);        /1* must make 40 turns to traverse grid *1/ */
 
-  printf("total routes: %llu\n", num_routes);
+  char buffer[1];
+
+  while (1) {
+    fgets(buffer, 2, stdin);
+    
+    printf("total routes: %llu\n", num_routes);
+  }
 }
+
+void *branch_thread(void *thread_args)
+{
+  struct branch_args *args = thread_args;
+
+  branch(args -> turn_value, args -> rem_turns, args -> num_routes_ptr);
+
+  return NULL;
+}
+
 
 /***********************************************************************************
  *                                   - branch -                                    *

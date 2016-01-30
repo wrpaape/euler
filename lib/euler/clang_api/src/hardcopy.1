@@ -1,61 +1,42 @@
-i: 8, bit_route: 80
-i: 9, bit_route: 100
-i: 10, bit_route: 200
-i: 11, bit_route: 400
-i: 12, bit_route: 800
-i: 13, bit_route: 1000
-i: 14, bit_route: 2000
-i: 15, bit_route: 4000
-i: 16, bit_route: 0
-i: 17, bit_route: 0
-i: 18, bit_route: 0
-i: 19, bit_route: 0
-i: 20, bit_route: 0
-i: 21, bit_route: 0
-i: 22, bit_route: 0
-i: 23, bit_route: 0
+                                                ~~~~ ^~
+                                                     .
+4 errors generated.
+make: *** [set_2.o] Error 1
 
-euler/clang_api/src  master                                                                                               11h45m ‘ Ò
-¶
-
-euler/clang_api/src  master                                                                                               11h45m ‘ Ò
+euler/clang_api/src  master                                                 35m  ‘ Ò  I
 ¶ make clean
 rm ../clang_api clang_api.o set_2.o
+rm: ../clang_api: No such file or directory
+rm: set_2.o: No such file or directory
+make: *** [clean] Error 1
 
-euler/clang_api/src  master                                                                                             11h46m  ‘ Ò
+euler/clang_api/src  master                                                 36m  ‘ Ò  I
+¶ make
+gcc -c clang_api.c
+gcc -c set_2.c
+set_2.c:202:22: error: initializing 'struct branch_args' with an expression of
+      incompatible type 'void *'
+  struct branch_args args = thread_args;
+                     ^      ~~~~~~~~~~~
+1 error generated.
+make: *** [set_2.o] Error 1
+
+euler/clang_api/src  master                                                 36m  ‘ Ò  I
+¶ make clean
+rm ../clang_api clang_api.o set_2.o
+rm: ../clang_api: No such file or directory
+rm: set_2.o: No such file or directory
+make: *** [clean] Error 1
+
+euler/clang_api/src  master                                                 36m  ‘ Ò  I
 ¶ make
 gcc -c clang_api.c
 gcc -c set_2.c
 gcc -o ../clang_api clang_api.o set_2.o
 
-euler/clang_api/src  master                                                                                               11h46m ‘ Ò
+euler/clang_api/src  master                                                    36m ‘ Ò
 ¶ ../clang_api 2 15
-bit_reg: 4294967295
-bit_reg (shifted): ffffffc0
-i: 0, bit_route: 80
-i: 1, bit_route: 40
-i: 2, bit_route: 20
-i: 3, bit_route: 10
-i: 4, bit_route: 8
-i: 5, bit_route: 4
-i: 6, bit_route: 2
-i: 7, bit_route: 1
-i: 8, bit_route: 80
-i: 9, bit_route: 40
-i: 10, bit_route: 0
-i: 11, bit_route: 0
-i: 12, bit_route: 0
-i: 13, bit_route: 0
-i: 14, bit_route: 0
-i: 15, bit_route: 0
-i: 16, bit_route: 0
-i: 17, bit_route: 0
-i: 18, bit_route: 0
-i: 19, bit_route: 0
-i: 20, bit_route: 0
-i: 21, bit_route: 0
-i: 22, bit_route: 0
-i: 23, bit_route: 0
+total routes: 0
 
-euler/clang_api/src  master                                                                                               11h46m ‘ Ò
+euler/clang_api/src  master                                                    36m ‘ Ò
 ¶

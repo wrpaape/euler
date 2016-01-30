@@ -178,40 +178,44 @@ void problem_14(void)
  ************************************************************************************/
 void problem_15(void)
 {
-  long long unsigned int num_routes; /* running total of viable routes */
+  long long unsigned int left_num_routes;  /* running total of viable routes */
+  long long unsigned int right_num_routes; /* running total of viable routes */
 
-  pthread_t left_thread_id;
-  pthread_t right_thread_id;
+  left_num_routes  = 0;
+  right_num_routes = 0;
 
   struct branch_args left_thread_args_ptr = {
-    .turn_value     = -1,
-    .rem_turns      = 29,
-    .num_routes_ptr = &num_routes
+    .turn_value     = 0,
+    .rem_turns      = 40,
+    .num_routes_ptr = &left_num_routes
   };
 
   struct branch_args right_thread_args_ptr = {
     .turn_value     = 1,
-    .rem_turns      = 29,
-    .num_routes_ptr = &num_routes
+    .rem_turns      = 39,
+    .num_routes_ptr = &right_num_routes
   };
 
-  num_routes = 0;                    /* initialize counter to 0 */
+  pthread_t left_thread_id;
+  pthread_t right_thread_id;
 
-  /* left_thread_args.turn_value     = 0; */
-  /* left_thread_args.rem_turns      = 35; */
-  /* left_thread_args.num_routes_ptr = &num_routes; */
-
-  pthread_create(&left_thread_id,  NULL, branch_thread, left_thread_args_ptr);
-  pthread_create(&right_thread_id, NULL, branch_thread, right_thread_args_ptr);
+  pthread_create(&left_thread_id,  NULL, branch_thread, &left_thread_args_ptr);
+  /* pthread_create(&right_thread_id, NULL, branch_thread, &right_thread_args_ptr); */
 
   /* branch(0, 40, &num_routes);        /1* must make 40 turns to traverse grid *1/ */
 
-  char buffer[1];
+  unsigned int time_elapsed;
+
+  time_elapsed = 0;
+
 
   while (1) {
-    fgets(buffer, 2, stdin);
-    
-    printf("total routes: %llu\n", num_routes);
+    /* printf("\n(%u seconds)\ntotal routes: %llu\n", time_elapsed, left_num_routes + right_num_routes); */
+    printf("\n(%u seconds)\ntotal routes: %llu\n", time_elapsed, left_num_routes);
+
+    sleep(1);
+
+    ++time_elapsed;
   }
 }
 

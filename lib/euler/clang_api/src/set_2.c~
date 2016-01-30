@@ -178,60 +178,80 @@ void problem_14(void)
  ************************************************************************************/
 void problem_15(void)
 {
+  unsigned int n;
+  long long unsigned int tri;
+  long long unsigned int adj;
 
-  long long unsigned int left_num_routes;  /* running total of viable routes */
-  long long unsigned int right_num_routes; /* running total of viable routes */
+  n = 1;
+  tri = 2;
 
+  while (n < 20) {
 
-  /* struct branch_thread branch_threads[NUM_THREADS] = { */
-  /*   [0] */
+    ++n;
+    adj = tri * (n - 1) / n;
 
-  /* }; */
+    tri = 2 * (tri + adj);
 
-  left_num_routes  = 0;
-  right_num_routes = 0;
-
-  struct branch_args left_thread_args_ptr = {
-    .turn_value     = -2,
-    .rem_turns      = 3,
-    .num_routes_ptr = &left_num_routes
-  };
-
-  struct branch_args right_thread_args_ptr = {
-    .turn_value     = 0,
-    .rem_turns      = 3,
-    .num_routes_ptr = &right_num_routes
-  };
-
-  pthread_t left_thread_id;
-  pthread_t right_thread_id;
-
-  pthread_create(&left_thread_id,  NULL, branch_thread, &left_thread_args_ptr);
-  pthread_create(&right_thread_id, NULL, branch_thread, &right_thread_args_ptr);
-
-  unsigned int time_elapsed;
-  time_elapsed = 0;
-
-  while (1) {
-    printf("\ntime elapsed: %u seconds\n", time_elapsed);
-    printf("left routes: %llu\n", left_num_routes);
-    printf("right routes: %llu\n", right_num_routes);
-    printf("total routes: %llu\n", 2 * (left_num_routes + right_num_routes));
-
-    sleep(1);
-
-    ++time_elapsed;
+    printf("n: %u, tri: %llu\n", n, tri);
   }
+
 }
+/* void problem_15(void) */
+/* { */
 
-void *branch_thread(void *thread_args)
-{
-  struct branch_args *args = thread_args;
+/*   long long unsigned int left_num_routes;  /1* running total of viable routes *1/ */
+/*   long long unsigned int right_num_routes; /1* running total of viable routes *1/ */
 
-  branch(args -> turn_value, args -> rem_turns, args -> num_routes_ptr);
 
-  return NULL;
-}
+/*   /1* struct branch_thread branch_threads[NUM_THREADS] = { *1/ */
+/*   /1*   [0] *1/ */
+
+/*   /1* }; *1/ */
+
+/*   left_num_routes  = 0; */
+/*   right_num_routes = 0; */
+
+/*   struct branch_args left_thread_args_ptr = { */
+/*     .turn_value     = -2, */
+/*     .rem_turns      = 9, */
+/*     .num_routes_ptr = &left_num_routes */
+/*   }; */
+
+/*   struct branch_args right_thread_args_ptr = { */
+/*     .turn_value     = 0, */
+/*     .rem_turns      = 9, */
+/*     .num_routes_ptr = &right_num_routes */
+/*   }; */
+
+/*   pthread_t left_thread_id; */
+/*   pthread_t right_thread_id; */
+
+/*   pthread_create(&left_thread_id,  NULL, branch_thread, &left_thread_args_ptr); */
+/*   pthread_create(&right_thread_id, NULL, branch_thread, &right_thread_args_ptr); */
+
+/*   unsigned int time_elapsed; */
+/*   time_elapsed = 0; */
+
+/*   while (1) { */
+/*     printf("\ntime elapsed: %u seconds\n", time_elapsed); */
+/*     printf("left routes: %llu\n", left_num_routes); */
+/*     printf("right routes: %llu\n", right_num_routes); */
+/*     printf("total routes: %llu\n", 2 * (left_num_routes + right_num_routes)); */
+
+/*     sleep(1); */
+
+/*     ++time_elapsed; */
+/*   } */
+/* } */
+
+/* void *branch_thread(void *thread_args) */
+/* { */
+/*   struct branch_args *args = thread_args; */
+
+/*   branch(args -> turn_value, args -> rem_turns, args -> num_routes_ptr); */
+
+/*   return NULL; */
+/* } */
 
 
 /***********************************************************************************
@@ -240,13 +260,13 @@ void *branch_thread(void *thread_args)
  * rem_turns:      remaining turns at current node                                 *
  * num_routes_ptr: points to running total of viable routes across all nodes       *
  ***********************************************************************************/
-void branch(int turn_value, int rem_turns, long long unsigned int *num_routes_ptr)
-{
-  if ((turn_value < -rem_turns) || (turn_value > rem_turns)) {
-    ++(*num_routes_ptr); /* grid traversed or hit a wall, increment counter */
-    return;
-  }
+/* void branch(int turn_value, int rem_turns, long long unsigned int *num_routes_ptr) */
+/* { */
+/*   if ((turn_value < -rem_turns) || (turn_value > rem_turns)) { */
+/*     ++(*num_routes_ptr); /1* grid traversed or hit a wall, increment counter *1/ */
+/*     return; */
+/*   } */
 
-  branch(turn_value - 1, rem_turns - 1, num_routes_ptr);
-  branch(turn_value + 1, rem_turns - 1, num_routes_ptr);
-}
+/*   branch(turn_value - 1, rem_turns - 1, num_routes_ptr); */
+/*   branch(turn_value + 1, rem_turns - 1, num_routes_ptr); */
+/* } */

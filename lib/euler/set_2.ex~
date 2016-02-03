@@ -1,5 +1,5 @@
 defmodule Euler.Set2 do
-  alias Euler.ClangAPI
+  alias Euler.ExternalAPI
 
   @moduledoc """
   Set2 holds solutions to problems 11 - 20.
@@ -36,6 +36,11 @@ defmodule Euler.Set2 do
   The product of these numbers is 26 × 63 × 78 × 14 = 1788696.
 
   What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20×20 grid?
+
+  01/17/16
+
+  iex> Euler.Set1.problem_11
+  "70600674"
   """
   @adj_count 4
   @grid_size 20
@@ -179,8 +184,13 @@ defmodule Euler.Set2 do
   We can see that 28 is the first triangle number to have over five divisors.
 
   What is the value of the first triangle number to have over five hundred divisors?
+
+  01/28/16
+
+  iex> Euler.Set1.problem_12
+  "76576500"
   """
-  def problem_12, do: ClangAPI.call(~w(2 12))
+  def problem_12, do: ExternalAPI.call(:clang, ~w(2 12))
 
   @doc """
   Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
@@ -285,8 +295,13 @@ defmodule Euler.Set2 do
   72107838435069186155435662884062257473692284509516
   20849603980134001723930671666823555245252804609722
   53503534226472524250874054075591789781264330331690
+
+  01/29/16
+
+  iex> Euler.Set1.problem_13
+  "5537376230"
   """
-  def problem_13, do: ClangAPI.call(~w(2 13))
+  def problem_13, do: ExternalAPI.call(:clang, ~w(2 13))
 
 
   @doc """
@@ -302,9 +317,14 @@ defmodule Euler.Set2 do
 
   Which starting number, under one million, produces the longest chain?
 
-  NOTENOTE: Once the chain starts the terms are allowed to go above one million.
+  NOTE: Once the chain starts the terms are allowed to go above one million.
+
+  01/29/16
+
+  iex> Euler.Set1.problem_14
+  "837799"
   """
-  def problem_14, do: ClangAPI.call(~w(2 14))
+  def problem_14, do: ExternalAPI.call(:clang, ~w(2 14))
 
 
   @doc """
@@ -312,6 +332,20 @@ defmodule Euler.Set2 do
 
 
   How many such routes are there through a 20×20 grid?
+
+  01/30/16
+
+  iex> Euler.Set1.problem_15
+  "137846528820"
   """
-  def problem_15, do: ClangAPI.call(~w(2 15))
+  def problem_15, do: ExternalAPI.call(:clang, ~w(2 15))
+
+
+  @doc """
+  215 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+
+  What is the sum of the digits of the number 21000?
+  """
+  def problem_16, do: ExternalAPI.call(:java, ~w(2 16))
+
 end

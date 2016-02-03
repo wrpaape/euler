@@ -208,6 +208,5 @@ void problem_15(void)
     num_routes = 2 * (num_routes + adjacent);
   }
 
-  /* printf("%llu", num_routes); */
-  printf("%llu", adjacent);
+  printf("%llu", num_routes);
 }

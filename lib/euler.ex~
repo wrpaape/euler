@@ -87,6 +87,11 @@ defmodule Euler do
      |> frame]
   end
 
+  defp format_output({delay, solution}, time) do
+    solution
+    |> format_output(time - delay)
+  end
+
   defp format_output(solution, time) do
     ["\nsolution:\n\n",
      {inspect(solution), ANSI.cyan}

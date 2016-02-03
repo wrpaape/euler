@@ -1,6 +1,6 @@
 defmodule Euler.Set2 do
-  alias Euler.{ClangAPI,
-               JavaAPI}
+  alias Euler.ExtAPI.{ClangAPI,
+                      JavaAPI}
 
   @moduledoc """
   Set2 holds solutions to problems 11 - 20.
@@ -43,7 +43,7 @@ defmodule Euler.Set2 do
   01/17/16
 
   iex> Euler.Set1.problem_11
-  "70600674"
+  70600674
   """
   @adj_count 4
   @grid_size 20
@@ -193,7 +193,7 @@ defmodule Euler.Set2 do
   01/28/16
 
   iex> Euler.Set1.problem_12
-  "76576500"
+  76576500
   """
   def problem_12, do: ClangAPI.call(~w(2 12))
 
@@ -306,7 +306,7 @@ defmodule Euler.Set2 do
   01/29/16
 
   iex> Euler.Set1.problem_13
-  "5537376230"
+  5537376230
   """
   def problem_13, do: ClangAPI.call(~w(2 13))
 
@@ -331,7 +331,7 @@ defmodule Euler.Set2 do
   01/29/16
 
   iex> Euler.Set1.problem_14
-  "837799"
+  837799
   """
   def problem_14, do: ClangAPI.call(~w(2 14))
 
@@ -347,7 +347,7 @@ defmodule Euler.Set2 do
   01/30/16
 
   iex> Euler.Set1.problem_15
-  "137846528820"
+  137846528820
   """
   def problem_15, do: ClangAPI.call(~w(2 15))
 
@@ -355,9 +355,9 @@ defmodule Euler.Set2 do
   @doc """
   16) Power Digit Sum
 
-  215 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+  2¹⁵ = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
 
-  What is the sum of the digits of the number 21000?
+  What is the sum of the digits of the number 2¹⁰⁰⁰?
   """
   def problem_16, do: JavaAPI.call(~w(2 16))
 

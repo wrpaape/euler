@@ -1,14 +1,20 @@
-defmodule Euler.ClangAPI do
-  alias Euler.Ticker
+defmodule Euler.ExtAPI.ClangAPI do
+  alias Euler.{ExtAPI,
+               Ticker}
 
   @clang_api_cmd Application.get_env(:euler, :clang_api_cmd)
   
   def call(set_prob) do
+    time_start = :erlang.timestamp
+
     @clang_api_cmd
     |> System.cmd(set_prob, stderr_to_stdout: true)
     |> case do
-      {result,    0}      ->
-        result
+      {stdout,    0}      ->
+        delay = :erlang.timestamp
+          |> :timer.now_diff(time_start)
+
+          {delay, ExtAPI.parse(stdout)}
 
       {error_msg, status} -> 
         Ticker.stop

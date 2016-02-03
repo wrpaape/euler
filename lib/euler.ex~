@@ -68,6 +68,10 @@ defmodule Euler do
     {time, solution} =
       set_module
       |> :timer.tc(problem_function, [])
+      |> case do
+        {_delayed, api_tup = {_time, _sol}} -> api_tup 
+        local_tup                           -> local_tup
+      end
 
     Ticker.stop
 
@@ -87,8 +91,7 @@ defmodule Euler do
      |> frame]
   end
 
-  defp format_output({time, solution}, _), do: format_output(solution, time)
-  defp format_output(solution, time)       do
+  defp format_output(solution, time) do
     ["\nsolution:\n\n",
      {inspect(solution), ANSI.cyan}
      |> frame,

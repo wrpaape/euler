@@ -42,7 +42,7 @@ defmodule Euler.Set2 do
 
   01/17/16
 
-  iex> Euler.Set1.problem_11
+  iex> Euler.Set2.problem_11
   70600674
   """
   @adj_count 4
@@ -192,7 +192,7 @@ defmodule Euler.Set2 do
 
   01/28/16
 
-  iex> Euler.Set1.problem_12
+  iex> Euler.Set2.problem_12 |> elem(1)
   76576500
   """
   def problem_12, do: ClangAPI.call(~w(2 12))
@@ -305,7 +305,7 @@ defmodule Euler.Set2 do
 
   01/29/16
 
-  iex> Euler.Set1.problem_13
+  iex> Euler.Set2.problem_13 |> elem(1)
   5537376230
   """
   def problem_13, do: ClangAPI.call(~w(2 13))
@@ -330,7 +330,7 @@ defmodule Euler.Set2 do
 
   01/29/16
 
-  iex> Euler.Set1.problem_14
+  iex> Euler.Set2.problem_14 |> elem(1)
   837799
   """
   def problem_14, do: ClangAPI.call(~w(2 14))
@@ -346,7 +346,7 @@ defmodule Euler.Set2 do
 
   01/30/16
 
-  iex> Euler.Set1.problem_15
+  iex> Euler.Set2.problem_15 |> elem(1)
   137846528820
   """
   def problem_15, do: ClangAPI.call(~w(2 15))

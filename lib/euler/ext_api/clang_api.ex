@@ -2,10 +2,12 @@ defmodule Euler.ExtAPI.ClangAPI do
   alias Euler.{ExtAPI,
                Ticker}
 
-  @clang_api_cmd Application.get_env(:euler, :clang_api_cmd)
+  @dir Application.get_env(:euler, :clang_api_dir)
+  @exe Application.get_env(:euler, :clang_api_exe)
+  @cmd Path.join(@dir, @exe)
   
   def call(set_prob) do
-    @clang_api_cmd
+    @cmd
     |> System.cmd(set_prob, stderr_to_stdout: true)
     |> case do
       {stdout, 0}         ->

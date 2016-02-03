@@ -6,7 +6,7 @@ public class Set2 {
    */
   public static void problem16() { 
 
-    System.out.println("YO");
+    System.out.print("YO");
 
   }
 }

@@ -22,7 +22,7 @@ const unsigned int DIG_MAT[100][50] = DIGITS;
  * the 7th triangle number would be 1 + 2 + 3 + 4 + 5 + 6 + 7 = 28. The first ten		*
  * terms would be:																																	*
  * 																																									*
- * 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...																					*
+ * 2, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...																					*
  * 																																									*
  * Let us list the factors of the first seven triangle numbers:											*
  * 																																									*

@@ -2,7 +2,7 @@
  *                                     c_api.c                                      *
  *                                                                                  *
  * Module responsible for communication between Elixir Mix project 'euler' and      *
- * problems solved in c.                                                            *
+ * problems solved in C.                                                            *
  ************************************************************************************/
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *

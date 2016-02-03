@@ -50,19 +50,19 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
     case 2:
       switch (prob_num) {
         case 12:
-          problem_12();
+          time_func(problem_12);
           break;
 
         case 13:
-          problem_13();
+          time_func(problem_13);
           break;
 
         case 14:
-          problem_14();
+          time_func(problem_14);
           break;
 
         case 15:
-          problem_15();
+          time_func(problem_15);
           break;
 
         default:
@@ -74,6 +74,18 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
     default:
       missing_set_error(set_num, prob_num);
   }
+}
+
+void time_func(void (*func_ptr)(void))
+{
+  clock_t time_start;
+  clock_t time_elapsed;
+
+  time_start = clock();
+  func_ptr();
+  time_elapsed = clock() - time_start;
+
+  printf("\n%lu", time_elapsed);
 }
 
 /************************************************************************************

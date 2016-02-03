@@ -1,5 +1,6 @@
 defmodule Euler.Set2 do
-  alias Euler.ExternalAPI
+  alias Euler.{ClangAPI,
+               JavaAPI}
 
   @moduledoc """
   Set2 holds solutions to problems 11 - 20.
@@ -194,7 +195,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set1.problem_12
   "76576500"
   """
-  def problem_12, do: ExternalAPI.call(:clang, ~w(2 12))
+  def problem_12, do: ClangAPI.call(~w(2 12))
 
   @doc """
   13) Large Sum
@@ -307,7 +308,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set1.problem_13
   "5537376230"
   """
-  def problem_13, do: ExternalAPI.call(:clang, ~w(2 13))
+  def problem_13, do: ClangAPI.call(~w(2 13))
 
 
   @doc """
@@ -332,7 +333,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set1.problem_14
   "837799"
   """
-  def problem_14, do: ExternalAPI.call(:clang, ~w(2 14))
+  def problem_14, do: ClangAPI.call(~w(2 14))
 
 
   @doc """
@@ -348,7 +349,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set1.problem_15
   "137846528820"
   """
-  def problem_15, do: ExternalAPI.call(:clang, ~w(2 15))
+  def problem_15, do: ClangAPI.call(~w(2 15))
 
 
   @doc """
@@ -358,6 +359,6 @@ defmodule Euler.Set2 do
 
   What is the sum of the digits of the number 21000?
   """
-  def problem_16, do: ExternalAPI.call(:java, ~w(2 16))
+  def problem_16, do: JavaAPI.call(~w(2 16))
 
 end

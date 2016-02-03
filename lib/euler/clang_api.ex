@@ -3,8 +3,9 @@ defmodule Euler.ClangAPI do
 
   @clang_api_cmd Application.get_env(:euler, :clang_api_cmd)
   
-  def call(argv) do
-    System.cmd(@clang_api_cmd, argv)
+  def call(set_prob) do
+    @clang_api_cmd
+    |> System.cmd(set_prob, stderr_to_stdout: true)
     |> case do
       {result,    0}      ->
         result

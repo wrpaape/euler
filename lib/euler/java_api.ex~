@@ -1,4 +1,4 @@
-defmodule Euler.ExternalAPI do
+defmodule Euler.JavaAPI do
   @cmd_map Application.get_env(:euler, :cmd_map)
     # |> Application.get_env(:resources)
     # |> Enum.reduce(Map.new, fn(resource, cmd_map) ->

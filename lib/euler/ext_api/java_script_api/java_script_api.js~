@@ -1,14 +1,17 @@
 'use strict';
 
 function main(setNum, probNum) {
+  const setMod,
+        probFunc;
+
   try {
-    var setMod   = require('./set_' + setNum);
+    setMod   = require('./set_' + setNum);
   } catch (e) {
     process.stderr.write('ERROR:\n  ' + e.message);
     process.exit(1);
   }
 
-  var probFunc = 'problem' + probNum;
+  probFunc = 'problem' + probNum;
 
   if (setMod[probFunc] == undefined) {
     process.stderr.write('ERROR:\n  Cannot find problem '
@@ -23,6 +26,7 @@ function main(setNum, probNum) {
   // convert time to μs
   var timeElapsed = (timeTup[0] * 1000) + (timeTup[1] / 1000);
 
+  // round to integer value
   Math.round(timeElapsed);
 
   process.stdout.write(solution + '\n' + Math.round(timeElapsed));

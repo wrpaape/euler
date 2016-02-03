@@ -76,7 +76,7 @@ defmodule Euler do
     |> IO.write
   end
 
-  defp format_error(arg_string, msg) do
+  def format_error(arg_string, msg) do
     [ANSI.bright,
      ANSI.red,
      ANSI.blink_slow,
@@ -87,12 +87,8 @@ defmodule Euler do
      |> frame]
   end
 
-  defp format_output({delay, solution}, time) do
-    solution
-    |> format_output(time - delay)
-  end
-
-  defp format_output(solution, time) do
+  defp format_output({time, solution}, _), do: format_output(solution, time)
+  defp format_output(solution, time)       do
     ["\nsolution:\n\n",
      {inspect(solution), ANSI.cyan}
      |> frame,

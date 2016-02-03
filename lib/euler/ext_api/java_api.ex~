@@ -2,8 +2,8 @@ defmodule Euler.ExtAPI.JavaAPI do
   alias Euler.ExtAPI
 
   @cmd  Application.get_env(:euler, :java_cmd)
-  @prog Application.get_env(:euler, :java_api_prog)
-  @dir  Application.get_env(:euler, :java_api_cp)
+  @prog Application.get_env(:euler, :java_api_main_class)
+  @dir  Application.get_env(:euler, :java_api_class_path)
   
   def call(set_prob) do
     @cmd

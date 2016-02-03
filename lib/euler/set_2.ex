@@ -1,6 +1,7 @@
 defmodule Euler.Set2 do
-  alias Euler.ExtAPI.{ClangAPI,
-                      JavaAPI}
+  alias Euler.ExtAPI.{CAPI,
+                      JavaAPI,
+                      JavaScriptAPI}
 
   @moduledoc """
   Set2 holds solutions to problems 11 - 20.
@@ -195,7 +196,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set2.problem_12 |> elem(1)
   76576500
   """
-  def problem_12, do: ClangAPI.call(~w(2 12))
+  def problem_12, do: CAPI.call(~w(2 12))
 
   @doc """
   13) Large Sum
@@ -308,7 +309,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set2.problem_13 |> elem(1)
   5537376230
   """
-  def problem_13, do: ClangAPI.call(~w(2 13))
+  def problem_13, do: CAPI.call(~w(2 13))
 
 
   @doc """
@@ -333,7 +334,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set2.problem_14 |> elem(1)
   837799
   """
-  def problem_14, do: ClangAPI.call(~w(2 14))
+  def problem_14, do: CAPI.call(~w(2 14))
 
 
   @doc """
@@ -349,7 +350,7 @@ defmodule Euler.Set2 do
   iex> Euler.Set2.problem_15 |> elem(1)
   137846528820
   """
-  def problem_15, do: ClangAPI.call(~w(2 15))
+  def problem_15, do: CAPI.call(~w(2 15))
 
 
   @doc """
@@ -361,4 +362,16 @@ defmodule Euler.Set2 do
   """
   def problem_16, do: JavaAPI.call(~w(2 16))
 
+
+  @doc """
+  17) Number Letter Counts
+
+  If the numbers 1 to 5 are written out in words: one, two, three, four, five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+
+  If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?
+
+
+  NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters. The use of "and" when writing out numbers is in compliance with British usage.
+  """
+  def problem_17, do: JavaScriptAPI.call(~w(2 17))
 end

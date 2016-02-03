@@ -9,11 +9,11 @@ ext_api_dir = ~w(.. .. lib euler ext_api)
   |> Path.expand(Project.build_path)
 
 config :euler, [problems_per_module: 10,
-                clang_api_dir:        Path.join(ext_api_dir, "clang_api"),
-                clang_api_exe:        "clang_api",
+                c_api_dir:           Path.join(ext_api_dir, "c_api"),
+                c_api_exe:           "c_api",
                 java_cmd:             "java",
-                java_api_cp:          Path.join(ext_api_dir, "java_api"),
-                java_api_prog:        "JavaAPI",
+                java_api_class_path:  Path.join(ext_api_dir, "java_api"),
+                java_api_main_class:  "JavaAPI",
                 java_script_cmd:      "node",
                 java_script_api_dir:  Path.join(ext_api_dir, "java_script_api"),
                 java_script_api_prog: "java_script_api.js"]

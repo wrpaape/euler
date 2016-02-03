@@ -1,9 +1,9 @@
-defmodule Euler.ExtAPI.ClangAPI do
+defmodule Euler.ExtAPI.CAPI do
   alias Euler.{ExtAPI,
                Ticker}
 
-  @dir Application.get_env(:euler, :clang_api_cmd)
-  @exe Application.get_env(:euler, :clang_api_cmd)
+  @dir Application.get_env(:euler, :c_api_dir)
+  @exe Application.get_env(:euler, :c_api_exe)
   @cmd Path.join(@dir, @exe)
   
   def call(set_prob) do

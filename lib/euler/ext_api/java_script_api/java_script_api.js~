@@ -2,6 +2,7 @@
 
 /************************************************************************************
  *                                     - main -                                     *
+ *                                                                                  *
  * Function responsible for fetching the problem set module specified by 'setNum',  *
  * calling its problem function specified by 'probNum', printing the results to     *
  * stdout, and handling all possible errors encountered along the way.              *
@@ -16,7 +17,7 @@ function main(setNum, probNum) {
 
   // ensure request problem set exists
   try {
-    setMod   = require('./set_' + setNum);
+    setMod = require('./set_' + setNum);
   } catch (e) {
     process.stderr.write('ERROR:\n  ' + e.message);
     process.exit(1);

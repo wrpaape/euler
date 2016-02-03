@@ -17,7 +17,7 @@ public class JavaAPI {
 
       long timeElapsed = (timeStop - timeStart) / 1_000; // convert ns → μs
 
-      System.out.format("\n%l", timeElapsed);
+      System.out.format("\n%d", timeElapsed);
 
     } catch(ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 

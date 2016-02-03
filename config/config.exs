@@ -4,7 +4,7 @@ use Mix.Config
 
 alias Mix.Project
 
-ext_api_path = fn(rel_root) ->
+api_path = fn(rel_root) ->
   ~w(.. .. lib euler)
   |> Enum.concat(rel_root)
   |> Path.join
@@ -12,8 +12,8 @@ ext_api_path = fn(rel_root) ->
 end
 
 config :euler, [problems_per_module: 10,
-                clang_api_cmd: ext_api_path.(~w(clang_api clang_api)),
-                java_api_cmd:  ext_api_path.(["JavaAPI", "java JavaAPI"])]
+                clang_api_cmd: api_path.(~w(clang_api clang_api)),
+                java_api_cp:   api_path.(~w(JavaAPI))]
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

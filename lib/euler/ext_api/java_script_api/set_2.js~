@@ -56,53 +56,58 @@ module.exports = {
     const HUNDRED_CHARS      = 6;  /* hundred */
     const ONE_THOUSAND_CHARS = 11; /* one-thousand */
 
-    const ONES_LIST  = {
-      3, /* one */       3, /* two */      5, /* three */
-      4, /* four */      4, /* five */     3, /* six */
-      5, /* seven */     5, /* eight */    4  /* nine */
-    };
-    const TENS_LIST  = {
-      6, /* twenty */    6, /* thirty */
-      5, /* forty */     5, /* fifty */    5, /* sixty */
-      6, /* seventy */   6, /* eighty */   6  /* ninety */
-    };
-    const UNIQS_LIST = {
-      3, /* ten */
-      6, /* eleven */    6, /* twelve */   8, /* thirteen */
-      8, /* fourteen */  7, /* fifteen */  7, /* sixteen */
-      9, /* seventeen */ 8, /* eighteen */ 8  /* nineteen */
-    };
+    const ONES  = [3, /* one */      3, /* two */       5, /* three */
+                   4, /* four */     4, /* five */      3, /* six */
+                   5, /* seven */    5, /* eight */     4  /* nine */];
 
-    var sum99;
+    const TENS  = [6, /* twenty */   6, /* thirty */    5, /* forty */
+                   5, /* fifty */    5, /* sixty */     7, /* seventy */
+                   6, /* eighty */   6  /* ninety */];
 
+    const UNIQS = [3, /* ten */      6, /* eleven */    6, /* twelve */
+                   8, /* thirteen */ 8, /* fourteen */  7, /* fifteen */
+                   7, /* sixteen */  9, /* seventeen */ 8, /* eighteen */
+                   8  /* nineteen */];
 
-    /* sum num chars of '_LIST' digits (1-19, 20, 30, ..., 90) */
-    sum99 = [ONES_LIST, TENS_LIST, UNIQS_LIST].reduce(function(acc, digit_chars) {
+    var sum9,
+        sum99,
+        sum999;
+
+    // sum num chars of 'ONES' digits (1-9)
+    sum9 = ONES.reduce(function(acc, num_chars) {
+
+      return acc + num_chars;
+    }, 0) ;
+
+    // add num chars of 'TENS'and 'UNIQS' digits (20, 30, ..., 90)
+    sum99 = [TENS, UNIQS].reduce(function(acc, digit_chars) {
 
       return digit_chars.reduce(function(acc, num_chars) {
 
         return acc + num_chars;
-
       }, acc);
-
-    }, 0);
-
-    /* sum num chars for digits between those in 'TENS_MAP' */
-    sum99 = (TENS_MAP).reduce(function(acc, ))
+    }, sum9);
 
 
+    // add num chars for digits between those in 'TENS'
+    sum99 = TENS.reduce(function(acc, tens_num_chars) {
 
-    // one eleven twenty-one ... one-hundred-and-one
-    // two twelve twenty-two
-    // three thirteen twenty-three
-    // four fourteen 
-    // five fifteen twenty-five ...
-    // six sixteen twenty-six
-    // seven seventeen
-    // eight eighteen
-    // nine nineteen
-    // ten twenty thirty forty fifty sixty seventy eighty ninety one-hundred ... two-hundred ... one-thousand
+      // i.e. twenty-one, twenty-two, ... twenty-nine
+      return acc + (tens_num_chars * 9) + sum9;
+    }, sum99);
 
-    return sum99;
+    // add num chars for each hundred interval (100 - 999)
+    sum999 = ONES.reduce(function(acc, ones_num_chars) {
+      var hunds_num_chars = ones_num_chars + HUNDRED_CHARS;
+
+      //i.e one-hundred-and-one ... one-hundred-and-ninety-nine
+      //          >                                  <
+      return acc + (hunds_num_chars + 3) * 99 + sum99 + hunds_num_chars; 
+      //                                               >               <
+      //i.e one-hundred
+    }, sum99) ;
+
+    // add num chars for 'one-thousand'
+    return sum999 + ONE_THOUSAND_CHARS;
   }
 };

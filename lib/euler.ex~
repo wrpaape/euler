@@ -8,9 +8,9 @@ defmodule Euler do
   """
 
   @problems_per_module Application.get_env(:euler, :problems_per_module)
+  @default_lang_tup    Application.get_env(:euler, :elixir_lang_tup)
   @solution_colors     ANSI.cyan_background  <> ANSI.magenta
   @default_colors      ANSI.white_background <> ANSI.black
-  @default_lang_tup    {"Elixir", ANSI.magenta}
   @parse_opts [strict:  [help: :boolean, all: :boolean, latest: :boolean],
                aliases: [h:    :help,    a:   :all,     l:      :latest]]
 

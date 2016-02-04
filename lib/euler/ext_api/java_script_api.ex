@@ -2,9 +2,10 @@ defmodule Euler.ExtAPI.JavaScriptAPI do
   alias Euler.{ExtAPI,
                Ticker}
 
-  @cmd  Application.get_env(:euler, :java_script_cmd)
-  @dir  Application.get_env(:euler, :java_script_api_dir)
-  @prog Application.get_env(:euler, :java_script_api_prog)
+  @lang_tup Application.get_env(:euler, :java_script_lang_tup)
+  @cmd      Application.get_env(:euler, :java_script_cmd)
+  @dir      Application.get_env(:euler, :java_script_api_dir)
+  @prog     Application.get_env(:euler, :java_script_api_prog)
   
   def call(set_prob) do
     @cmd
@@ -13,6 +14,7 @@ defmodule Euler.ExtAPI.JavaScriptAPI do
       {stdout, 0}         ->
         stdout
         |> ExtAPI.parse_stdout
+        |> Tuple.append(@lang_tup)
 
       {error_msg, status} -> 
         Ticker.stop

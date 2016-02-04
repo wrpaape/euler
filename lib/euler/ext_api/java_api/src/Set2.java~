@@ -16,29 +16,27 @@ public abstract class Set2 {
    **********************************************************************************/
   public static void problem16() { 
 
-    // 00000001 00000000 ... 00000000 (7 '0' bits → 1 '1' bit → 1,000 '0' bits)
-    // equals 1,000 '1' bits + 00000001
-    //       >              <
-    //        equals (1 '1' bit → 999 '0' bits) * 2 - 00000001
-    //        2 * 2 * 2 * 2 * 2
-    //
-    System.out.print("YO");
+		LinkedList<Integer> digitsList = new LinkedList<Integer>();
 
-	public static void main(String[] args) {
-	       LinkedList<String> linkedList = new LinkedList<String>();
-	        linkedList.add("eBay");
-	        linkedList.add("Paypal");
-	        linkedList.add("Google");
-	        linkedList.add("Yahoo");
-	        linkedList.add("IBM");
-	        linkedList.add("Facebook");
- 
-	        // ListIterator approach
-	        System.out.println("ListIterator Approach: ");
-	        ListIterator<String> listIterator = linkedList.listIterator();
-	        while (listIterator.hasNext()) {
-	            System.out.println(listIterator.next());
-	        }
-  
+		System.out.println("adding first el");
+		digitsList.add(10);
+
+		System.out.println("init iterator");
+		ListIterator<Integer> digitsIterator = digitsList.listIterator();
+
+		
+		System.out.println("setting first el");
+		digitsIterator.set(0);
+		System.out.println("next el");
+		digitsIterator.next();
+		digitsIterator.set(1);
+
+
+		System.out.println("resetting iterator");
+	  digitsIterator = digitsList.listIterator();
+
+		while (digitsIterator.hasNext()) {
+				System.out.println(digitsIterator.next());
+		}
   }
 }

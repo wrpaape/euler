@@ -36,6 +36,15 @@ public abstract class Set2 {
 	  digitsIterator = digitsList.listIterator();
 
 		while (digitsIterator.hasNext()) {
+      digitsIterator.add(100);
+				System.out.println(digitsIterator.next());
+		}
+
+		System.out.println("resetting iterator");
+	  digitsIterator = digitsList.listIterator();
+
+		while (digitsIterator.hasNext()) {
+      digitsIterator.add(100);
 				System.out.println(digitsIterator.next());
 		}
   }

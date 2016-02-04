@@ -373,6 +373,11 @@ defmodule Euler.Set2 do
 
 
   NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters. The use of "and" when writing out numbers is in compliance with British usage.
+
+  02/04/16
+
+  iex> Euler.Set2.problem_17 |> elem(1)
+  21124
   """
   def problem_17, do: JavaScriptAPI.call(~w(2 17))
 
@@ -384,28 +389,28 @@ defmodule Euler.Set2 do
 
      #{ANSI.red}3#{ANSI.reset}
     #{ANSI.red}7#{ANSI.reset} 4
-   #{ANSI.red}2#{ANSI.reset} 4 6
+   2 #{ANSI.red}4#{ANSI.reset} 6
 	8 5 #{ANSI.red}9#{ANSI.reset} 3
 
 	That is, 3 + 7 + 4 + 9 = 23.
 
 	Find the maximum total from top to bottom of the triangle below:
 
-	                            75
-	                          95   4
-	                        17   7   2
-	                      18   5   7   0
-	                    20   4   2   7   5
-                    19   1   3   5   3   4
-                  88   2   7   3   7   3   7
-	              99   5   4   8   6   6   0   2
-	            41   1   6   6   3   0   0   0   3
-	          41   8   2   3   7   2   7   6   4   9
-	        53   1   4   5   5   3   1   2   7   1   4
-	      70   1   3   8   7   3   7   8   9   8   7   7
-	    91   1   2   8   7   4   1   3   8   0   7   9   8
-	   63   6   4   8   9   3   7   0   3   6   9   7   0   1
-	04   2   8   7   3   9   0   8   3   3   8   3   0   4   3
+                              75
+                            95  64
+                          17  47  82
+                        18  35  87  10
+                      20  04  82  47  65
+                    19  01  23  75  03  34
+                  88  02  77  73  07  63  67
+                99  65  04  28  06  16  70  92
+              41  41  26  56  83  40  80  70  33
+            41  48  72  33  47  32  37  16  94  29
+          53  71  44  65  25  43  91  52  97  51  14
+        70  11  33  28  77  73  17  78  39  68  17  57
+      91  71  52  38  17  14  91  43  58  50  27  29  48
+    63  66  04  68  89  53  67  30  73  16  69  87  40  31
+  04  62  98  27  23  09  70  98  73  93  38  53  60  04  23
 
 	NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
   """

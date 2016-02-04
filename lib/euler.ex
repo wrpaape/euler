@@ -10,6 +10,7 @@ defmodule Euler do
   @problems_per_module Application.get_env(:euler, :problems_per_module)
   @solution_colors     ANSI.cyan_background  <> ANSI.magenta
   @default_colors      ANSI.white_background <> ANSI.black
+  @default_lang_tup    {"Elixir", ANSI.magenta}
   @parse_opts [strict:  [help: :boolean, all: :boolean, latest: :boolean],
                aliases: [h:    :help,    a:   :all,     l:      :latest]]
 
@@ -56,7 +57,7 @@ defmodule Euler do
       |> parse_set_module
 
     problem_function =
-      "problem_" <> problem_number_string 
+      "problem_" <> problem_number_string
       |> String.to_atom
 
     set_module
@@ -65,18 +66,22 @@ defmodule Euler do
 
     Ticker.start
 
-    {time, solution} =
+    {time, solution, language_tup} =
       set_module
       |> :timer.tc(problem_function, [])
       |> case do
-        {_delayed, api_tup = {_time, _sol}} -> api_tup 
-        local_tup                           -> local_tup
+        {_delayed, api_tup = {_time, _sol, _lang_tup}} ->
+          api_tup
+
+        local_tup ->
+          local_tup
+          |> Tuple.append(@default_lang_tup)
       end
 
     Ticker.stop
 
     solution
-    |> format_output(time)
+    |> format_output(time, language_tup)
     |> IO.write
   end
 
@@ -91,9 +96,12 @@ defmodule Euler do
      |> frame]
   end
 
-  defp format_output(solution, time) do
+  defp format_output(solution, time, language_tup) do
     ["\nsolution:\n\n",
      {inspect(solution), ANSI.cyan}
+     |> frame,
+     "\nsolved with:\n\n",
+     language_tup
      |> frame,
      "\nsolved in:\n\n",
      time

@@ -26,7 +26,7 @@ public abstract class Set2 {
 
 		
 		System.out.println("setting first el");
-		digitsIterator.set(0);
+		digitsIterator.add(0);
 		System.out.println("next el");
 		digitsIterator.next();
 		digitsIterator.set(1);
@@ -36,6 +36,15 @@ public abstract class Set2 {
 	  digitsIterator = digitsList.listIterator();
 
 		while (digitsIterator.hasNext()) {
+      digitsIterator.add(100);
+				System.out.println(digitsIterator.next());
+		}
+
+		System.out.println("resetting iterator");
+	  digitsIterator = digitsList.listIterator();
+
+		while (digitsIterator.hasNext()) {
+      digitsIterator.add(100);
 				System.out.println(digitsIterator.next());
 		}
   }

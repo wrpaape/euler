@@ -1,14 +1,14 @@
-defmodule Euler.ExtAPI.CAPI do
+defmodule Euler.ExtAPI.RubyAPI do
   alias Euler.{ExtAPI,
                Ticker}
 
-  @dir Application.get_env(:euler, :c_api_dir)
-  @exe Application.get_env(:euler, :c_api_exe)
-  @cmd Path.join(@dir, @exe)
+  @cmd  Application.get_env(:euler, :ruby_cmd)
+  @dir  Application.get_env(:euler, :ruby_api_dir)
+  @prog Application.get_env(:euler, :ruby_api_prog)
   
   def call(set_prob) do
     @cmd
-    |> System.cmd(set_prob, stderr_to_stdout: true)
+    |> System.cmd([@prog | set_prob], cd: @dir, stderr_to_stdout: true)
     |> case do
       {stdout, 0}         ->
         stdout

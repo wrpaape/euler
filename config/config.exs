@@ -16,7 +16,10 @@ config :euler, [problems_per_module: 10,
                 java_api_main_class:  "JavaAPI",
                 java_script_cmd:      "node",
                 java_script_api_dir:  Path.join(ext_api_dir, "java_script_api"),
-                java_script_api_prog: "java_script_api.js"]
+                java_script_api_prog: "java_script_api.js",
+                ruby_cmd:             "ruby",
+                ruby_api_dir:         Path.join(ext_api_dir, "ruby_api"),
+                ruby_api_prog:        "ruby_api.rb"]
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

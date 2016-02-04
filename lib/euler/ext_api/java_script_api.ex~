@@ -13,7 +13,6 @@ defmodule Euler.ExtAPI.JavaScriptAPI do
       {stdout, 0}         ->
         stdout
         |> ExtAPI.parse_stdout
-          
 
       {error_msg, status} -> 
         Ticker.stop
@@ -23,6 +22,5 @@ defmodule Euler.ExtAPI.JavaScriptAPI do
 
         System.halt(status)
     end
-    |> ExtAPI.parse_stdout
   end
 end

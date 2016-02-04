@@ -1,8 +1,8 @@
 /************************************************************************************
  *                                 - JavaAPI.java -                                 *
  *                                                                                  *
- * Main class of the Java API, responsible for communication between Elixir Mix     *
- * project 'euler' and problems solved in Java.                                     *
+ * Houses the main class of the Java API, responsible for communication between     *
+ * Elixir Mix project 'euler' and problems solved in Java.                          *
  ************************************************************************************/
 import java.lang.Class;
 import java.lang.reflect.Method;

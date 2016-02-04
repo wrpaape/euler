@@ -1,6 +1,10 @@
 defmodule Euler.ExtAPI do
   def parse_stdout(stdout) do
     stdout
+    # |> String.to_char_list
+    # |> IO.inspect(char_lists: :as_lists, pretty: true)
+    # |> IO.inspect(char_lists: :as_char_lists, pretty: true)
+    # |> List.to_string
     |> :binary.split("\n")
     |> case do
       [sol_str, time_str] ->

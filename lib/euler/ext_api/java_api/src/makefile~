@@ -5,7 +5,7 @@ JC = javac
 .SUFFIXES: .java .class
 
 .java.class:
-				$(JC) $(JFLAGS) $*.java -d../
+				$(JC) $(JFLAGS) $*.java -d ../
 
 CLASSES = JavaAPI.java Set2.java
 

@@ -15,10 +15,10 @@ public abstract class Set2 {
    * What is the sum of the digits of the number 2¹⁰⁰⁰?                             *
    **********************************************************************************/
   public static Integer problem16() { 
-		LinkedList<Integer> digitsList;       // stores result digits, expanding for overflow
+		LinkedList<Integer> digitsList;       // stores result digits while multiplying
 		ListIterator<Integer> digitsIterator; // iterator for traversing digitsList
     int remNumMults;                      // remaining multiplications (* 2)
-    int sumDigits;                        // sum of all decimal digits of 2¹⁰⁰⁰ (result)
+    int sumDigits;                        // sum of all decimal digits of 2¹⁰⁰⁰
     int digAcc;                           // used to 'carry' overflow to next 'place'
 
 		digitsList = new LinkedList<Integer>();     // initialize digitsList
@@ -54,7 +54,6 @@ public abstract class Set2 {
       sumDigits += digitsIterator.next();
     }
 
-    // System.out.print(sumDigits); // print final sum
     return sumDigits; // return final sum
   }
 }

@@ -9,40 +9,59 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
 public class JavaAPI {
-  // private Class problemSet;
-  private Method problemMethod;
-  private Object solution;
-  // private long timeStart;
-  // private long timeStop;
-  private long timeElapsed;
+  private Method problemMethod; // method corresponding to requested problem number
+  private Object solution;      // problem solution returned by 'problemMethod'
+  private long timeElapsed;     // time (μs) taken to solve requested problem number
 
   private JavaAPI(String setNum, String probNum) {
     try {
-    Class problemSet    = Class.forName("Set" + setNum);
-    problemMethod = problemSet.getDeclaredMethod("problem" + probNum);
+      Class<?> problemSet = Class.forName("Set" + setNum);
+      problemMethod    = problemSet.getDeclaredMethod("problem" + probNum);
+
     } catch(ClassNotFoundException e) {
-      e.printStackTrace();
+      exitOnError("Problem set class 'Set"
+                + setNum
+                + "' housing requested problem number '"
+                + probNum
+                + "' does not exist");
+
     } catch(NoSuchMethodException e) {
-      e.printStackTrace();
+      exitOnError("Problem method 'problem'"
+                + probNum
+                + "' was not found in requested problem set class 'Set"
+                + setNum
+                + "'");
     }
-  };
+  }
 
   private void solveProblem() {
     try {
-      long timeStart = System.nanoTime();
-      solution  = problemMethod.invoke(null);
-      long timeStop  = System.nanoTime();
+      long timeStart = System.nanoTime();              // start clock
+      solution       = problemMethod.invoke(null);     // solve problem
+      long timeStop  = System.nanoTime();              // stop clock
+      timeElapsed    = (timeStop - timeStart) / 1_000; // convert diff ns → μs
 
-      timeElapsed = (timeStop - timeStart) / 1_000; // convert ns → μs
     } catch(IllegalAccessException e) {
-      e.printStackTrace();
+      exitOnError("JavaAPI method 'solveProblem' does not have access to '"
+                + problemMethod.toString()
+                + "'");
+
     } catch(InvocationTargetException e) {
-      e.printStackTrace();
+      exitOnError("'"
+                + e.getTargetException()
+                + "' thrown calling '"
+                + problemMethod.toString()
+                + "'");
     }
   }
 
   private void reportSolution() {
     System.out.format(solution.toString() + "\n%d", timeElapsed);
+  }
+
+  private void exitOnError(String message) {
+    System.out.print("\nERROR:\n  " + message); // print error message to stderr
+    System.exit(1);                             // exit with status '1'
   }
 
   public static void main(String[] args) {

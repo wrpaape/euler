@@ -14,7 +14,7 @@ public abstract class Set2 {
    *                                                                                *
    * What is the sum of the digits of the number 2¹⁰⁰⁰?                             *
    **********************************************************************************/
-  public static void problem16() { 
+  public static Integer problem16() { 
 		LinkedList<Integer> digitsList;       // stores result digits, expanding for overflow
 		ListIterator<Integer> digitsIterator; // iterator for traversing digitsList
     int remNumMults;                      // remaining multiplications (* 2)
@@ -54,6 +54,7 @@ public abstract class Set2 {
       sumDigits += digitsIterator.next();
     }
 
-    System.out.print(sumDigits); // print final sum
+    // System.out.print(sumDigits); // print final sum
+    return sumDigits; // return final sum
   }
 }

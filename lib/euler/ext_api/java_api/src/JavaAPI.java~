@@ -9,24 +9,79 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
 public class JavaAPI {
+    private Class problemSet;
+    private Method problemMethod;
+    private Object solution;
+    private long timeStart;
+    private long timeStop;
+    private long timeElapsed;
+
+  private JavaAPI(String setNum, String probNum) {
+    try {
+    problemSet    = Class.forName("Set" + setNum);
+    problemMethod = problemSet.getDeclaredMethod("problem" + probNum);
+    } catch(ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch(NoSuchMethodException e) {
+      e.printStackTrace();
+    }
+    // private Class problemSet     = Class.forName("Set" + setNum);
+    // private Method problemMethod = setClass.getDeclaredMethod("problem" + probNum);
+    // private Object solution;
+    // private long timeStart;
+    // private long timeStop;
+    // private long timeElapsed;
+  };
+
+  private void solveProblem() {
+    try {
+      timeStart = System.nanoTime();
+      solution  = problemMethod.invoke(null);
+      timeStop  = System.nanoTime();
+
+      timeElapsed = (timeStop - timeStart) / 1_000; // convert ns → μs
+    } catch(IllegalAccessException e) {
+      e.printStackTrace();
+    } catch(InvocationTargetException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void reportSolution() {
+    System.out.format(solution.toString() + "\n%d", timeElapsed);
+  }
+
   public static void main(String[] args) {
     try {
-      Class setClass = Class.forName("Set" + args[0]);
+      JavaAPI api = new JavaAPI(args[0], args[1]);
 
-      Method problemMethod = setClass.getDeclaredMethod("problem" + args[1]);
+      api.solveProblem();
 
-      long timeStart = System.nanoTime();
+      api.reportSolution();
+      // Class setClass = Class.forName("Set" + args[0]);
 
-      problemMethod.invoke(null);
+      // Method problemMethod = setClass.getDeclaredMethod("problem" + args[1]);
 
-      long timeStop = System.nanoTime();
+      // long timeStart = System.nanoTime();
 
-      long timeElapsed = (timeStop - timeStart) / 1_000; // convert ns → μs
+      // problemMethod.invoke(null);
 
-      System.out.format("\n%d", timeElapsed);
+      // long timeStop = System.nanoTime();
 
-    } catch(ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      // long timeElapsed = (timeStop - timeStart) / 1_000; // convert ns → μs
 
+      // System.out.format("\n%d", timeElapsed);
+
+    } catch(ClassNotFoundException e) {
+      e.printStackTrace();
+
+    } catch(NoSuchMethodException e) {
+      e.printStackTrace();
+
+    } catch(IllegalAccessException e) {
+      e.printStackTrace();
+
+    } catch(InvocationTargetException e) {
       e.printStackTrace();
 
     }

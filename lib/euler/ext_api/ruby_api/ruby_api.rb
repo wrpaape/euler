@@ -6,7 +6,7 @@
 * Elixir Mix project 'euler' and problems solved in Ruby.                            *
 **************************************************************************************
 =end
-Dir["set_*.rb"].each {|file| require_relative file}
+# Dir["set_*.rb"].each {|file| require_relative file}
 
 class RubyAPI
 =begin
@@ -19,6 +19,18 @@ class RubyAPI
 **************************************************************************************
 =end
   def self.main(set_num, prob_num)
+    # set_class_str = "Set#{set_num}"
+
+    # Dir["set_*.rb"].each {|file| require_relative file}
+
+    begin
+      require_relative "set_#{set_num}.rb"
+
+    rescue LoadError
+      puts "awooga 0"
+      exit 1
+    end
+
     set_class_str = "Set#{set_num}"
 
     unless Object.const_defined?(set_class_str)

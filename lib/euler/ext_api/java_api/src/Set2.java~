@@ -15,37 +15,46 @@ public abstract class Set2 {
    * What is the sum of the digits of the number 2¹⁰⁰⁰?                             *
    **********************************************************************************/
   public static void problem16() { 
+    // create linked list to store digits, expanding as they accumulate
+		LinkedList<Integer> digitsList;
+		ListIterator<Integer> digitsIterator;
+    int remNumMults;
+    int sumDigits;
+    int digAcc;
 
-		LinkedList<Integer> digitsList = new LinkedList<Integer>();
+		digitsList = new LinkedList<Integer>();
+		digitsList.add(2);
 
-		System.out.println("adding first el");
-		digitsList.add(10);
+		digitsIterator = digitsList.listIterator(); // initialize iterator
+    remNumMults = 999;                          // 999 mults to go
+    // build digitsList
+    while (remNumMults > 0) {
+      digAcc = 0;
+      // update digits list
+      while (digitsIterator.hasNext()) {
+        digAcc += (digitsIterator.next() * 2);
 
-		System.out.println("init iterator");
-		ListIterator<Integer> digitsIterator = digitsList.listIterator();
+        digitsIterator.set(
+            (digAcc > 9) ? digAcc % 10 : digAcc);
 
-		
-		System.out.println("setting first el");
-		digitsIterator.add(0);
-		System.out.println("next el");
-		digitsIterator.next();
-		digitsIterator.set(1);
+        digAcc /= 10;
+      }
 
+      // append nonzero overflow
+      if (digAcc > 0) {
+        digitsIterator.add(digAcc);
+      }
+      
+      digitsIterator = digitsList.listIterator(); // reset iterator
+      remNumMults--;                              // decrement remaining multiplications
+    }
 
-		System.out.println("resetting iterator");
-	  digitsIterator = digitsList.listIterator();
+    sumDigits = 0;
+    // sum resultant digitsList
+    while (digitsIterator.hasNext()) {
+      sumDigits += digitsIterator.next();
+    }
 
-		while (digitsIterator.hasNext()) {
-      digitsIterator.add(100);
-				System.out.println(digitsIterator.next());
-		}
-
-		System.out.println("resetting iterator");
-	  digitsIterator = digitsList.listIterator();
-
-		while (digitsIterator.hasNext()) {
-      digitsIterator.add(100);
-				System.out.println(digitsIterator.next());
-		}
+    System.out.print(sumDigits); // print final sum
   }
 }

@@ -6,9 +6,27 @@
 * Elixir Mix project 'euler' and problems solved in Ruby.                            *
 **************************************************************************************
 =end
-# Dir["set_*.rb"].each {|file| require_relative file}
 
 class RubyAPI
+  def initialize(set_num, prob_num)
+    @problem_set    = Object.const_get("Set#{set_num}")
+    @problem_method = "problem_#{prob_num}"
+  end
+
+  def solve_problem
+    time_start  = Time.now
+    @solution   = @problem_set.send(@problem_method)
+    time_finish = Time.now
+
+    time_diff   = (time_finish - time_start) * 1_000_000 # convert s → μs
+
+    @time_elapsed = time_diff.round                      # round to nearest integer
+  end
+
+  def report_solution
+    print(@solution, "\n", @time_elapsed) # print solution and time_elapsed to stdout
+  end
+
 =begin
 **************************************************************************************
 *                                   - self.main -                                    *
@@ -19,46 +37,42 @@ class RubyAPI
 **************************************************************************************
 =end
   def self.main(set_num, prob_num)
-    # set_class_str = "Set#{set_num}"
-
-    # Dir["set_*.rb"].each {|file| require_relative file}
-
     begin
       require_relative "set_#{set_num}.rb"
 
+      api = new(set_num, prob_num)
+
+      api.solve_problem
+
+      api.report_solution
+
     rescue LoadError
-      puts "awooga 0"
-      exit 1
+      exit_on_error "
+        Cannot load file for problem set '#{set_num}' (set_#{set_num}.rb) housing
+        requested problem '#{prob_num}'"
+
+    rescue NoMethodError
+      exit_on_error "
+        Requested problem number '#{prob_num}' does not exist in problem set
+        '#{set_num}'"
+
+    rescue NameError
+      exit_on_error "
+        Problem set class 'Set#{set_num}' does not exist in problem set file
+        'set_#{set_num}.rb' housing requested problem '#{prob_num}'"
     end
-
-    set_class_str = "Set#{set_num}"
-
-    unless Object.const_defined?(set_class_str)
-      # TODO print error msg to stderr
-      puts "awooga 1"
-      exit 1
-    end
-
-    set_class = Object.const_get(set_class_str)
-
-
-    prob_meth = "problem_#{prob_num}"
-
-    unless set_class.respond_to?(prob_meth)
-      # TODO print error msg to stderr
-      puts prob_meth
-      puts "awooga 2"
-      exit 1
-    end
-
-    time_start   = Time.now
-    solution     = set_class.send(prob_meth)
-    time_finish  = Time.now
-
-    time_elapsed = (time_finish - time_start) * 1_000_000 # convert s → μs
-
-    print(solution, "\n", time_elapsed.round)             # print solution to stdout
   end
+
+  def self.exit_on_error(message)
+   # strip whitespace caused by multilining string
+    message.tr!("/\n/", " ")    # replace newlines with single space
+           .gsub!(/ {2,}/, " ") # replace indents with single space
+           .sub!(" ", "")       # delete leading space
+
+    STDERR.print "\nERROR:\n  #{message}"  # print error message to stderr
+    exit 1                                 # exit with status '1'
+  end
+  private_class_method :exit_on_error
 end
 
 RubyAPI.main(*ARGV)

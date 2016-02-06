@@ -67,10 +67,10 @@ class RubyAPI
    # strip whitespace caused by multilining string
     message.tr!("/\n/", " ")    # replace newlines with single space
            .gsub!(/ {2,}/, " ") # replace indents with single space
-           .sub!(" ", "")       # delete leading space
+           .sub!(/ /, "")       # delete leading space
 
-    STDERR.print "\nERROR:\n  #{message}"  # print error message to stderr
-    exit 1                                 # exit with status '1'
+    STDERR.print "\nERROR:\n  #{message}" # print error message to stderr
+    exit 1                                # exit with status '1'
   end
   private_class_method :exit_on_error
 end

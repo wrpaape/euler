@@ -69,10 +69,13 @@ class Set2
             fork_child[:head] = child_row[fork_child[:col]]
             fork_child[:sum]  = fork_child[:head]
 
-            col = fork_child[:col]
+            col    = fork_child[:col]
+            weight = 1.0
             fork_tail_row.upto(last_row) do |row|
               col              += fork_child[:step]
-              fork_child[:sum] += tri[row][col]
+              weight /= 2 
+              puts "weight #{weight}"
+              fork_child[:sum] += (tri[row][col] / weight)
             end
 
             if fork_child[:sum] >= max_sum
@@ -90,6 +93,7 @@ class Set2
         branches = candidates.map do |fork_child| 
           puts "  branching: #{fork_child[:step].zero? ? "left" : "right"}"
           puts "  head:      #{fork_child[:head]}"
+          puts "  row_max:   #{child_row.max}"
           puts "  sum:       #{fork_child[:sum]}"
           acc += fork_child[:head]
           {

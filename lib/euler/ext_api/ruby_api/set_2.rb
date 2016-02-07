@@ -69,10 +69,12 @@ class Set2
             fork_child[:head] = child_row[fork_child[:col]]
             fork_child[:sum]  = fork_child[:head]
 
-            col = fork_child[:col]
+            col    = fork_child[:col]
+            weight = 1.0
             fork_tail_row.upto(last_row) do |row|
               col              += fork_child[:step]
-              fork_child[:sum] += tri[row][col]
+              weight /= 2 
+              fork_child[:sum] += (tri[row][col] * weight)
             end
 
             if fork_child[:sum] >= max_sum

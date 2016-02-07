@@ -48,9 +48,69 @@ class Set2
            [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23]]
 
     begin
-      rev_tri = tri.reverse.each { |row| row << 0 }
+      accs = tri.pop.map.with_index { |val, col| {sum: val, col: col, hist: [val]} }
 
-      puts rev_tri.inspect
+      # rev_tri = tri.reverse.each do |row|
+      #   row.push(-1)
+      #   row.unshift(-1)
+
+
+      tri.reverse.each do |row|
+        accs = accs.flat_map do |acc|
+          # puts acc[:hist].inspect
+
+          parent_sum  = acc[:sum]
+          parent_hist = acc[:hist]
+
+          right_col = acc[:col]
+          left_col  = right_col - 1
+
+          left_val  = row[left_col]
+          right_val = row[right_col]
+
+          next_accs = []
+
+          if left_val
+            next_accs.push({
+              sum: parent_sum + left_val,
+              col: left_col,
+              hist: parent_hist.clone.push(left_val)
+            })
+          end
+
+          if right_val
+            next_accs.push({
+              sum: parent_sum + right_val,
+              col: right_col,
+              hist: parent_hist.clone.push(right_val)
+            })
+          end
+
+          next_accs
+        end
+          # next_col = (row[left_col] > row[right_col]) ? left_col : right_col
+          # next_val = row[next_col]
+          # puts "left_col:  #{left_col}"
+          # puts "right_col: #{right_col}"
+          # puts "left_val:  #{row[left_col]}"
+          # puts "right_val: #{row[right_col]}"
+          # puts "next_col:  #{next_col}"
+          # puts "next_val:  #{next_val}"
+          # acc[:sum] += next_val
+          # acc[:col] =  next_col
+          # acc[:hist].push(next_val)
+
+        merged_accs = accs.group_by { |acc| acc[:col] }.values
+
+
+        accs = merged_accs.map { |crossed_accs| crossed_accs.max_by { |acc| acc[:sum] } }
+
+      end
+
+      max_acc = accs.max_by { |acc| acc[:sum] }
+
+      puts max_acc.inspect
+
 
 
     rescue Exception => e

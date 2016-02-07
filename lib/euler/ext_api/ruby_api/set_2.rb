@@ -54,11 +54,14 @@ class Set2
       last_row = tri.length - 1
 
       (1..last_row).step(2) do |prim_row|
+        sec_row      = prim_row + 1
+
+        prim_tri_row = tri[prim_row]
+        sec_tri_row  = tri[sec_row]
+
         left_col  = prev_col
         mid_col   = left_col + 1
         right_col = mid_col + 1
-
-        prim_tri_row = tri[prim_row]
 
         left  = prim_tri_row[left_col]
         right = prim_tri_row[mid_col]
@@ -91,8 +94,6 @@ class Set2
         rl_loss  = mid_loss + left
         rr_loss  = ll_sum + lr_sum + left
 
-        sec_row      = prim_row + 1
-        sec_tri_row  = tri[sec_row]
 
         child_nodes = [{loss: ll_loss, route: [left_col, left_col]},
                        {loss: lr_loss, route: [left_col, mid_col]},

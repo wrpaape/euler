@@ -48,63 +48,68 @@ class Set2
            [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23]]
 
     begin
-      branches = [{acc_sum: 75, col: 0}] # holds column indices of branches sharing largest last sum
-
-      acc = 75
+      route = [75]
+      sum    = 75
+      prev_col = 0
       last_row = tri.length - 1
 
-      1.upto(last_row - 1) do |row|  
-        child_row = tri[row]
-        max_sum = 0
-        candidates = []
+      (1..last_row).step(2) do |prim_row|
+        left_col  = prev_col
+        mid_col   = left_col + 1
+        right_col = mid_col + 1
 
-        branches.each do |branch|
-          root_col = branch[:col]
+        prim_tri_row = tri[prim_row]
 
-          fork_tail_row = row + 1
+        left  = prim_tri_row[left_col]
+        right = prim_tri_row[mid_col]
 
-          0.upto(1) do |step|
-            fork_child        = {step: step}
-            fork_child[:col]  = root_col + fork_child[:step]
-            fork_child[:head] = child_row[fork_child[:col]]
-            fork_child[:sum]  = fork_child[:head]
 
-            col    = fork_child[:col]
-            weight = 1.0
-            fork_tail_row.upto(last_row) do |row|
-              col              += fork_child[:step]
-              weight /= 2 
-              fork_child[:sum] += (tri[row][col] * weight)
-            end
+        ll_sum = 0
+        lr_sum = 0
+        rl_sum = 0
+        rr_sum = 0
 
-            if fork_child[:sum] >= max_sum
-              max_sum               = fork_child[:sum]
-              fork_child[:root_sum] = branch[:acc_sum]
-              candidates.push(fork_child)
-            end
-          end
+        ll_col = left_col
+        lr_col = mid_col
+        rl_col = mid_col
+        rr_col = right_col
+        
+        sec_row.upto(last_row) do |row|
+          tri_row  = tri[row]
+          ll_sum  += tri_row[ll_col]
+          lr_sum  += tri_row[lr_col]
+          rl_sum  += tri_row[rl_col]
+          rr_sum  += tri_row[rr_col]
+          rl_col  += 1
+          rr_col  += 1
         end
 
-        candidates.reject! { |fork_child| fork_child[:sum] < max_sum }
 
-        puts "*********"
-        puts "on row #{row}"
-        branches = candidates.map do |fork_child| 
-          puts "  branching: #{fork_child[:step].zero? ? "left" : "right"}"
-          puts "  head:      #{fork_child[:head]}"
-          puts "  row_max:   #{child_row.max}"
-          puts "  sum:       #{fork_child[:sum]}"
-          acc += fork_child[:head]
-          {
-            acc_sum: fork_child[:root_sum] + fork_child[:head],
-            col:     fork_child[:col]
-          }
-        end
+        ll_loss  = rl_sum + rr_sum + right
+        mid_loss = ll_sum + rr_sum
+        lr_loss  = mid_loss + right
+        rl_loss  = mid_loss + left
+        rr_loss  = ll_sum + lr_sum + left
+
+        sec_row      = prim_row + 1
+        sec_tri_row  = tri[sec_row]
+
+        child_nodes = [{loss: ll_loss, route: [left_col, left_col]},
+                       {loss: lr_loss, route: [left_col, mid_col]},
+                       {loss: rl_loss, route: [mid_col,  mid_col]},
+                       {loss: rr_loss, route: [mid_col,  right_col]}]
+
+        next_node  = child_nodes.min_by { |node| node[:loss] }
+
+        node_route = next_node[:route]
+
+        route.concat(node_route)
+
+        prev_col   = route.last
       end
 
-      puts "acc: #{acc}"
+      route.each { |col, row| puts "row #{row}: #{tri[row][col]}" }
 
-      puts branches.inspect
 
     rescue Exception => e
       puts e.inspect

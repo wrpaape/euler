@@ -90,16 +90,20 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
   }
 }
 
-void time_func(void (*func_ptr)(void))
+void time_func(void (*func_ptr)(char *))
 {
   clock_t time_start;
+  clock_t time_stop;
   clock_t time_elapsed;
+  char result_buffer[LEN_RES_BUF];
 
   time_start = clock();
-  func_ptr();
-  time_elapsed = clock() - time_start;
+  func_ptr(result_buffer);
+  time_stop  = clock();
 
-  printf("\n%lu", time_elapsed);
+  time_elapsed = time_stop - time_start;
+
+  printf("%s\n%lu", result_buffer, time_elapsed);
 }
 
 /************************************************************************************

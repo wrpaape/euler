@@ -114,7 +114,7 @@
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-char *problem_12(void);
-char *problem_13(void);
-char *problem_14(void);
-char *problem_15(void);
+void problem_12(char *result_buffer);
+void problem_13(char *result_buffer);
+void problem_14(char *result_buffer);
+void problem_15(char *result_buffer);

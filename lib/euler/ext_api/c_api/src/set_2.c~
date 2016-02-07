@@ -37,7 +37,7 @@ const unsigned int DIG_MAT[100][50] = DIGITS;
  * What is the value of the first triangle number to have over five hundred					*
  * divisors? 																																				*
  ************************************************************************************/
-char *problem_12(char *result_buffer)
+void problem_12(char *result_buffer)
 {
 	const unsigned int N = 10; /* max number of iterations */
 
@@ -68,7 +68,8 @@ char *problem_12(char *result_buffer)
     }
 	}
 
-	printf("%u", num_routes);
+	/* printf("%u", num_routes); */
+  sprintf(result_buffer, "%uawefawefawef", num_routes);
 }
 
 
@@ -79,7 +80,7 @@ char *problem_12(char *result_buffer)
  * Work out the first ten digits of the sum of the following one-hundred 50-digit   *
  * numbers. (DIG_MAT)                                                               *
  ************************************************************************************/
-char *problem_13(char *result_buffer)
+void problem_13(char *result_buffer)
 {
   unsigned int result[52]; /* digits of total sum (extra digits for overflow) */
   unsigned int off_num;    /* number position counter (x-coordinate) */
@@ -107,11 +108,9 @@ char *problem_13(char *result_buffer)
 
   while (off_dig < off_ten) {
     /* printf("%u", result[off_dig]); /1* print first ten significant digits *1/ */
-    sscanf(result_buffer, "%u", result[off_dig]); /* print first ten significant digits */
+    sprintf(result_buffer, "%u", result[off_dig]); /* copy first ten significant digits */
     ++off_dig;
   }
-
-  return result_buffer;
 }
 
 
@@ -134,7 +133,7 @@ char *problem_13(char *result_buffer)
  *                                                                                  *
  * NOTE: Once the chain starts the terms are allowed to go above one million.       *
  ************************************************************************************/
-char *problem_14(char *result_buffer)
+void problem_14(char *result_buffer)
 {
   unsigned int n0;           /* number at start of sequence defined above */
   unsigned int n;            /* current number in sequence defined above */
@@ -167,9 +166,7 @@ char *problem_14(char *result_buffer)
   }
 
   /* printf("%u", n0_max_count); */
-  sscanf(result_buffer, "%u", n0_max_count);
-
-  return result_buffer;
+  sprintf(result_buffer, "%u", n0_max_count);
 }
 
 
@@ -181,7 +178,7 @@ char *problem_14(char *result_buffer)
  * 																																									*
  * How many such routes are there through a 20×20 grid?                             *
  ************************************************************************************/
-char *problem_15(char *result_buffer)
+void problem_15(char *result_buffer)
 {
   unsigned int n;                    /* counter where current grid is nxn */
   long long unsigned int num_routes; /* central bionomial coefficent */
@@ -215,7 +212,5 @@ char *problem_15(char *result_buffer)
 
   /* printf("%llu", num_routes); */
 
-  sscanf(result_buffer, "%llu", num_routes)
-
-  return result_buffer;
+  sprintf(result_buffer, "%llu", num_routes);
 }

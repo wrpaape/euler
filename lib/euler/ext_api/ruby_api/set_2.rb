@@ -48,9 +48,8 @@ class Set2
            [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23]]
 
     begin
-      route = [75]
+      route = [0]
       sum    = 75
-      prev_col = 0
       last_row = tri.length - 1
 
       (1..last_row).step(2) do |prim_row|
@@ -58,6 +57,8 @@ class Set2
 
         prim_tri_row = tri[prim_row]
         sec_tri_row  = tri[sec_row]
+
+        prev_col  = route.last
 
         left_col  = prev_col
         mid_col   = left_col + 1
@@ -105,11 +106,9 @@ class Set2
         node_route = next_node[:route]
 
         route.concat(node_route)
-
-        prev_col   = route.last
       end
 
-      route.each { |col, row| puts "row #{row}: #{tri[row][col]}" }
+      route.each.with_index { |col, row| puts "row #{row}: #{tri[row][col]}" }
 
 
     rescue Exception => e

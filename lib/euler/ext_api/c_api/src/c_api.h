@@ -12,6 +12,7 @@
 #include <time.h>
 #include "sets.h"
 #include "set_2.h"
+#include "set_7.h"
 
 #define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
 /************************************************************************************

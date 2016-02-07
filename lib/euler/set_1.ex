@@ -1,6 +1,6 @@
 defmodule Euler.Set1 do
   @moduledoc """
-  Set1 holds solutions to problems 1 - 10.
+  Set1 houses solutions to problems 1 - 10.
   """
 
 

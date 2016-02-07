@@ -6,7 +6,6 @@
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
-#include "sets.h"
 #include "set_2.h"
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
@@ -22,7 +21,7 @@ const unsigned int DIG_MAT[100][50] = DIGITS;
  * the 7th triangle number would be 1 + 2 + 3 + 4 + 5 + 6 + 7 = 28. The first ten		*
  * terms would be:																																	*
  * 																																									*
- * 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...																					*
+ * 2, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...																					*
  * 																																									*
  * Let us list the factors of the first seven triangle numbers:											*
  * 																																									*
@@ -38,7 +37,7 @@ const unsigned int DIG_MAT[100][50] = DIGITS;
  * What is the value of the first triangle number to have over five hundred					*
  * divisors? 																																				*
  ************************************************************************************/
-void problem_12(void)
+char *problem_12(char *result_buffer)
 {
 	const unsigned int N = 10; /* max number of iterations */
 
@@ -80,7 +79,7 @@ void problem_12(void)
  * Work out the first ten digits of the sum of the following one-hundred 50-digit   *
  * numbers. (DIG_MAT)                                                               *
  ************************************************************************************/
-void problem_13(void)
+char *problem_13(char *result_buffer)
 {
   unsigned int result[52]; /* digits of total sum (extra digits for overflow) */
   unsigned int off_num;    /* number position counter (x-coordinate) */
@@ -107,9 +106,12 @@ void problem_13(void)
   off_ten = off_dig + 10;
 
   while (off_dig < off_ten) {
-    printf("%u", result[off_dig]); /* print first ten significant digits */
+    /* printf("%u", result[off_dig]); /1* print first ten significant digits *1/ */
+    sscanf(result_buffer, "%u", result[off_dig]); /* print first ten significant digits */
     ++off_dig;
   }
+
+  return result_buffer;
 }
 
 
@@ -132,7 +134,7 @@ void problem_13(void)
  *                                                                                  *
  * NOTE: Once the chain starts the terms are allowed to go above one million.       *
  ************************************************************************************/
-void problem_14(void)
+char *problem_14(char *result_buffer)
 {
   unsigned int n0;           /* number at start of sequence defined above */
   unsigned int n;            /* current number in sequence defined above */
@@ -164,7 +166,10 @@ void problem_14(void)
     }
   }
 
-  printf("%u", n0_max_count);
+  /* printf("%u", n0_max_count); */
+  sscanf(result_buffer, "%u", n0_max_count);
+
+  return result_buffer;
 }
 
 
@@ -176,7 +181,7 @@ void problem_14(void)
  * 																																									*
  * How many such routes are there through a 20×20 grid?                             *
  ************************************************************************************/
-void problem_15(void)
+char *problem_15(char *result_buffer)
 {
   unsigned int n;                    /* counter where current grid is nxn */
   long long unsigned int num_routes; /* central bionomial coefficent */
@@ -208,5 +213,9 @@ void problem_15(void)
     num_routes = 2 * (num_routes + adjacent);
   }
 
-  printf("%llu", num_routes);
+  /* printf("%llu", num_routes); */
+
+  sscanf(result_buffer, "%llu", num_routes)
+
+  return result_buffer;
 }

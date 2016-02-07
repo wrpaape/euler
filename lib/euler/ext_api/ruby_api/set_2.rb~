@@ -47,55 +47,43 @@ class Set2
            [63, 66,  4, 68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31],
            [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23]]
 
-    begin
-      accs = tri.pop.map.with_index { |val, col| {sum: val, col: col} }
+    accs = tri.pop.map.with_index { |val, col| {sum: val, col: col} }
 
-      tri.reverse.each do |row|
-        accs = accs.flat_map do |acc|
-          parent_sum  = acc[:sum]
+    tri.reverse.each do |row|
+      accs = accs.flat_map do |acc|
+        parent_sum  = acc[:sum]
 
-          right_col = acc[:col]
-          left_col  = right_col - 1
+        right_col = acc[:col]
+        left_col  = right_col - 1
 
-          left_val  = row[left_col]
-          right_val = row[right_col]
+        left_val  = row[left_col]
+        right_val = row[right_col]
 
-          next_accs = []
+        next_accs = []
 
-          if left_val
-            next_accs.push({
-              sum: parent_sum + left_val,
-              col: left_col
-            })
-          end
-
-          if right_val
-            next_accs.push({
-              sum: parent_sum + right_val,
-              col: right_col
-            })
-          end
-
-          next_accs
+        if left_val
+          next_accs.push({
+            sum: parent_sum + left_val,
+            col: left_col
+          })
         end
 
-        merged_accs = accs.group_by { |acc| acc[:col] }.values
+        if right_val
+          next_accs.push({
+            sum: parent_sum + right_val,
+            col: right_col
+          })
+        end
 
-
-        accs = merged_accs.map { |crossed_accs| crossed_accs.max_by { |acc| acc[:sum] } }
-
+        next_accs
       end
 
-      max_acc = accs.max_by { |acc| acc[:sum] }
-
-      max_acc[:sum]
+      merged_accs = accs.group_by { |acc| acc[:col] }.values
 
 
-
-
-    rescue Exception => e
-      puts e.inspect
-      puts e.backtrace
+      accs = merged_accs.map { |crossed_accs| crossed_accs.max_by { |acc| acc[:sum] } }
     end
+
+    accs.map { |acc| acc[:sum] }.max
   end
 end

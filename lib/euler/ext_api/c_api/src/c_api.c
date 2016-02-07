@@ -69,6 +69,20 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
           missing_prob_error(prob_num, 2);
       }
       break;
+    /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+        problem set 7: "set_7.c"
+       ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+    case 7:
+      switch (prob_num) {
+        case 67:
+          time_func(problem_67);
+          break;
+
+        default:
+          missing_prob_error(prob_num, 7);
+      }
+      break;
     /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
     default:

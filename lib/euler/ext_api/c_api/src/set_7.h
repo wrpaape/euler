@@ -1,26 +1,23 @@
 /************************************************************************************
- *                                     c_api.h                                      *
+ *                                    set_7.h                                       *
  *                                                                                  *
- * Declares preprocessor directives and function prototypes needed to dispatch      *
- * a call from 'main' to the correct problem set and number.                        *
+ * Houses preprocessor directives, constant declarations, and function prototypes   *
+ * needed in module 'set_7.c'.                                                      *
  ************************************************************************************/
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
+#include <memory.h>
+#include <math.h>
 #include "sets.h"
-#include "set_2.h"
+#include <stdio.h> /* required for file operations */
+#include <conio.h> /* for clrscr */
+#include <dos.h>   /* for delay */
+#include "set_7-prob_67-data.txt"
 
-#define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
+#define NUM_TRI_ROWS 100
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-void parse_num(char *arg, unsigned int *num_ptr);
-void dispatch(const unsigned int set_num, const unsigned int prob_num);
-void time_func(void (*func_ptr)(void));
-void arg_error(void);
-void parse_error(const char *arg);
-void missing_set_error(const unsigned int set_num, const unsigned int prob_num);
-void missing_prob_error(const unsigned int prob_num, const unsigned int set_num);
+char *problem_67(void);
+int **load_triangle(void);

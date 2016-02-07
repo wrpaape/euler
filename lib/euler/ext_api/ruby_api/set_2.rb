@@ -48,67 +48,73 @@ class Set2
            [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23]]
 
     begin
-      route = [0]
-      sum    = 75
-      last_row = tri.length - 1
-
-      (1..last_row).step(2) do |prim_row|
-        sec_row      = prim_row + 1
-
-        prim_tri_row = tri[prim_row]
-        sec_tri_row  = tri[sec_row]
-
-        prev_col  = route.last
-
-        left_col  = prev_col
-        mid_col   = left_col + 1
-        right_col = mid_col + 1
-
-        left  = prim_tri_row[left_col]
-        right = prim_tri_row[mid_col]
+      col_i      = 0
+      col_route  = [col_i]
+      last_row_i = tri.length - 1
 
 
-        ll_sum = 0
-        lr_sum = 0
-        rl_sum = 0
-        rr_sum = 0
-
-        ll_col = left_col
-        lr_col = mid_col
-        rl_col = mid_col
-        rr_col = right_col
+      1.upto(last_row_i) do |row_i|
+        shift_col_i = col_i
+        left_sum  = 0
+        right_sum = 0
         
-        sec_row.upto(last_row) do |row|
-          tri_row  = tri[row]
-          ll_sum  += tri_row[ll_col]
-          lr_sum  += tri_row[lr_col]
-          rl_sum  += tri_row[rl_col]
-          rr_sum  += tri_row[rr_col]
-          rl_col  += 1
-          rr_col  += 1
+        tri[row_i..-1].each do |row|
+          shift_col_i += 1
+          left_sum    += row[col_i]
+          right_sum   += row[shift_col_i]
         end
 
+        col_i += 1 if right_sum > left_sum
 
-        ll_loss  = rl_sum + rr_sum + right
-        mid_loss = ll_sum + rr_sum
-        lr_loss  = mid_loss + right
-        rl_loss  = mid_loss + left
-        rr_loss  = ll_sum + lr_sum + left
-
-
-        child_nodes = [{loss: ll_loss, route: [left_col, left_col]},
-                       {loss: lr_loss, route: [left_col, mid_col]},
-                       {loss: rl_loss, route: [mid_col,  mid_col]},
-                       {loss: rr_loss, route: [mid_col,  right_col]}]
-
-        next_node  = child_nodes.min_by { |node| node[:loss] }
-
-        node_route = next_node[:route]
-
-        route.concat(node_route)
+        col_route << col_i
       end
 
-      route.each.with_index { |col, row| puts "row #{row}: #{tri[row][col]}" }
+      acc_sum    = 0
+
+      1.upto(last_row_i - 1) do |row_i|
+        row      = tri[row_i]
+
+        prev_col_i = col_route[row_i - 1]
+        curr_col_i = col_route[row_i]
+        next_col_i = col_route[row_i + 1]
+
+        curr_val = row[curr_col_i]
+
+        if next_col_i == prev_col_i + 1
+          twin_col_i = prev_col_i + (next_col_i - curr_col_i)
+
+          twin_val = row[twin_col_i]
+
+          if twin_val > curr_val
+            col_route[row_i] = twin_col_i
+            curr_val         = twin_val
+          end
+        end
+        acc_sum += curr_val
+      end
+      last_row = tri.last
+
+      left_col_i  = col_route[-2]
+      left_val    = last_row[left_col_i]
+      right_col_i = left_col_i + 1
+      right_val   = last_row[right_col_i]
+
+      last_col_i = left_col_i
+      last_val   = left_val
+
+      if right_val > left_val
+        last_col_i = right_col_i
+        last_val   = right_val
+      end
+
+      col_route[-1] = last_col_i
+      acc_sum      += last_val
+
+      puts col_route.inspect
+      puts col_route.map.with_index { |col_i, row_i| tri[row_i][col_i] }.inspect
+      puts acc_sum
+
+
 
 
     rescue Exception => e

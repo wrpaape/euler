@@ -15,7 +15,7 @@ public class JavaAPI {
 
   private JavaAPI(String setNum, String probNum) {
     try {
-      Class problemSet = Class.forName("Set" + setNum);
+      Class<?> problemSet = Class.forName("Set" + setNum);
       problemMethod    = problemSet.getDeclaredMethod("problem" + probNum);
 
     } catch(ClassNotFoundException e) {
@@ -49,7 +49,7 @@ public class JavaAPI {
     } catch(InvocationTargetException e) {
       exitOnError("'"
                 + e.getTargetException()
-                + "' thrown calling '"
+                + "' thrown calling problem method '"
                 + problemMethod.toString()
                 + "'");
     }

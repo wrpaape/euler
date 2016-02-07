@@ -49,7 +49,7 @@ public class JavaAPI {
     } catch(InvocationTargetException e) {
       exitOnError("'"
                 + e.getTargetException()
-                + "' thrown calling '"
+                + "' thrown calling problem method '"
                 + problemMethod.toString()
                 + "'");
     }

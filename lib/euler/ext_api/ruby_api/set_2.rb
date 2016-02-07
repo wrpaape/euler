@@ -48,20 +48,53 @@ class Set2
                 [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23]]
 
     begin
-      num_rows = triangle.length
-      abs_min = 0
-      abs_max = 99
-      maxes        = triangle.map(&:max)
-      mins         = triangle.map(&:min)
-      total_maxes  = maxes.reduce(:+)
-      best_case_rems = maxes.reduce { |acc, max| }
-      avg_max_step = total_maxes / num_rows
+      live_branches = [{acc_sum: 75, col: 0}] # holds column indices of branches sharing largest last sum
 
+      last_row = triangle.length - 1
 
-      maxes.inspect
+      1.upto(last_row - 1) do |row|  
+        live_branches = live_branches.flat_map do |branch|
+          col     = branch[:col]
+          acc_sum = branch[:acc_sum]
+
+          puts branch.inspect
+
+          fork_children = [0, 1].map do |col_step|  
+            child_col = col + col_step
+            head_val  = triangle[row][child_col]
+
+            child = {
+              col_step: col_step,
+              col:      child_col, 
+              acc_sum:  acc_sum + head_val,
+              rem_sum:  head_val 
+            }
+
+           (row + 1).upto(last_row) do |child_row|
+              child_col       += col_step
+              child[:rem_sum] += triangle[child_row][child_col]
+            end
+
+            child
+          end
+
+          puts "*****"
+          puts "children:  #{fork_children}"
+          puts "*****"
+
+          if fork_children[0][:rem_sum] == fork_children[1][:rem_sum]
+            fork_children
+          else
+            fork_children.max_by { |child| child[:rem_sum] }
+          end
+        end
+      end
+
+      puts live_branches.inspect
+
     rescue Exception => e
-      e.inspect
-      
+      puts e.inspect
+      puts e.backtrace
     end
   end
 end

@@ -34,10 +34,6 @@ void problem_67(char *result_buffer)
   if (head_ptr == NULL) {
     mem_error(B_NODE_PTR_BYTES);
   }
-  prev_ptr = (struct BranchNode **) malloc(B_NODE_PTR_BYTES);
-  if (prev_ptr == NULL) {
-    mem_error(B_NODE_PTR_BYTES);
-  }
 
   *head_ptr = init_branches(tri_mat[NUM_TRI_ROWS - 1]);
 
@@ -60,44 +56,27 @@ void problem_67(char *result_buffer)
     }
 
 
+    /* merge forked branches, deleting those nodes with lesser sums */
     prev_ptr = head_ptr;
     for (col_i = 0; col_i < num_cols; ++col_i) {
       prev_node = (*prev_ptr);
       next_node = prev_node -> next_node;
 
       if ((prev_node -> sum) > (next_node -> sum)) {
-        prev_node -> sum += tri_row[col_i];            /* increment branch sum */
-        prev_node -> next_node = next_node -> next_node;            /* bridge pointer gap */
-        prev_ptr  = &(prev_node -> next_node);        /* set next 'prev_ptr' */
-        free(next_node);                               /* delete lesser node */
+        prev_node -> sum      += tri_row[col_i];            /* increment branch sum */
+        prev_node -> next_node = next_node -> next_node;    /* bridge pointer gap */
+        prev_ptr               = &(prev_node -> next_node); /* set next 'prev_ptr' */
+        free(next_node);                                    /* delete lesser node */
       } else {
-        next_node -> sum += tri_row[col_i];            /* increment branch sum */
-        *prev_ptr = next_node;                         /* bridge pointer gap */
-        prev_ptr  = &(next_node -> next_node);         /* set next 'prev_ptr' */
-        free(prev_node);                               /* delete lesser node */
+        next_node -> sum      += tri_row[col_i];            /* increment branch sum */
+        *prev_ptr              = next_node;                 /* bridge pointer gap */
+        prev_ptr               = &(next_node -> next_node); /* set next 'prev_ptr' */
+        free(prev_node);                                    /* delete lesser node */
       }
     }
-
-    puts("after merge:");
-    printf("  head_ptr:     %p\n", head_ptr);
-    printf("  *head_ptr:    %p\n", *head_ptr);
-    printf("  (*head_ptr) -> next_node:    %p\n", (*head_ptr) -> next_node);
-    printf("  prev_ptr:     %p\n", prev_ptr);
-    printf("  *prev_ptr:    %p\n", *prev_ptr);
-    printf("  NULL:         %p\n", NULL);
-    fflush(stdout);
-
-
-    /* if (*prev_ptr != NULL) { */
-    /*   (*prev_ptr) -> next_node = NULL; /1* terminate branch list *1/ */
-    /* } */
-
-    next_node = *head_ptr;
-    for(int i = 0; i < 98; ++i) {
-      printf("next_node -> sum: %d\n", next_node -> sum);
-      next_node = next_node -> next_node;
-    }
   }
+  /* the single remaining branch node should hold the greatest possible sum */
+  sprintf(result_buffer, "%d", (*head_ptr) -> sum);
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *

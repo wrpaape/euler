@@ -18,7 +18,7 @@
  ************************************************************************************/
 struct BranchNode {
   int sum;
-  struct BranchNode *next_ptr;
+  struct BranchNode *next_node;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *

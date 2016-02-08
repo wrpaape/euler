@@ -18,14 +18,13 @@
  ************************************************************************************/
 struct BranchNode {
   int sum;
-  /* int col_i; */
-  struct BranchNode *next_ptr;
+  struct BranchNode *next_node;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
 void problem_67(char *result_buffer);
 int **load_triangle(void);
-struct BranchNode *init_branches(int *base_row);
+struct BranchNode **init_branches(int *base_row);
 void mem_error(const size_t num_bytes);
 void file_error(const char *filename);

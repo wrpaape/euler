@@ -16,6 +16,16 @@ void problem_67(char *result_buffer)
 
   tri_mat = load_triangle();
 
+  int i, j, num_cols;
+
+  num_cols = 3;
+  for (i = 0; i < NUM_TRI_ROWS; ++i) {
+    for (j = 0; j < num_cols; ++j) {
+      printf("tri_mat[%i][%i]: %i\n", i, j, tri_mat[i][j]);
+    }
+      ++num_cols;
+  }
+
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
@@ -26,10 +36,11 @@ int **load_triangle(void)
   int **tri_mat;
   int *tri_row;
   size_t row_bytes; /* num bytes required for row pointers of 'tri_mat' */
+  size_t col_bytes;
+  size_t num_cols;
   size_t row_i;
   size_t col_i;
-  size_t num_cols;
-  size_t col_bytes;
+  size_t ob_col_i;
   
   /* open the triangle data txt file */
   tri_file = fopen(TRI_FILENAME, "r");
@@ -51,21 +62,18 @@ int **load_triangle(void)
       mem_error(col_bytes);
     }
 
+   ob_col_i = num_cols - 1;
     /* scan file top to bottom */
-    for (col_i = 1; col_i < num_cols; ++col_i) {
-      
+    for (col_i = 1; col_i < ob_col_i; ++col_i) {
+      fscanf(tri_file, "%i", &tri_row[col_i]);
     }
 
-    /* set first and last cells to an "out of bounds" sentinel value */
-    tri_row[0]     = INT_MIN;
-    tri_row[col_i] = INT_MIN;
-
-    
+    /* set first and last cells to negative "out of bounds" sentinel values */
+    tri_row[0]        = -1;
+    tri_row[ob_col_i] = -1;
 
     tri_mat[row_i] = tri_row;
   }
-
-
 
   return tri_mat;
 }

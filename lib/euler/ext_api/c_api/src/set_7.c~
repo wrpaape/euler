@@ -28,16 +28,16 @@ void problem_67(char *result_buffer)
   struct BranchNode *next_node;
   struct BranchNode *fork_node;
 
-  tri_mat  = load_triangle();
+  tri_mat  = load_triangle(); /* load in triangle numbers from txt file */
 
   head_ptr = (struct BranchNode **) malloc(B_NODE_PTR_BYTES);
   if (head_ptr == NULL) {
     mem_error(B_NODE_PTR_BYTES);
   }
 
-  *head_ptr = init_branches(tri_mat[NUM_TRI_ROWS - 1]);
+  *head_ptr = init_branches(tri_mat[NUM_TRI_ROWS - 1]); /* set init sums = last row */
 
-  /* starting from the second-to-last-row and working up... */
+  /* starting from the second-to-last-row and working upward... */
   for (row_i = NUM_TRI_ROWS - 2, num_cols = row_i + 1; row_i > -1; --row_i, --num_cols) {
     tri_row   = tri_mat[row_i];
     next_node = *head_ptr;
@@ -75,7 +75,7 @@ void problem_67(char *result_buffer)
       }
     }
   }
-  /* the single remaining branch node should hold the greatest possible sum */
+  /* the last remaining branch node should hold the greatest possible traversal sum */
   sprintf(result_buffer, "%d", (*head_ptr) -> sum);
 }
 /************************************************************************************

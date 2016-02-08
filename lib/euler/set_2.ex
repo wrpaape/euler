@@ -418,6 +418,11 @@ defmodule Euler.Set2 do
   04  62  98  27  23  09  70  98  73  93  38  53  60  04  23
 
 	NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o)
+
+  02/07/16
+
+  iex> Euler.Set2.problem_18 |> elem(1)
+  1074
   """
   def problem_18, do: RubyAPI.call(~w(2 18))
 end

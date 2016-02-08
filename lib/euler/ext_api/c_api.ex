@@ -9,7 +9,7 @@ defmodule Euler.ExtAPI.CAPI do
 
   def call(set_prob) do
     @cmd
-    |> System.cmd(set_prob, stderr_to_stdout: true)
+    |> System.cmd(set_prob, cd: @dir, stderr_to_stdout: true)
     |> case do
       {stdout, 0}         ->
         stdout

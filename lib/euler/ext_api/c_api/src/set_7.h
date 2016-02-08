@@ -12,7 +12,7 @@
 #include "sets.h"
 
 #define NUM_TRI_ROWS 100
-#define TRI_FILENAME "set_7-prob_67-data.txt"
+#define TRI_FILENAME "data/set_7-prob_67-data.txt"
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/

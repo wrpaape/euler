@@ -3,6 +3,7 @@ defmodule EulerTest do
   doctest Euler
   doctest Euler.Set1
   doctest Euler.Set2
+  doctest Euler.Set7
 
   test "the truth" do
     assert 1 + 1 == 2

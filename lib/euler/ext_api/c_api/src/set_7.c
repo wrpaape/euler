@@ -17,6 +17,8 @@ const size_t BRANCH_NODE_BYTES = sizeof(struct BranchNode);
 void problem_67(char *result_buffer)
 {
   int row_i;
+  int col_i;
+  int num_cols;
   int **tri_mat;
   int *tri_row;
   struct BranchNode *head_node;
@@ -28,7 +30,7 @@ void problem_67(char *result_buffer)
   head_node = init_branches(tri_mat[NUM_TRI_ROWS - 1]);
 
   /* starting from the second-to-last-row and working up... */
-  for (row_i = NUM_TRI_ROWS - 2; row_i > -1; --row_i) {
+  for (row_i = NUM_TRI_ROWS - 2, num_cols = row_i + 1; row_i > -1; --row_i, --num_cols) {
     tri_row = tri_mat[row_i];
 
     /* fork branch nodes, from second node to second-to-last node */
@@ -42,7 +44,7 @@ void problem_67(char *result_buffer)
       }
       memcpy(fork_node, next_node, BRANCH_NODE_BYTES);
 
-      --(fork_node -> col_i); /* decrement column index of new node */
+      /* --(fork_node -> col_i); /1* decrement column index of new node *1/ */
 
       /* insert 'fork_node' between 'prev_node' and 'next_node' */
       prev_node -> next_ptr = fork_node;
@@ -56,14 +58,30 @@ void problem_67(char *result_buffer)
     free(fork_node -> next_ptr);
     fork_node -> next_ptr = NULL;
 
+    /* compare overlapping nodes: the branch with the lesser sum is discarded */
+    prev_node = head_node;
+    next_node = prev_node -> next_ptr;
 
-    next_node = head_node;
-    while(next_node != NULL) {
-      printf("sum: %d, col_i: %d\n", next_node -> sum, next_node -> col_i);
-      next_node = next_node -> next_ptr;
+    while (next_node != NULL) {
+      if ((prev_node -> sum) > (next_node -> sum)) {
+
+      }
+
+      /* insert 'fork_node' between 'prev_node' and 'next_node' */
+      prev_node -> next_ptr = fork_node;
+      fork_node -> next_ptr = next_node;
+
+      prev_node = next_node;             /* set 'prev_node' to last node */
+      next_node = next_node -> next_ptr; /* set 'next_node' to next in list */
     }
 
-    return;
+
+    /* next_node = head_node; */
+    /* while(next_node != NULL) { */
+    /*   printf("sum: %d, col_i: %d\n", next_node -> sum, next_node -> col_i); */
+    /*   next_node = next_node -> next_ptr; */
+    /* } */
+    /* return; */
   }
 
 }
@@ -122,14 +140,14 @@ int **load_triangle(void)
 
 struct BranchNode *init_branches(int *base_row)
 {
+  int col_i;
   struct BranchNode *next_node;
   struct BranchNode *prev_node;
 
   next_node = NULL;
 
-  /* working backwards from the last IN BOUNDS index of the 'base_row' of 'tri_mat' */
   /* working backwards from the last index of the 'base_row' of 'tri_mat' */
-  for (int col_i = NUM_TRI_ROWS - 1; col_i > -1; --col_i) {
+  for (col_i = NUM_TRI_ROWS - 1; col_i > -1; --col_i) {
     /* allocate memory for new branch node */
     prev_node = (struct BranchNode *) malloc(BRANCH_NODE_BYTES);
     if (prev_node == NULL) {
@@ -137,7 +155,7 @@ struct BranchNode *init_branches(int *base_row)
     }
 
     /* initialize new node in list */
-    prev_node -> col_i    = col_i;
+    /* prev_node -> col_i    = col_i; */
     prev_node -> sum      = base_row[col_i];
     prev_node -> next_ptr = next_node;
 

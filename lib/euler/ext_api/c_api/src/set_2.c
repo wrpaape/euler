@@ -68,7 +68,6 @@ void problem_12(char *result_buffer)
     }
 	}
 
-	/* printf("%u", num_routes); */
   sprintf(result_buffer, "%u", num_routes);
 }
 
@@ -107,7 +106,6 @@ void problem_13(char *result_buffer)
   off_ten = off_dig + 10;
 
   while (off_dig < off_ten) {
-    /* printf("%u", result[off_dig]); /1* print first ten significant digits *1/ */
     sprintf(result_buffer, "%u", result[off_dig]); /* copy first ten significant digits */
     ++off_dig;
   }
@@ -165,7 +163,6 @@ void problem_14(char *result_buffer)
     }
   }
 
-  /* printf("%u", n0_max_count); */
   sprintf(result_buffer, "%u", n0_max_count);
 }
 
@@ -209,8 +206,6 @@ void problem_15(char *result_buffer)
 
     num_routes = 2 * (num_routes + adjacent);
   }
-
-  /* printf("%llu", num_routes); */
 
   sprintf(result_buffer, "%llu", num_routes);
 }

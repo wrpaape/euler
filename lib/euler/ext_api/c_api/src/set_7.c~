@@ -12,20 +12,17 @@
  ************************************************************************************/
 void problem_67(char *result_buffer)
 {
+  int row_i;
   int **tri_mat;
+  struct BranchNode *branches;
 
-  tri_mat = load_triangle();
+  tri_mat  = load_triangle();
+  branches = init_branches(tri_mat[NUM_TRI_ROWS - 1]);
 
-  int i, j, num_cols;
-
-  num_cols = 3;
-  for (i = 0; i < NUM_TRI_ROWS; ++i) {
-    for (j = 0; j < num_cols; ++j) {
-      printf("tri_mat[%i][%i]: %i\n", i, j, tri_mat[i][j]);
-    }
-      ++num_cols;
+  while (branches -> next_ptr != NULL) {
+    printf("col_i: %i, sum: %i\n", branches -> col_i, branches -> sum);
+    branches = branches -> next_ptr;
   }
-
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
@@ -33,14 +30,14 @@ void problem_67(char *result_buffer)
 int **load_triangle(void)
 {
   FILE *tri_file;
-  int **tri_mat;
-  int *tri_row;
   size_t row_bytes; /* num bytes required for row pointers of 'tri_mat' */
   size_t col_bytes;
-  size_t num_cols;
-  size_t row_i;
-  size_t col_i;
-  size_t ob_col_i;
+  int **tri_mat;
+  int *tri_row;
+  int num_cols;
+  int row_i;
+  int col_i;
+  int ob_col_i;
   
   /* open the triangle data txt file */
   tri_file = fopen(TRI_FILENAME, "r");
@@ -76,6 +73,33 @@ int **load_triangle(void)
   }
 
   return tri_mat;
+}
+
+struct BranchNode *init_branches(int *base_row)
+{
+  struct BranchNode *next_node;
+  struct BranchNode *prev_node;
+
+  const size_t node_bytes = sizeof(struct BranchNode);
+  next_node               = NULL;
+
+  /* working backwards from the last IN BOUNDS index of the 'base_row' of 'tri_mat' */
+  for (int col_i = NUM_TRI_ROWS; col_i > 0; --col_i) {
+    /* allocate memory for new branch node */
+    prev_node = (struct BranchNode *) malloc(node_bytes);
+    if (prev_node == NULL) {
+      mem_error(node_bytes);
+    }
+
+    /* initialize new node in list */
+    prev_node -> col_i    = col_i;
+    prev_node -> sum      = base_row[col_i];
+    prev_node -> next_ptr = next_node;
+
+    next_node = prev_node; /* set new node as list head */
+  }
+
+  return next_node; /* return head of list */
 }
 
 

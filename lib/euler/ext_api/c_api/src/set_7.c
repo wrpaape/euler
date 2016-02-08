@@ -24,6 +24,7 @@ void problem_67(char *result_buffer)
   int *tri_row;
   struct BranchNode **prev_ptr;
   struct BranchNode **head_ptr;
+  struct BranchNode **tail_ptr;
   struct BranchNode *prev_node;
   struct BranchNode *next_node;
   struct BranchNode *fork_node;
@@ -35,24 +36,28 @@ void problem_67(char *result_buffer)
     mem_error(B_NODE_PTR_BYTES);
   }
 
+  tail_ptr = (struct BranchNode **) malloc(B_NODE_PTR_BYTES);
+  if (tail_ptr == NULL) {
+    mem_error(B_NODE_PTR_BYTES);
+  }
+
   *head_ptr = init_branches(tri_mat[NUM_TRI_ROWS - 1]);
+  *tail_ptr = (*head_ptr) -> next_node;
 
   /* starting from the second-to-last-row and working up... */
   for (row_i = NUM_TRI_ROWS - 2, num_cols = row_i + 1; row_i > -1; --row_i, --num_cols) {
     tri_row = tri_mat[row_i];
 
     /* fork branch nodes, from second node to second-to-last node (exclude ends) */
-
-    printf("  (*head_ptr) -> sum: %d\n", (*head_ptr) -> sum);
-    printf("  head_ptr: %p\n", head_ptr);
-    printf("  *head_ptr: %p\n", *head_ptr);
-    printf("  (*head_ptr) -> sum: %d\n", (*head_ptr) -> sum);
-    fflush(stdout);
+    /* puts("before fork:"); */
+    /* printf("  (*head_ptr) -> sum:       %d\n", (*head_ptr) -> sum); */
+    /* printf("  (*head_ptr) -> next_node: %p\n", (*head_ptr) -> next_node); */
+    /* printf("  (*tail_ptr) -> sum:       %d\n", (*tail_ptr) -> sum); */
+    /* printf("  (*tail_ptr) -> next_node: %p\n", (*tail_ptr) -> next_node); */
+    /* printf("  NULL:                     %p\n", NULL); */
 
     next_node = *head_ptr;
     for (col_i = 1; col_i < num_cols; ++col_i) {
-      printf("  (*head_ptr) -> sum: %d\n", (*head_ptr) -> sum);
-      fflush(stdout);
       prev_node = next_node;              /* set 'prev_node' to last 'next_node' */
       next_node = prev_node -> next_node; /* set 'next_node' to next in list */
       fork_node = (struct BranchNode *) malloc(BRANCH_NODE_BYTES);
@@ -60,31 +65,28 @@ void problem_67(char *result_buffer)
         mem_error(BRANCH_NODE_BYTES);
       }
       memcpy(fork_node, next_node, BRANCH_NODE_BYTES);
-      printf("  (*head_ptr) -> sum: %d\n", (*head_ptr) -> sum);
-      fflush(stdout);
 
       /* insert 'fork_node' between 'prev_node' and 'next_node' */
       fork_node -> next_node = next_node;
       prev_node -> next_node = fork_node;
-      printf("  (*head_ptr) -> sum: %d\n", (*head_ptr) -> sum);
-      fflush(stdout);
     }
-      puts("last nodes:");
-      printf("  prev_node -> sum: %d\n", prev_node -> sum);
-      printf("  fork_node -> sum: %d\n", fork_node -> sum);
-      printf("  next_node -> sum: %d\n", next_node -> sum);
-      printf("  next_node -> next_node -> sum: %d\n", next_node -> next_node -> sum);
-      printf("  (*head_ptr) -> sum: %d\n", (*head_ptr) -> sum);
-      fflush(stdout);
 
-    puts("forked branches");
+    /* puts("after fork:"); */
+    /* printf("  (*head_ptr) -> sum:       %d\n", (*head_ptr) -> sum); */
+    /* printf("  (*head_ptr) -> next_node: %p\n", (*head_ptr) -> next_node); */
+    /* printf("  (*tail_ptr) -> sum:       %d\n", (*tail_ptr) -> sum); */
+    /* printf("  (*tail_ptr) -> next_node: %p\n", (*tail_ptr) -> next_node); */
+    /* printf("  NULL:                     %p\n", NULL); */
+
+    puts("after merge:");
+    printf("  head_ptr:     %p\n", head_ptr);
+    printf("  *head_ptr:    %p\n", *head_ptr);
+    printf("  (*head_ptr) -> next_node:    %p\n", (*head_ptr) -> next_node);
+    printf("  tail_ptr:     %p\n", tail_ptr);
+    printf("  *tail_ptr:    %p\n", *tail_ptr);
+    printf("  (*tail_ptr) -> next_node:    %p\n", (*tail_ptr) -> next_node);
+    printf("  NULL:         %p\n", NULL);
     fflush(stdout);
-
-    /* compare overlapping nodes: the branch with the lesser sum is discarded */
-    prev_ptr = (struct BranchNode **) malloc(B_NODE_PTR_BYTES);
-    if (prev_ptr == NULL) {
-      mem_error(B_NODE_PTR_BYTES);
-    }
 
     prev_ptr = head_ptr;
 
@@ -92,29 +94,44 @@ void problem_67(char *result_buffer)
       prev_node = *prev_ptr;
       next_node = prev_node -> next_node;
 
-      printf("tri_row[%d]: %d\n", col_i, tri_row[col_i]);
-      printf("  prev_node -> sum: %d\n", prev_node -> sum);
-      printf("  next_node -> sum: %d\n", next_node -> sum);
-      fflush(stdout);
+      /* printf("tri_row[%d]: %d\n", col_i, tri_row[col_i]); */
+      /* printf("  prev_node -> sum: %d\n", prev_node -> sum); */
+      /* printf("  next_node -> sum: %d\n", next_node -> sum); */
+      /* fflush(stdout); */
       if ((prev_node -> sum) > (next_node -> sum)) {
         prev_node -> sum += tri_row[col_i];            /* increment branch sum */
-        prev_ptr  = &(next_node -> next_node);         /* set next 'prev_ptr' */
         prev_node -> next_node = *prev_ptr;            /* bridge pointer gap */
+        prev_ptr  = &(next_node -> next_node);         /* set next 'prev_ptr' */
         free(next_node);                               /* delete lesser node */
+        /* printf("    prev_node -> sum: %d\n", prev_node -> sum); */
       } else {
         next_node -> sum += tri_row[col_i];            /* increment branch sum */
-        (*prev_ptr) -> next_node = next_node;          /* bridge pointer gap */
+        *prev_ptr = next_node;                         /* bridge pointer gap */
         prev_ptr  = &(next_node -> next_node);         /* set next 'prev_ptr' */
         free(prev_node);                               /* delete lesser node */
+        /* *prev_node = NULL; */
+        /* printf("    next_node -> sum: %d\n", next_node -> sum); */
       }
     }
 
-    next_node = *head_ptr;
-    while(next_node != NULL) {
-      printf("sum: %d\n", next_node -> sum);
-      next_node = next_node -> next_node;
-    }
+    puts("after merge:");
+    printf("  head_ptr:     %p\n", head_ptr);
+    printf("  *head_ptr:    %p\n", *head_ptr);
+    printf("  (*head_ptr) -> next_node:    %p\n", (*head_ptr) -> next_node);
+    printf("  (*head_ptr) -> sum:    %d\n", (*head_ptr) -> sum);
+    printf("  tail_ptr:     %p\n", tail_ptr);
+    printf("  *tail_ptr:    %p\n", *tail_ptr);
+    printf("  (*tail_ptr) -> next_node:    %p\n", (*tail_ptr) -> next_node);
+    printf("  NULL:         %p\n", NULL);
+    fflush(stdout);
     return;
+
+    /* next_node = *head_ptr; */
+    /* while(next_node != NULL) { */
+    /*   printf("sum: %d\n", next_node -> sum); */
+    /*   next_node = next_node -> next_node; */
+    /* } */
+    /* return; */
   }
 }
 /************************************************************************************

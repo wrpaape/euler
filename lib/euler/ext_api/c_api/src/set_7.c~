@@ -62,7 +62,9 @@ int **load_triangle(void)
    ob_col_i = num_cols - 1;
     /* scan file top to bottom */
     for (col_i = 1; col_i < ob_col_i; ++col_i) {
-      fscanf(tri_file, "%i", &tri_row[col_i]);
+      fscanf(tri_file, "%2i", &tri_row[col_i]);
+
+      printf("tri_max[%i][%i]: %i\n", row_i, col_i, tri_row[col_i]);
     }
 
     /* set first and last cells to negative "out of bounds" sentinel values */

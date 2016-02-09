@@ -10,6 +10,6 @@
 #include <string.h>
 #include <memory.h>
 #include <math.h>
-#include "errors.h"
+#include <errno.h>
 
-#define MAX_RESULT_SIZE 100
+#define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n""]]]]"

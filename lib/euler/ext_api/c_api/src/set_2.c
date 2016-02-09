@@ -232,22 +232,25 @@ void problem_15(char *result_buffer)
  **********************************************************************************/
 void problem_19(char *result_buffer)
 {
-  struct DayNode *current_day;
+  struct DayNode   *current_day;
   struct MonthNode *current_month;
 
-  current_day   = init_day_cycle();
-  current_month = init_month_cycle();
+  init_day_cycle(current_day);
+  init_month_cycle(current_month);
+
+  printf("current_day:   %d\n", current_day -> name);
+  printf("current_month: %d\n", current_month -> name);
 
 }
 
 
-struct DayNode *init_day_cycle(void)
+void init_day_cycle(struct DayNode *head_ptr)
 {
-  struct DayNode last_day;
-  struct DayNode *head_ptr;
+  struct DayNode *last_ptr;
 
-  last_day.name = SUNDAY;
-  head_ptr      = &last_day;
+  pushDayNode(last_ptr, SUNDAY);
+
+  head_ptr = last_ptr;
 
   pushDayNode(head_ptr, SATURDAY);
   pushDayNode(head_ptr, FRIDAY);
@@ -256,59 +259,58 @@ struct DayNode *init_day_cycle(void)
   pushDayNode(head_ptr, TUESDAY);
   pushDayNode(head_ptr, MONDAY);
 
-  last_day.next_day = *head_ptr;
-
-  return head_ptr;
+  last_ptr -> next_ptr = head_ptr;
 }
 
 
-struct MonthNode *init_month_cycle(void)
+void init_month_cycle(struct MonthNode *head_ptr)
 {
-  struct DayNode *head_day;
+  struct MonthNode *last_ptr;
 
-  return head_month;
+  pushMonthNode(last_ptr, DECEMBER,  30);
+
+  head_ptr = last_ptr;
+
+  pushMonthNode(head_ptr, NOVEMBER,  30);
+  pushMonthNode(head_ptr, OCTOBER,   31);
+  pushMonthNode(head_ptr, SEPTEMBER, 30);
+  pushMonthNode(head_ptr, AUGUST,    31);
+  pushMonthNode(head_ptr, JULY,      31);
+  pushMonthNode(head_ptr, JUNE,      30);
+  pushMonthNode(head_ptr, MAY,       31);
+  pushMonthNode(head_ptr, APRIL,     30);
+  pushMonthNode(head_ptr, MARCH,     31);
+  pushMonthNode(head_ptr, FEBRUARY,  28);
+  pushMonthNode(head_ptr, JANUARY,   31);
+
+  last_ptr -> next_ptr = head_ptr;
 }
 
 
-void pushDayNode(struct DayNode *prev_ptr, enum DayName name)
+void pushDayNode(struct DayNode *prev_ptr,
+                 const enum DayName name)
 {
-  struct DayNode day;
-  day.name = next;
-  prev_ptr -> next_day = day; 
-}
-
-
-void pushMonthNode(struct MonthNode *prev_ptr, enum MonthName name, int num_days)
-{
-  struct MonthNode last_month;
-  struct MonthNode *head_ptr;
-
-  last_month.name = DECEMBER;
-  head_ptr        = &last_month;
-
-  JANUARY, FEBRUARY, MARCH,
-  APRIL,   MAY,      JUNE,
-  JULY,    AUGUST,   SEPTEMBER,
-  OCTOBER, NOVEMBER, DECEMBER
-
-  pushMonthNode(head_ptr, NOVEMBER);
-  pushMonthNode(head_ptr, OCTOBER);
-  pushMonthNode(head_ptr, SEPTEMBER);
-  pushMonthNode(head_ptr, AUGUST);
-  pushMonthNode(head_ptr, JULY);
-  pushMonthNode(head_ptr, JUNE);
-  pushMonthNode(head_ptr, MAY);
-  pushMonthNode(head_ptr, APRIL);
-  pushMonthNode(head_ptr, MARCH);
-  pushMonthNode(head_ptr, FEBRUARY);
-
-
-  last_month.next_month = *head_ptr;
-
-  return head_ptr;
-}
+  struct DayNode day = {
+    .name = name
+  };
   /* prev_day_ptr = (struct DayNode *) malloc(DAY_NODE_BYTES); */
   /* if (prev_day_ptr == NULL) { */
   /*   mem_error(DAY_NODE_BYTES); */
   /* } */
+
+  prev_ptr -> next_ptr = &day; 
+}
+
+
+void pushMonthNode(struct MonthNode *prev_ptr,
+                   const enum MonthName name,
+                   const int num_days)
+{
+  struct MonthNode month = {
+    .name     = name,
+    .num_days = num_days
+  };
+
+  prev_ptr -> next_ptr = &month; 
+}
 

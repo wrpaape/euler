@@ -11,6 +11,9 @@
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
 const unsigned int DIG_MAT[100][50] = DIGITS;
+const size_t DAY_NODE_BYTES         = sizeof(struct DayNode);
+/* const size_t D_NODE_PTR_BYTES       = sizeof(struct DayNode); */
+const size_t MONTH_NODE_BYTES       = sizeof(struct MonthNode);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
@@ -209,3 +212,103 @@ void problem_15(char *result_buffer)
 
   sprintf(result_buffer, "%llu", num_routes);
 }
+
+/**********************************************************************************
+ *                                 - problem19 -                                  *
+ *                                                                                *
+ * You are given the following information, but you may prefer to do some         *
+ * research for yourself.                                                         *
+ *                                                                                *
+ * 1 Jan 1900 was a Monday.                                                       *  
+ * Thirty days has September,                                                     *  
+ * April, June and November.                                                      *  
+ * All the rest have thirty-one,                                                  *  
+ * Saving February alone,                                                         *  
+ * Which has twenty-eight, rain or shine.                                         *  
+ * And on leap years, twenty-nine.                                                *  
+ * A leap year occurs on any year evenly divisible by 4, but not on a century     *  
+ * unless it is divisible by 400. How many Sundays fell on the first of the month *
+ * during the twentieth century (1 Jan 1901 to 31 Dec 2000)?                      *
+ **********************************************************************************/
+void problem_19(char *result_buffer)
+{
+  struct DayNode *current_day;
+  struct MonthNode *current_month;
+
+  current_day   = init_day_cycle();
+  current_month = init_month_cycle();
+
+}
+
+
+struct DayNode *init_day_cycle(void)
+{
+  struct DayNode last_day;
+  struct DayNode *head_ptr;
+
+  last_day.name = SUNDAY;
+  head_ptr      = &last_day;
+
+  pushDayNode(head_ptr, SATURDAY);
+  pushDayNode(head_ptr, FRIDAY);
+  pushDayNode(head_ptr, THURSDAY);
+  pushDayNode(head_ptr, WEDNESDAY);
+  pushDayNode(head_ptr, TUESDAY);
+  pushDayNode(head_ptr, MONDAY);
+
+  last_day.next_day = *head_ptr;
+
+  return head_ptr;
+}
+
+
+struct MonthNode *init_month_cycle(void)
+{
+  struct DayNode *head_day;
+
+  return head_month;
+}
+
+
+void pushDayNode(struct DayNode *prev_ptr, enum DayName name)
+{
+  struct DayNode day;
+  day.name = next;
+  prev_ptr -> next_day = day; 
+}
+
+
+void pushMonthNode(struct MonthNode *prev_ptr, enum MonthName name, int num_days)
+{
+  struct MonthNode last_month;
+  struct MonthNode *head_ptr;
+
+  last_month.name = DECEMBER;
+  head_ptr        = &last_month;
+
+  JANUARY, FEBRUARY, MARCH,
+  APRIL,   MAY,      JUNE,
+  JULY,    AUGUST,   SEPTEMBER,
+  OCTOBER, NOVEMBER, DECEMBER
+
+  pushMonthNode(head_ptr, NOVEMBER);
+  pushMonthNode(head_ptr, OCTOBER);
+  pushMonthNode(head_ptr, SEPTEMBER);
+  pushMonthNode(head_ptr, AUGUST);
+  pushMonthNode(head_ptr, JULY);
+  pushMonthNode(head_ptr, JUNE);
+  pushMonthNode(head_ptr, MAY);
+  pushMonthNode(head_ptr, APRIL);
+  pushMonthNode(head_ptr, MARCH);
+  pushMonthNode(head_ptr, JUNE);
+
+
+  last_month.next_month = *head_ptr;
+
+  return head_ptr;
+}
+  /* prev_day_ptr = (struct DayNode *) malloc(DAY_NODE_BYTES); */
+  /* if (prev_day_ptr == NULL) { */
+  /*   mem_error(DAY_NODE_BYTES); */
+  /* } */
+

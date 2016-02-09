@@ -8,7 +8,6 @@
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
 #include <stdlib.h>
-#include "errors.h"
 #include "sets.h"
 
 #define NUM_TRI_ROWS 100
@@ -26,5 +25,3 @@ struct BranchNode {
 void problem_67(char *result_buffer);
 int **load_triangle(void);
 struct BranchNode *init_branches(int *base_row);
-void mem_error(const size_t num_bytes);
-void file_error(const char *filename);

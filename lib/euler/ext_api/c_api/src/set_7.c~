@@ -121,6 +121,8 @@ int **load_triangle(void)
     tri_mat[row_i] = tri_row;
   }
 
+  fclose(tri_file);
+
   return tri_mat;
 }
 
@@ -148,18 +150,4 @@ struct BranchNode *init_branches(int *base_row)
   }
 
   return next_node;
-}
-
-
-void mem_error(const size_t num_bytes)
-{
-  fprintf(stderr, FORMAT_ERROR(failed to allocate "%lu" bytes of memory), num_bytes);
-  exit(1);
-}
-
-
-void file_error(const char *filename)
-{
-  fprintf(stderr, FORMAT_ERROR(failed to open "%s\n\n  reason: %s"), filename, strerror(errno));
-  exit(1);
 }

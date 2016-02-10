@@ -363,7 +363,7 @@ defmodule Euler.Set2 do
 
   02/04/16
 
-  iex> Euler.Set2.problem_16 elem(1)
+  iex> Euler.Set2.problem_16 |> elem(1)
   1366
   """
   def problem_16, do: JavaAPI.call(~w(2 16))
@@ -425,4 +425,51 @@ defmodule Euler.Set2 do
   1074
   """
   def problem_18, do: RubyAPI.call(~w(2 18))
+
+
+  @doc """
+  19) Counting Sundays
+
+  You are given the following information, but you may prefer to do some research for yourself.
+
+  • 1 Jan 1900 was a Monday.
+  • Thirty days has September,
+    April, June and November.
+    All the rest have thirty-one,
+    Saving February alone,
+    Which has twenty-eight, rain or shine.
+    And on leap years, twenty-nine.
+  • A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
+
+  How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
+
+  02/10/16
+
+  iex> Euler.Set2.problem_19 |> elem(1)
+  171
+  """
+  def problem_19, do: CAPI.call(~w(2 19))
+
+
+  @doc """
+  20) Factorial Digit Sum
+
+  n! means n × (n − 1) × ... × 3 × 2 × 1
+
+  For example, 10! = 10 × 9 × ... × 3 × 2 × 1 = 3628800,
+  and the sum of the digits in the number 10! is 3 + 6 + 2 + 8 + 8 + 0 + 0 = 27.
+
+  Find the sum of the digits in the number 100!
+
+  02/10/16
+
+  iex> Euler.Set2.problem_20
+  648
+  """
+  def problem_20 do # high level programming up in this bitch
+    1..100
+    |> Enum.reduce(&*/2)
+    |> Integer.digits
+    |> Enum.reduce(&+/2)
+  end
 end

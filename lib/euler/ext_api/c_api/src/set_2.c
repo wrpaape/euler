@@ -77,7 +77,7 @@ void problem_12(char *result_buffer)
  ************************************************************************************/
 void problem_13(char *result_buffer)
 {
-  unsigned int *result;   /* points to array of decimal digits of current total sum  */
+  unsigned int *result;   /* points to array of decimal digits of current total sum */
   unsigned int off_num;   /* number position counter (x-coordinate) */
   unsigned int off_dig;   /* digit place counter (y-coordinate) */
   unsigned int off_ten;   /* index of tenth sig digit in final result */
@@ -92,16 +92,19 @@ void problem_13(char *result_buffer)
     mem_error(sizeof(unsigned int) * 52);
   }
 
+  /* staring from the ones digits, add next number to 'result', propogating overflow */
   for (off_dig = 51; off_dig > 1; --off_dig) {
     for (off_num = 0; off_num < 100; ++off_num) {
       result[off_dig] += DIG_MAT[off_num][off_dig - 2]; /* sum column of digits */
     }
-
+    /* carry remainder of 2+-digit sums */
     result[off_dig - 1] += (result[off_dig] / 10);      /* shift overflow left */
     result[off_dig]     %= 10;                          /* set digit to remainder */
   }
 
+  /* account for overflow and set 'off_dig' to position of first non-zero sig digit */
   while (result[off_dig] > 9) {
+    /* carry remainder of 2+-digit sums */
     result[off_dig - 1] += (result[off_dig] / 10);      /* shift overflow left */
     result[off_dig]     %= 10;                          /* set digit to remainder */
     --off_dig;
@@ -206,7 +209,7 @@ void problem_15(char *result_buffer)
   num_routes = 2; /* staring with 2 possible routes for a 1✕1 grid... */
 
   /* from a 2✕2 to a 20✕20 grid... */
-  for (n = 2; n < 20; ++n) {
+  for (n = 2; n < 21; ++n) {
     adjacent = num_routes * (n - 1) / n;      /* calculate next 'adjacent' number */
 
     num_routes = 2 * (num_routes + adjacent); /* calculate 'num_routes' for 'n' */

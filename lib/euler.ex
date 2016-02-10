@@ -31,12 +31,12 @@ defmodule Euler do
   def process({invalid_opt, nil}) do
     invalid_opt
     |> format_error("Invalid option")
-    |> IO.puts
+    |> clear_and_puts
   end
 
   def process({:help, :true}) do
     "euler [<problem numbers> | --latest/-l | --all/-a | --help/-h]"
-    |> IO.puts
+    |> clear_and_puts
   end
 
   def process({:all, true}) do
@@ -48,7 +48,7 @@ defmodule Euler do
   def process({:error, arg_string}) do
     arg_string
     |> format_error("Failed to parse problem number from")
-    |> IO.puts
+    |> clear_and_puts
   end
 
   def process({{problem_number, _}, problem_number_string}) do
@@ -62,7 +62,7 @@ defmodule Euler do
 
     set_module
     |> retreive_problem_doc(problem_function)
-    |> IO.puts
+    |> clear_and_puts
 
     Ticker.start
 
@@ -169,4 +169,6 @@ defmodule Euler do
   defp format_time(time),                       do: {format_float(time / 1_000_000) <> " s",  ANSI.red}
 
   defp format_float(float), do: :io_lib.format("~.4g", [float]) |> List.to_string
+
+  defp clear_and_puts(msg), do: IO.puts(ANSI.clear <> msg)
 end

@@ -251,44 +251,36 @@ void problem_19(char *result_buffer)
   curr_day_ptr = init_day_cycle();
   sunday_count = 0;
   is_20th_cent = false;
+
   /* from January 1st, 1900 through the 20th century... */
   for (year = 1900; year < 2001; ++year) {
-    /* is the current year in the 20th century? */
-    if ((year > 1900) && (year < 2001)) {
-      is_20th_cent = true;
-    } else {
-      is_20th_cent = false;
-    }
     /* is the current year a leap year? */
     if (year % 100 == 0) {
       is_leap_year = (year % 400 == 0) ? true : false;
     } else {
       is_leap_year = (year %   4 == 0) ? true : false;
     }
-
     /* for every month of the year... */
     for (month_i = 0; month_i < MONTHS_PER_YEAR; ++month_i) {
       /* is the current day (1st of the month) a Sunday (in the 20th century)? */
       if ((curr_day_ptr -> name) == SUNDAY && is_20th_cent) {
         ++sunday_count; /* increment 'sunday_count' */
       }
-
       /* if it's a leap year and the current month is February... */
       if (is_leap_year && (months[month_i].name == FEBRUARY)) {
-        puts("it's a leap year");
-        printf("year:  %d\n", year);
-        printf("month: %d\n", months[month_i].name);
-        printf("day:   %d\n", curr_day_ptr -> name); 
         rem_month_days = 29; /* set month days to 29 */
       } else {
         rem_month_days = months[month_i].num_days;
       }
-
       /* cycle through one current month's worth of days */
       while (rem_month_days > 0) {
         curr_day_ptr = curr_day_ptr -> next_ptr;
         --rem_month_days;
       }
+    }
+    /* set 20th century after first iteration */
+    if (!is_20th_cent) {
+      is_20th_cent = true;
     }
   }
 

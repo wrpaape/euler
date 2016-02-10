@@ -8,10 +8,6 @@
  ************************************************************************************/
 #include "set_2.h"
 /************************************************************************************
- *                               INTIAL DECLARATIONS                                *
- ************************************************************************************/
-const unsigned int DIG_MAT[100][50] = DIGITS;
-/************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
 /************************************************************************************
@@ -39,36 +35,36 @@ const unsigned int DIG_MAT[100][50] = DIGITS;
  ************************************************************************************/
 void problem_12(char *result_buffer)
 {
+	unsigned int n;						/* counter for calculating triangule number 'tri_num' */
+	unsigned int tri_num;	    /* triangle number corresponding to counter 'n' */
+	unsigned int num_divs;		/* number of divisors for 'tri_num' */
+	unsigned int smaller_div; /* smaller of two divisors whose product is 'tri_num' */
+	unsigned int min_big_div; /* current smallest larger divisor */
+
 	const unsigned int N = 10; /* max number of iterations */
 
-	unsigned int n;						 /* counter for calculating triangule number 'num_routes' */
-	unsigned int num_routes;					 /* triangle number corresponding to counter 'n' */
-	unsigned int num_divs;		 /* number of divisors for 'num_routes' */
-	unsigned int smaller_div;  /* smaller of two divisors whose product is 'num_routes' */
-	unsigned int min_big_div;  /* current smallest larger divisor */
-
-  n   = 0;      /* zeroth counter */
-  num_routes = 0;      /* zeroth triangle number */
-  num_divs = 1; /* corresponds to 0 */ 
+  n        = 0; /* zeroth counter */
+  tri_num  = 0; /* zeroth triangle number */
+  num_divs = 1; /* corresponds to 'tri_num' of 0 */ 
 
   while (num_divs < 500) {
-    ++n;
-    num_routes = num_routes + n;         /* calculate next triangle number */
-		num_divs = 2;          /* corresponds to 1 and 'num_routes' */
-    smaller_div = 1;
-		min_big_div = num_routes;
+    ++n;                   /* increment counter */
+    tri_num    += n;       /* calculate next triangle number */
+    smaller_div = 1;       /* set first smaller divisor to 1 */
+		min_big_div = tri_num; /* set smallest bigger divisor to 'tri_num' */
+		num_divs    = 2;       /* corresponds to divisors 1 and 'tri_num' */
 
     while (smaller_div <= min_big_div) {
       ++smaller_div;
 
-      if (num_routes % smaller_div == 0) {
-        min_big_div = num_routes / smaller_div;
+      if (tri_num % smaller_div == 0) {
+        min_big_div = tri_num / smaller_div;
         num_divs += 2;
       }
     }
 	}
 
-  sprintf(result_buffer, "%u", num_routes);
+  sprintf(result_buffer, "%u", tri_num); /* copy result to buffer */
 }
 
 
@@ -81,12 +77,20 @@ void problem_12(char *result_buffer)
  ************************************************************************************/
 void problem_13(char *result_buffer)
 {
-  unsigned int result[52]; /* digits of total sum (extra digits for overflow) */
-  unsigned int off_num;    /* number position counter (x-coordinate) */
-  unsigned int off_dig;    /* digit place counter (y-coordinate) */
-  unsigned int off_ten;    /* index of tenth sig digit in final result */
+  unsigned int *result;   /* points to array of decimal digits of current total sum  */
+  unsigned int off_num;   /* number position counter (x-coordinate) */
+  unsigned int off_dig;   /* digit place counter (y-coordinate) */
+  unsigned int off_ten;   /* index of tenth sig digit in final result */
+  unsigned int res_buf_i; /* index of current char in 'result_buffer' */
 
-  memset(result, 0, sizeof(result)); /* initialize all digits to 0 */
+  /* 100 ✕ 50 array of digits representing 100 50-digit numbers */
+  const unsigned int DIG_MAT[100][50] = DIGITS;
+
+  /* allocate memory for 50 digits + 2 extra digits for overflow, init all to 0 */
+  result = calloc(52, sizeof(unsigned int));
+  if (result == NULL) {
+    mem_error(sizeof(unsigned int) * 52);
+  }
 
   for (off_dig = 51; off_dig > 1; --off_dig) {
     for (off_num = 0; off_num < 100; ++off_num) {
@@ -103,11 +107,10 @@ void problem_13(char *result_buffer)
     --off_dig;
   }
 
-  off_ten = off_dig + 10;
-
-  while (off_dig < off_ten) {
-    sprintf(result_buffer, "%u", result[off_dig]); /* copy first ten significant digits */
-    ++off_dig;
+  /* copy first ten significant digits to buffer */
+  for (res_buf_i = 0; res_buf_i < 10; ++res_buf_i, ++off_dig) {
+    /* offset value of char '0' by current digit to convert to ASCII char */
+    result_buffer[res_buf_i] = '0' + result[off_dig];
   }
 }
 
@@ -177,37 +180,39 @@ void problem_14(char *result_buffer)
  ************************************************************************************/
 void problem_15(char *result_buffer)
 {
-  unsigned int n;                    /* counter where current grid is nxn */
+  unsigned int n;                    /* counter indicating current grid size (n✕n) */
   long long unsigned int num_routes; /* central bionomial coefficent */
   long long unsigned int adjacent;   /* adjacent number in sequence (see below) */
 
-/*********************************
- *  n   ║ adjacent ║ num_routes  *
- * ═════╬══════════╬════════════ *
- *  1   ║    ∅     ║     2       *
- *  ↓   ║          ║  ↙          *
- *  + 1 ║          +             *
- *  ↓   ║       ↙  ║             *
- *  2   ║    1  → ✕ 2 →  6       *
- *  ↓   ║          ║  ↙          *
- *  + 1 ║          +             *
- *  ↓   ║       ↙  ║             *
- *  3   ║    4  → ✕ 2 →  20      *
- *  ⋮   ║    ⋮     ║     ⋮       *
- *********************************/
+  /*****************************************************************
+   *  n   ║ last num_routes ║ (n - 1) / n ║ adjacent ║ num_routes  *
+   * ═════╬═════════════════╬═════════════╬══════════╬════════════ *
+   *  1   ║        ∅        ║             ║    ∅     ║     2       *
+   *  ↓   ║                 ║             ║          ║  ↙          *
+   *  + 1 ║                 ║             ║          +             *
+   *  ↓   ║                 ║             ║       ↙  ║             *
+   *  2   ║        2        →     ✕ ½     →    1  → ✕ 2 →  6       *
+   *  ↓   ║                 ║             ║          ║  ↙          *
+   *  + 1 ║                 ║             ║          +             *
+   *  ↓   ║                 ║             ║       ↙  ║             *
+   *  3   ║        6        →     ✕ ⅔     →    4  → ✕ 2 →  20      *
+   *  ↓   ║                 ║             ║          ║  ↙          *
+   *  + 1 ║                 ║             ║          +             *
+   *  ↓   ║                 ║             ║       ↙  ║             *
+   *  4   ║        20       →     ✕ ¾     →    15 → ✕ 2 →  70      *
+   *  ⋮   ║        ⋮        ║             ║    ⋮     ║     ⋮       *
+   ****************************************************************/
 
-  n          = 1; /* for a 1x1 grid... */
-  num_routes = 2; /* there are 2 possible routes */
+  num_routes = 2; /* staring with 2 possible routes for a 1✕1 grid... */
 
-  while (n < 20) {
-    ++n;
+  /* from a 2✕2 to a 20✕20 grid... */
+  for (n = 2; n < 20; ++n) {
+    adjacent = num_routes * (n - 1) / n;      /* calculate next 'adjacent' number */
 
-    adjacent = num_routes * (n - 1) / n;
-
-    num_routes = 2 * (num_routes + adjacent);
+    num_routes = 2 * (num_routes + adjacent); /* calculate 'num_routes' for 'n' */
   }
 
-  sprintf(result_buffer, "%llu", num_routes);
+  sprintf(result_buffer, "%llu", num_routes); /* copy result to buffer */
 }
 
 /**********************************************************************************

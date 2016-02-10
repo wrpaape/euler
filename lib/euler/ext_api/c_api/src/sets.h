@@ -15,7 +15,7 @@
 #include <math.h>
 #include <errno.h>
 
-#define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n""]]]]"
+#define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/

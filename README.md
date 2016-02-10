@@ -1,11 +1,18 @@
 # Euler
 
 ## Purpose
-> Euler is an ongoing exercise in exploring the implementation of data-structures and algorithms in a variety of programming languages and paradigms.
-> Basically this repo serves to attempt to organize [the progress on my project euler account](https://projecteuler.net/progress=tastyham).
+> Euler is an ongoing exercise in exploring the "best" (fastest/most efficient/"proper") implementation of new and familiar data-structures and algorithms in a variety of programming languages and paradigms while attempting to perserve "industry"(read Stack Overflow)-best practices of:
+  - code readability and reuse
+  - coherence to language-specific conventions of style and structure
+  - thorough testing and documentation, and 
+  - consistent and maintainable project organization.
+
+> Basically this repo serves as a hub to house [the progress on my Project Euler account](https://projecteuler.net/progress=tastyham).
 
 ## Structure
 > Wrapped in a commandline interface built with Elixir's Mix framework, Euler houses solutions to mathematical word problems hosted on [projecteuler.net](https://projecteuler.net).
+
+## Usage
 
 ## Installation
 

@@ -143,4 +143,3 @@ void problem_14(char *result_buffer);
 void problem_15(char *result_buffer);
 void problem_19(char *result_buffer);
 struct DayNode *init_day_cycle(void);
-struct MonthNode *init_month_cycle(void);

@@ -231,60 +231,58 @@ void problem_15(char *result_buffer)
  **********************************************************************************/
 void problem_19(char *result_buffer)
 {
-  int date;
   int year;
+  int month_i;
   int rem_month_days;
   int is_leap_year;
   unsigned int sunday_count;
-  struct DayNode   *curr_day_ptr;
+  struct DayNode *curr_day_ptr;
+
   const struct Month months[MONTHS_PER_YEAR] = {
-    {.name = JANUARY,   .num_days = 31},
-    {.name = FEBRUARY,  .num_days = 28},
-    {.name = MARCH,     .num_days = 31},
-    {.name = APRIL,     .num_days = 30},
-    {.name = MAY,       .num_days = 31},
-    {.name = JUNE,      .num_days = 30},
-    {.name = JULY,      .num_days = 31},
-    {.name = AUGUST,    .num_days = 31},
-    {.name = SEPTEMBER, .num_days = 30},
-    {.name = OCTOBER,   .num_days = 31},
-    {.name = NOVEMBER,  .num_days = 30},
-    {.name = DECEMBER,  .num_days = 31}
-  };
-  const unsigned int num_days_arr[MONTHS_PER_YEAR] = {
-    31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    {.name = JANUARY,   .num_days = 31}, {.name = FEBRUARY,  .num_days = 28},
+    {.name = MARCH,     .num_days = 31}, {.name = APRIL,     .num_days = 30},
+    {.name = MAY,       .num_days = 31}, {.name = JUNE,      .num_days = 30},
+    {.name = JULY,      .num_days = 31}, {.name = AUGUST,    .num_days = 31},
+    {.name = SEPTEMBER, .num_days = 30}, {.name = OCTOBER,   .num_days = 31},
+    {.name = NOVEMBER,  .num_days = 30}, {.name = DECEMBER,  .num_days = 31}
   };
 
-  curr_day_ptr   = init_day_cycle();
-  curr_month_ptr = init_month_cycle();
-
+  curr_day_ptr = init_day_cycle();
   sunday_count = 0;
-  date         = 1;
-  year         = 1901;
 
+  /* for every year of the 20th century... */
   for (year = 1901; year < 2001; ++year) {
 
-    while()
-    if (curr_day_ptr -> name == SUNDAY) {
-      ++sunday_count;
+    /* is the current year a leap year? */
+    if (year % 100 == 0) {
+      is_leap_year = (year % 400 == 0) ? true : false;
+    } else {
+      is_leap_year = (year %   4 == 0) ? true : false;
     }
 
-    rem_month_days = curr_month_ptr -> num_days;
-    if ((curr_month_ptr -> name) == FEBRUARY && is_leap_year) {
-      ++rem_month_days;
-    }
+    /* for every month of the year... */
+    for (month_i = 0; month_i < MONTHS_PER_YEAR; ++month_i) {
+      /* is the current day (first of the month) a Sunday? */
+      if (curr_day_ptr -> name == SUNDAY) {
+        ++sunday_count; /* increment 'sunday_count' */
+      }
 
-    while (rem_month_days > 0) {
-      curr_day_ptr = curr_day_ptr -> next_ptr;
-      --rem_month_days;
-    }
+      /* if it's a leap year and the current month is February... */
+      if (is_leap_year && (months[month_i].name == FEBRUARY)) {
+        rem_month_days = 29; /* set month days to 29 */
+      } else {
+        rem_month_days = months[month_i].num_days;
+      }
 
-    
+      /* cycle through one current month's worth of days */
+      while (rem_month_days > 0) {
+        curr_day_ptr = curr_day_ptr -> next_ptr;
+        --rem_month_days;
+      }
+    }
   }
 
-
-  sprintf("%u", sunday_count);
-
+  sprintf(result_buffer, "%u", sunday_count);
 }
 
 
@@ -322,44 +320,3 @@ struct DayNode *init_day_cycle(void)
     return day_cycle;
   }
 }
-
-struct MonthNode *init_month_cycle(void)
-{
-  int month_i;
-  struct MonthNode *month_cycle;
-  const int LAST_I = MONTHS_PER_YEAR - 1;
-  const size_t MONTH_CYCLE_SIZE = sizeof(struct MonthNode) * MONTHS_PER_YEAR;
-  const enum MonthName month_names[MONTHS_PER_YEAR] = {
-    JANUARY, FEBRUARY, MARCH,     APRIL,   MAY,      JUNE,
-    JULY,    AUGUST,   SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
-  };
-  const unsigned int num_days_arr[MONTHS_PER_YEAR] = {
-    31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-  };
-
-  month_cycle = malloc(MONTH_CYCLE_SIZE);
-  if (month_cycle == NULL) {
-    mem_error(MONTH_CYCLE_SIZE);
-  }
-
-  month_i = 0;
-  while (1) {
-    struct MonthNode month_node = {
-      .name     = month_names[month_i],
-      .num_days = num_days_arr[month_i]
-    };
-
-    if (month_i < LAST_I) {
-      month_node.next_ptr  = &month_cycle[month_i + 1];
-      month_cycle[month_i] = month_node;
-      ++month_i;
-      continue;
-    }
-
-    month_node.next_ptr = &month_cycle[0];
-    month_cycle[LAST_I] = month_node;
-
-    return month_cycle;
-  }
-}
-

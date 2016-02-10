@@ -1,7 +1,7 @@
 # Euler
 
 ## Purpose
-> _Euler_ is an ongoing exercise in exploring the "best" (fastest/most efficient/most succinct/"proper") implementation of new and familiar data-structures and algorithms in a variety of programming languages and paradigms while attempting to perserve "industry"(read Stack Overflow)-best practices of:
+> _Euler_ is an ongoing exercise in exploring the "best" (fastest/most efficient/most succinct/"proper") implementation of new and familiar data-structures and algorithms in a variety of programming languages and paradigms while attempting to perserve "industry"(Stack Overflow)-best practices of:
   - code readability and reuse
   - coherence to language-specific conventions of style and structure
   - thorough testing and documentation, and 

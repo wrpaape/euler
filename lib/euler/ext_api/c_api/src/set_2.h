@@ -127,13 +127,13 @@ enum MonthName {
 };
 
 struct DayNode {
-  enum DayName   name;
-  struct DayNode *next_ptr;
+  const enum DayName name;
+  struct DayNode     *next_ptr;
 };
 struct MonthNode {
-  enum MonthName   name;
-  unsigned int     num_days;
-  struct MonthNode *next_ptr;
+  const enum MonthName name;
+  const unsigned int   num_days;
+  struct MonthNode     *next_ptr;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
@@ -144,11 +144,4 @@ void problem_14(char *result_buffer);
 void problem_15(char *result_buffer);
 void problem_19(char *result_buffer);
 struct DayNode *init_day_cycle(void);
-/* void init_day_cycle(struct DayNode **head_dptr); */
-struct DayNode *init_day(const enum DayName name);
 struct MonthNode *init_month_cycle(void);
-void pushDayNode(struct DayNode     **prev_ptr,
-                 const enum DayName name);
-void pushMonthNode(struct MonthNode     *prev_ptr,
-                   const enum MonthName name,
-                   const int            num_days);

@@ -248,7 +248,6 @@ void problem_19(char *result_buffer)
 
   for (year = 1901; year < 2001; ++year) {
 
-    while()
     if (curr_day_ptr -> name == SUNDAY) {
       ++sunday_count;
     }
@@ -267,7 +266,6 @@ void problem_19(char *result_buffer)
   }
 
 
-  sprintf("%u", sunday_count);
 
 }
 

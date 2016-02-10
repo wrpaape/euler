@@ -109,6 +109,8 @@
                 {7, 2, 1, 0, 7, 8, 3, 8, 4, 3, 5, 0, 6, 9, 1, 8, 6, 1, 5, 5, 4, 3, 5, 6, 6, 2, 8, 8, 4, 0, 6, 2, 2, 5, 7, 4, 7, 3, 6, 9, 2, 2, 8, 4, 5, 0, 9, 5, 1, 6}, \
                 {2, 0, 8, 4, 9, 6, 0, 3, 9, 8, 0, 1, 3, 4, 0, 0, 1, 7, 2, 3, 9, 3, 0, 6, 7, 1, 6, 6, 6, 8, 2, 3, 5, 5, 5, 2, 4, 5, 2, 5, 2, 8, 0, 4, 6, 0, 9, 7, 2, 2}, \
                 {5, 3, 5, 0, 3, 5, 3, 4, 2, 2, 6, 4, 7, 2, 5, 2, 4, 2, 5, 0, 8, 7, 4, 0, 5, 4, 0, 7, 5, 5, 9, 1, 7, 8, 9, 7, 8, 1, 2, 6, 4, 3, 3, 0, 3, 3, 1, 6, 9, 0}}
+#define NUM_DAYS 7
+#define NUM_MONTHS 12
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
@@ -141,9 +143,11 @@ void problem_13(char *result_buffer);
 void problem_14(char *result_buffer);
 void problem_15(char *result_buffer);
 void problem_19(char *result_buffer);
-void init_day_cycle(struct DayNode     *head_ptr);
-void init_month_cycle(struct MonthNode *head_ptr);
-void pushDayNode(struct DayNode     *prev_ptr,
+struct DayNode *init_day_cycle(void);
+/* void init_day_cycle(struct DayNode **head_dptr); */
+struct DayNode *init_day(const enum DayName name);
+struct MonthNode *init_month_cycle(void);
+void pushDayNode(struct DayNode     **prev_ptr,
                  const enum DayName name);
 void pushMonthNode(struct MonthNode     *prev_ptr,
                    const enum MonthName name,

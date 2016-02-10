@@ -11,9 +11,8 @@
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
 const unsigned int DIG_MAT[100][50] = DIGITS;
-const size_t DAY_NODE_BYTES         = sizeof(struct DayNode);
-/* const size_t D_NODE_PTR_BYTES       = sizeof(struct DayNode); */
-const size_t MONTH_NODE_BYTES       = sizeof(struct MonthNode);
+const size_t DAY_NODE_SIZE          = sizeof(struct DayNode);
+const size_t MONTH_NODE_SIZE        = sizeof(struct MonthNode);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
@@ -232,79 +231,79 @@ void problem_15(char *result_buffer)
  **********************************************************************************/
 void problem_19(char *result_buffer)
 {
-  struct DayNode   *current_day;
-  struct MonthNode *current_month;
+  struct DayNode   *curr_day_ptr;
+  /* struct MonthNode *current_month; */
 
-  init_day_cycle(current_day);
-  init_month_cycle(current_month);
+  curr_day_ptr = init_day_cycle();
+  /* current_day   = init_day_cycle(); */
+  /* current_month = init_month_cycle(); */
 
-  printf("current_day:   %d\n", current_day -> name);
-  printf("current_month: %d\n", current_month -> name);
+  printf("current_day:   %d\n", curr_day_ptr -> name);
+  curr_day_ptr = curr_day_ptr -> next_ptr;
+  printf("current_day:   %d\n", curr_day_ptr -> name);
+  curr_day_ptr = curr_day_ptr -> next_ptr;
+  printf("current_day:   %d\n", curr_day_ptr -> name);
+  /* printf("current_month: %d\n", current_month -> name); */
 
 }
 
+  /* const enum DayName rev_day_names[NUM_DAYS] = { */
+  /*   SUNDAY, SATURDAY, FRIDAY, THURSDAY, WEDNESDAY, TUESDAY, MONDAY */
+  /* }; */
 
-void init_day_cycle(struct DayNode *head_ptr)
+struct DayNode *init_day_cycle(void)
 {
-  struct DayNode *last_ptr;
+  int day_i;
+  struct DayNode *head_ptr;
 
-  pushDayNode(last_ptr, SUNDAY);
-
-  head_ptr = last_ptr;
-
-  pushDayNode(head_ptr, SATURDAY);
-  pushDayNode(head_ptr, FRIDAY);
-  pushDayNode(head_ptr, THURSDAY);
-  pushDayNode(head_ptr, WEDNESDAY);
-  pushDayNode(head_ptr, TUESDAY);
-  pushDayNode(head_ptr, MONDAY);
-
-  last_ptr -> next_ptr = head_ptr;
-}
-
-
-void init_month_cycle(struct MonthNode *head_ptr)
-{
-  struct MonthNode *last_ptr;
-
-  pushMonthNode(last_ptr, DECEMBER,  30);
-
-  head_ptr = last_ptr;
-
-  pushMonthNode(head_ptr, NOVEMBER,  30);
-  pushMonthNode(head_ptr, OCTOBER,   31);
-  pushMonthNode(head_ptr, SEPTEMBER, 30);
-  pushMonthNode(head_ptr, AUGUST,    31);
-  pushMonthNode(head_ptr, JULY,      31);
-  pushMonthNode(head_ptr, JUNE,      30);
-  pushMonthNode(head_ptr, MAY,       31);
-  pushMonthNode(head_ptr, APRIL,     30);
-  pushMonthNode(head_ptr, MARCH,     31);
-  pushMonthNode(head_ptr, FEBRUARY,  28);
-  pushMonthNode(head_ptr, JANUARY,   31);
-
-  last_ptr -> next_ptr = head_ptr;
-}
-
-
-void pushDayNode(struct DayNode *prev_ptr,
-                 const enum DayName name)
-{
-  struct DayNode day = {
-    .name = name
+  const enum DayName day_names[NUM_DAYS] = {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
   };
-  /* prev_day_ptr = (struct DayNode *) malloc(DAY_NODE_BYTES); */
-  /* if (prev_day_ptr == NULL) { */
-  /*   mem_error(DAY_NODE_BYTES); */
-  /* } */
 
-  prev_ptr -> next_ptr = &day; 
+  struct DayNode *day_ptr = malloc(NUM_DAYS * DAY_NODE_SIZE);
+  if (day_ptr == NULL) {
+    mem_error(DAY_NODE_SIZE);
+  }
+
+  head_ptr = day_ptr;
+
+  for (day_i = 0; day_i < NUM_DAYS; ++day_i) {
+    struct DayNode day_node = {
+      .name     = day_names[day_i],
+      .next_ptr = day_ptr
+    };
+    day_ptr = &day_node;
+    /* memcpy(day_ptr, &day_node, DAY_NODE_SIZE); */
+    printf("init day:   %d\n", day_ptr -> name);
+    printf("  next day: %d\n", day_ptr -> next_ptr -> name);
+    /* day_ptr = day_ptr -> next_ptr; */ 
+  }
+
+  head_ptr -> next_ptr = day_ptr;
+
+  /* memcpy(head_ptr, day_ptr, DAY_NODE_SIZE); */
+
+  return head_ptr;
 }
 
 
-void pushMonthNode(struct MonthNode *prev_ptr,
+/* struct DayNode *init_day(const enum DayName name) */
+/* { */
+/*   struct DayNode day = { */
+/*     .name = name */
+/*   }; */
+
+/*   struct DayNode *day_ptr = malloc(DAY_NODE_BYTES); */
+
+/*   memcpy(day_ptr, &day, DAY_NODE_BYTES); */
+
+/*   return day_ptr; */
+/* } */
+
+
+void pushMonthNode(struct MonthNode     *prev_ptr,
                    const enum MonthName name,
-                   const int num_days)
+                   const int            num_days)
 {
   struct MonthNode month = {
     .name     = name,

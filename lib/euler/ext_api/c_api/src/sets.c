@@ -1,8 +1,15 @@
 /************************************************************************************
- *                                     errors.c                                     *
+ *                                     sets.c                                       *
  *                                                                                  *
- * Defines constants, declares helper functions, and includes libraries for         *
- * handling and reporting errors.                                                   *
+ * Defines constants, declares helper functions, and includes libraries shared      *
+ * amongst set modules.                                                             *
+ ************************************************************************************/
+/************************************************************************************
+ *                             PREPROCESSOR DIRECTIVES                              *
+ ************************************************************************************/
+#include "sets.h"
+/************************************************************************************
+ *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
 void mem_error(const size_t num_bytes)
 {

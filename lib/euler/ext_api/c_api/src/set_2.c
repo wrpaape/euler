@@ -247,41 +247,45 @@ void problem_19(char *result_buffer)
 
 }
 
-  /* const enum DayName rev_day_names[NUM_DAYS] = { */
-  /*   SUNDAY, SATURDAY, FRIDAY, THURSDAY, WEDNESDAY, TUESDAY, MONDAY */
-  /* }; */
 
 struct DayNode *init_day_cycle(void)
 {
   int day_i;
   struct DayNode *head_ptr;
+  struct DayNode day_cycle[DAYS_PER_WEEK];
+  /* const enum DayName rev_day_names[DAYS_PER_WEEK] = { */
+  /*   SUNDAY, SATURDAY, FRIDAY, THURSDAY, WEDNESDAY, TUESDAY, MONDAY */
+  /* }; */
 
-  const enum DayName day_names[NUM_DAYS] = {
+  const enum DayName day_names[DAYS_PER_WEEK] = {
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
   };
 
-  struct DayNode *day_ptr = malloc(NUM_DAYS * DAY_NODE_SIZE);
-  if (day_ptr == NULL) {
-    mem_error(DAY_NODE_SIZE);
-  }
+  /* head_ptr = day_cycle[DAYS_PER_WEEK - 1]; */
 
-  head_ptr = day_ptr;
-
-  for (day_i = 0; day_i < NUM_DAYS; ++day_i) {
+  day_i = 0;
+  while (1) {
     struct DayNode day_node = {
-      .name     = day_names[day_i],
-      .next_ptr = day_ptr
+      .name = day_names[day_i],
     };
-    day_ptr = &day_node;
-    /* memcpy(day_ptr, &day_node, DAY_NODE_SIZE); */
-    printf("init day:   %d\n", day_ptr -> name);
-    printf("  next day: %d\n", day_ptr -> next_ptr -> name);
-    /* day_ptr = day_ptr -> next_ptr; */ 
+
+    if (day_i == (DAYS_PER_WEEK - 1)) {
+      day_node.next_ptr = &day_cycle[0];
+      day_cycle[day_i]  = day_node;
+      break;
+    }
+
+    day_node.next_ptr = &day_cycle[day_i + 1];
+    day_cycle[day_i]  = day_node;
+    ++day_i;
   }
 
-  head_ptr -> next_ptr = day_ptr;
+  head_ptr = &day_cycle[0];
+  for (int i = 0; i < 14; ++i) {
+    printf("head_ptr -> name: %d\n", head_ptr -> name);
 
-  /* memcpy(head_ptr, day_ptr, DAY_NODE_SIZE); */
+    head_ptr = head_ptr -> next_ptr;
+  }
 
   return head_ptr;
 }

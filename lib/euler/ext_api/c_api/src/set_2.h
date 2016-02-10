@@ -115,15 +115,11 @@
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
 enum DayName {
-  MONDAY,   TUESDAY, WEDNESDAY,
-  THURSDAY, FRIDAY,  SATURDAY,
-  SUNDAY
+  MONDAY,   TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,  SATURDAY, SUNDAY
 };
 enum MonthName {
-  JANUARY, FEBRUARY, MARCH,
-  APRIL,   MAY,      JUNE,
-  JULY,    AUGUST,   SEPTEMBER,
-  OCTOBER, NOVEMBER, DECEMBER
+  JANUARY, FEBRUARY, MARCH,     APRIL,   MAY,      JUNE,
+  JULY,    AUGUST,   SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
 };
 
 struct DayNode {

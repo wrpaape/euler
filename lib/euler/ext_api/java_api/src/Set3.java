@@ -3,12 +3,9 @@
  *                                                                                  *
  * Abstract class 'Set3' houses solutions for problems 11-20.                       *
  ************************************************************************************/
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.stream.Stream;
 import java.util.stream.IntStream;
 
 public abstract class Set3 {
@@ -27,11 +24,12 @@ public abstract class Set3 {
    **********************************************************************************/
   public static Integer problem21() { 
     int sumAmicableNumbers = 0;
-    IntStream validRange   = IntStream.range(2, 10_000);
 
     Map<Integer, Integer> divsSumMap = new ConcurrentHashMap<>();
 
-    validRange.forEach((baseNum) -> {
+    IntStream.range(2, 10_000)
+             .forEach((baseNum) -> {
+
       divsSumMap.put(Integer.valueOf(baseNum),
                      sumOfProperDivs(baseNum));
     });
@@ -40,14 +38,12 @@ public abstract class Set3 {
                                                               .iterator();
     while(mapIter.hasNext()) {
       Map.Entry<Integer, Integer> numSumPair = mapIter.next();
-      // System.out.println("checking pair:" + numSumPair.toString());
 
       Integer baseNum     = numSumPair.getKey();
       Integer candNum     = numSumPair.getValue();
       Integer candSumDivs = divsSumMap.get(candNum);
 
-      if ((candSumDivs != null) && candSumDivs.equals(baseNum) && !candNum.equals(baseNum)) {
-        System.out.println("adding amicable pair:" + numSumPair.toString());
+      if (candSumDivs.equals(baseNum) && !candNum.equals(baseNum)) {
 
         sumAmicableNumbers += (baseNum + candNum);
 

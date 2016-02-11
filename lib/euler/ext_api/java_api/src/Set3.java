@@ -30,6 +30,7 @@ public abstract class Set3 {
 
     IntStream.range(1, 10_000)
              .forEach((num) -> {
+
       Integer sumDivs = sumProperDivs(num);
 
       LinkedList<Integer> amicables = divsSumMap.get(sumDivs);
@@ -46,37 +47,14 @@ public abstract class Set3 {
     sumAmicableNumbers = 0;
     for (LinkedList<Integer> amicables : divsSumMap.values()) {
       if (amicables.size() > 1) {
-
+        System.out.println("amicables: " + amicables.toString());
         for (Integer amicableNum : amicables) {
-          
+          sumAmicableNumbers += amicableNum;
         }
-
-        
       }
     }
-              .stream()
-              .filter((amicables) -> {
-                amicables.size() > 1;
-              })
-              .reduce(Integer.valueOf(0), Integer::sum);
-              // .reduce(0, (amicables) -> {
 
-//                      });
-
-      // if (amicables.size() > 1) {
-        // amicables.forEach((amicableNum) -> {
-        // });
-        // for (Integer amicableNum : amicables) {
-        //   sumAmicables += amicableNum;
-        // }
-      // }
-    // });
-
-      // System.out.println("sum:  " + commonSum.toString());
-      // System.out.println("divs: " + amicables.toString());
-    // sum final set of amicable numbers
-    // return amicableNums.parallelStream()
-    //                    .reduce(0, Integer::sum);
+    return sumAmicableNumbers;
   }
 
   static private Integer sumProperDivs(int num) {

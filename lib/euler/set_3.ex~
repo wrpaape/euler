@@ -17,6 +17,5 @@ defmodule Euler.Set3 do
 
   Evaluate the sum of all the amicable numbers under 10000.
   """
-  def problem_21 do
-  end
+  def problem_21, do: JavaAPI.call(~w(3 21))
 end

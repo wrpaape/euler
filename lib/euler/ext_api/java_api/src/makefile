@@ -7,7 +7,7 @@ JC = javac
 .java.class:
 				$(JC) $(JFLAGS) $*.java -d ../
 
-CLASSES = JavaAPI.java Set2.java
+CLASSES = JavaAPI.java Set2.java Set3.java
 
 default: classes
 

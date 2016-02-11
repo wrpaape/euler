@@ -16,12 +16,12 @@ public abstract class Set2 {
    **********************************************************************************/
   public static Integer problem16() { 
 		LinkedList<Integer> digitsList;       // stores result digits while multiplying
-		ListIterator<Integer> digitsIterator; // iterator for traversing digitsList
+		ListIterator<Integer> digitsIterator; // iterator for traversing 'digitsList'
     int remNumMults;                      // remaining multiplications (* 2)
     int sumDigits;                        // sum of all decimal digits of 2¹⁰⁰⁰
     int digAcc;                           // used to 'carry' overflow to next 'place'
 
-		digitsList = new LinkedList<Integer>();     // initialize digitsList
+		digitsList = new LinkedList<Integer>();     // initialize 'digitsList'
 		digitsList.add(2);                          // set head digit (ones) to '2'
 
 		digitsIterator = digitsList.listIterator(); // initialize iterator

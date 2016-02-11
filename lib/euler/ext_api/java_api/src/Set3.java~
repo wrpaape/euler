@@ -3,10 +3,8 @@
  *                                                                                  *
  * Abstract class 'Set3' houses solutions for problems 11-20.                       *
  ************************************************************************************/
-// import java.util.LinkedList;
-// import java.util.ListIterator;
 import java.util.HashSet;
-// import java.util.stream.Stream;
+import java.util.SortedSet;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
@@ -25,38 +23,52 @@ public abstract class Set3 {
    * Evaluate the sum of all the amicable numbers under 10000.                      *
    **********************************************************************************/
   public static Integer problem21() { 
-		HashSet<Integer> amicableNums; // stores accumulated amicable numbers 
-		HashSet<Integer> remNums;      // diff set of {1, ..., 9_999} and 'amicableNums' 
-	  int nextNum;               // intermediate tested for amicability with 'baseNum'
+    IntStream candidateNums;       // search range of amicable nums: {1, ..., 9_999}
+		HashSet<Integer> amicableNums; // set of accumulated amicable numbers 
+		HashSet<Integer> remCandNums;  // diff set of 'candidateNums' and established amicable numbers
+	  int sumBaseDivs;               // sum of proper divisors for 'baseNum' 
+	  int sumNextDivs;               // sum of proper divisors for 'nextNum' 
 
-    HashSet<Integer> CandidateNums;
+    // initialize range of candidate numbers
+    candidateNums = IntStream.range(1, 10_000);
 
-    CandidateNums = IntStream
-                    .range(1, 10_000)
-                    .boxed()
-                    .collect(Collectors.toCollection(HashSet::new));
+    // initialize 'remCanNums' as a HashSet starting with all candidates
+    remCandNums = candidateNums.boxed()
+                               .collect(Collectors.toCollection(HashSet::new));
 
-    // for (Integer baseNum : CandidateNums) {
-    //   System.out.println(baseNum);
-    // }
+    // candidateNums.forEach((baseNum) -> {
+    //   sumBaseDivs = sumBaseDivs(baseNum);
 
-    CandidateNums.forEach(System.out::println);
-    
-    // from a base number of 1 to 9_999...
-    // IntStream.range(1, 10_000).forEach(baseNum -> {
-    //   System.out.println(n);
+    //   remCandNums.forEach((nextNum) -> {
+
+    //   });
     // });
 
     // sum final set of amicable numbers
-    // return amicableNums
-    //        .parallelStream()
-    //        .reduce(0, Integer::sum);
-
-    return 42;
+    // return amicableNums.parallelStream()
+    //                    .reduce(0, Integer::sum);
+    return sumProperDivs(220);
   }
 
   private int sumProperDivs(int num) {
+    int sumDivs;
+    int nextNum;
+    int minBigDiv; // current smallest divisor 'b' where a * b = 'nextNum' and b > a
 
-    return num;
+    sumDivs   = 1;   // set init sum to 1 (for first proper divisor, 1)
+    minBigDiv = num; // init to 'num' (for first larger proper divisor, 'num')
+    nextNum   = 2;   // starting at 2, find second proper divisor of 'num'
+    
+    while (nextNum < minBigDiv) {
+      // if 'num' is evenly divisible by 'nextNum'...
+      if (num % nextNum == 0) {
+        minBigDiv = num / nextNum; // calculate larger divisor
+        // if 'nextNum' is a square root of 'num', add once, otherwise add both divs
+        sumDivs += (minBigDiv == nextNum) ? nextNum : (nextNum + minBigDiv);
+      }
+      nextNum++; //increment counter
+    }
+
+    return sumDivs;
   }
 }

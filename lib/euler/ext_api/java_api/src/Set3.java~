@@ -37,13 +37,16 @@ public abstract class Set3 {
     Iterator<Map.Entry<Integer, Integer>> mapIter = divsSumMap.entrySet()
                                                               .iterator();
     while(mapIter.hasNext()) {
+
       Map.Entry<Integer, Integer> numSumPair = mapIter.next();
 
       Integer baseNum     = numSumPair.getKey();
       Integer candNum     = numSumPair.getValue();
       Integer candSumDivs = divsSumMap.get(candNum);
 
-      if (candSumDivs.equals(baseNum) && !candNum.equals(baseNum)) {
+      if (candSumDivs != null
+          && candSumDivs.equals(baseNum)
+          && !candNum.equals(baseNum)) {
 
         sumAmicableNumbers += (baseNum + candNum);
 
@@ -52,7 +55,7 @@ public abstract class Set3 {
       }
     }
 
-    return sumAmicableNumbers;
+    return Integer.valueOf(sumAmicableNumbers);
   }
 
   static private Integer sumOfProperDivs(int num) {

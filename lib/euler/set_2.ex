@@ -1,4 +1,5 @@
 defmodule Euler.Set2 do
+  alias IO.ANSI
   alias Euler.ExtAPI.{CAPI,
                       JavaAPI,
                       JavaScriptAPI,
@@ -8,7 +9,6 @@ defmodule Euler.Set2 do
   Set2 houses solutions to problems 11 - 20.
   """
 
-  alias IO.ANSI
 
   @grid """
   08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08

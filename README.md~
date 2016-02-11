@@ -10,13 +10,14 @@
 
 > Basically this repo serves as a hub to catalog [the progress on my Project Euler account](https://projecteuler.net/progress=tastyham).
 
+
 ## Structure
 
 > Wrapped in a commandline interface built with Elixir's Mix framework, _Euler_ houses solutions to mathematical word problems hosted on [projecteuler.net](https://projecteuler.net). Commands issued by one or more problem numbers are dispatched from the master Mix 'Euler' module to the 'API' module of the solution language. The solution code is then timed and executed by the API, and its results are relayed back to master application where they formatted and printed alongside other information pertaining to the problem(s)'s solution.
 
 ## Usage
 
-  `$ ./euler [<problem numbers> | --latest/-l | --all/-a | --help/-h]`
+  `$ ./euler [<problem number(s)> | --latest/-l | --all/-a | --help/-h]`
 
 
 ## Installation

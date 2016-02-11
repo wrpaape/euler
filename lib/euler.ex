@@ -35,7 +35,7 @@ defmodule Euler do
   end
 
   def process({:help, :true}) do
-    "euler [<problem numbers> | --latest/-l | --all/-a | --help/-h]"
+    "euler [<problem number(s)> | --latest/-l | --all/-a | --help/-h]"
     |> clear_and_puts
   end
 

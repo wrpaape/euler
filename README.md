@@ -17,7 +17,7 @@
 
 ## Usage
 
-  `$ ./euler [<problem numbers> | --latest/-l | --all/-a | --help/-h]`
+  `$ ./euler [<problem number(s)> | --latest/-l | --all/-a | --help/-h]`
 
 
 ## Installation

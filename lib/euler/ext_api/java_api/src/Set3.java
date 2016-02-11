@@ -4,6 +4,9 @@
  * Abstract class 'Set3' houses solutions for problems 11-20.                       *
  ************************************************************************************/
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.stream.Stream;
 import java.util.stream.IntStream;
@@ -23,41 +26,40 @@ public abstract class Set3 {
    * Evaluate the sum of all the amicable numbers under 10000.                      *
    **********************************************************************************/
   public static Integer problem21() { 
-    int sumAmicableNumbers;
+    int sumAmicableNumbers = 0;
+    IntStream validRange   = IntStream.range(2, 10_000);
 
-    // HashMap<Integer, LinkedList<Integer>> divsSumMap = new HashMap<Integer, LinkedList<Integer>>();
-    HashMap<Integer, LinkedList<Integer>> divsSumMap = new HashMap<>();
+    Map<Integer, Integer> divsSumMap = new ConcurrentHashMap<>();
 
-    IntStream.range(1, 10_000)
-             .forEach((num) -> {
-
-      Integer sumDivs = sumProperDivs(num);
-
-      LinkedList<Integer> amicables = divsSumMap.get(sumDivs);
-
-      if (amicables == null) {
-        amicables = new LinkedList<Integer>();
-
-        divsSumMap.put(sumDivs, amicables);
-      }
-
-      amicables.add(num);
+    validRange.forEach((baseNum) -> {
+      divsSumMap.put(Integer.valueOf(baseNum),
+                     sumOfProperDivs(baseNum));
     });
 
-    sumAmicableNumbers = 0;
-    for (LinkedList<Integer> amicables : divsSumMap.values()) {
-      if (amicables.size() > 1) {
-        System.out.println("amicables: " + amicables.toString());
-        for (Integer amicableNum : amicables) {
-          sumAmicableNumbers += amicableNum;
-        }
+    Iterator<Map.Entry<Integer, Integer>> mapIter = divsSumMap.entrySet()
+                                                              .iterator();
+    while(mapIter.hasNext()) {
+      Map.Entry<Integer, Integer> numSumPair = mapIter.next();
+      // System.out.println("checking pair:" + numSumPair.toString());
+
+      Integer baseNum     = numSumPair.getKey();
+      Integer candNum     = numSumPair.getValue();
+      Integer candSumDivs = divsSumMap.get(candNum);
+
+      if ((candSumDivs != null) && candSumDivs.equals(baseNum) && !candNum.equals(baseNum)) {
+        System.out.println("adding amicable pair:" + numSumPair.toString());
+
+        sumAmicableNumbers += (baseNum + candNum);
+
+        mapIter.remove();
+        divsSumMap.remove(candNum);
       }
     }
 
     return sumAmicableNumbers;
   }
 
-  static private Integer sumProperDivs(int num) {
+  static private Integer sumOfProperDivs(int num) {
     int sumDivs;
     int nextNum;
     int minBigDiv; // current smallest divisor 'b' where a * b = 'nextNum' and b > a
@@ -77,5 +79,6 @@ public abstract class Set3 {
     }
 
     return Integer.valueOf(sumDivs); // return final sum as an instance of Integer
+    // return sumDivs; // return final sum
   }
 }

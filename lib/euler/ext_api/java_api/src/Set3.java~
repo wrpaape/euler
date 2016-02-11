@@ -5,8 +5,9 @@
  ************************************************************************************/
 // import java.util.LinkedList;
 // import java.util.ListIterator;
-import java.util.Set;
-import java.util.stream;
+import java.util.HashSet;
+// import java.util.stream.Stream;
+import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
 public abstract class Set3 {
@@ -24,19 +25,22 @@ public abstract class Set3 {
    * Evaluate the sum of all the amicable numbers under 10000.                      *
    **********************************************************************************/
   public static Integer problem21() { 
-		Set<Integer> amicableNums; // stores accumulated amicable numbers 
-		Set<Integer> remNums;      // diff set of {1, ..., 9_999} and 'amicableNums' 
+		HashSet<Integer> amicableNums; // stores accumulated amicable numbers 
+		HashSet<Integer> remNums;      // diff set of {1, ..., 9_999} and 'amicableNums' 
 	  int nextNum;               // intermediate tested for amicability with 'baseNum'
 
-    Set<Integer> CandidateNums;
+    HashSet<Integer> CandidateNums;
 
     CandidateNums = IntStream
                     .range(1, 10_000)
-                    .collect(Collectors.toSet());
+                    .boxed()
+                    .collect(Collectors.toCollection(HashSet::new));
 
-    for (baseNum : CandidateNums) {
-      System.out.println(baseNum);
-    }
+    // for (Integer baseNum : CandidateNums) {
+    //   System.out.println(baseNum);
+    // }
+
+    CandidateNums.forEach(System.out::println);
     
     // from a base number of 1 to 9_999...
     // IntStream.range(1, 10_000).forEach(baseNum -> {
@@ -53,6 +57,6 @@ public abstract class Set3 {
 
   private int sumProperDivs(int num) {
 
-    return sum;
+    return num;
   }
 }

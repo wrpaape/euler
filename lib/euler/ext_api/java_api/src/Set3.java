@@ -4,7 +4,8 @@
  * Abstract class 'Set3' houses solutions for problems 11-20.                       *
  ************************************************************************************/
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.stream.Stream;
 import java.util.stream.IntStream;
 
 public abstract class Set3 {
@@ -22,29 +23,19 @@ public abstract class Set3 {
    * Evaluate the sum of all the amicable numbers under 10000.                      *
    **********************************************************************************/
   public static Integer problem21() { 
-    IntStream candidateNums;       // search range of amicable nums: {1, ..., 9_999}
-		ArrayList<Integer> amicable;   // list of accumulated amicable numbers 
-		HashSet<Integer> remCandNums;  // diff set of 'candidateNums' and established amicable numbers
-	  int sumAmicables;              // sum of all amicable numbers < 10_000 (result)
-	  // int sumNextDivs;                // sum of proper divisors for 'nextNum' 
+    int sumAmicableNumbers;
 
-    // initialize candidate numbers as a range of Integer objects
-    candidateNums = IntStream.range(1, 10_000);
+    // HashMap<Integer, LinkedList<Integer>> divsSumMap = new HashMap<Integer, LinkedList<Integer>>();
+    HashMap<Integer, LinkedList<Integer>> divsSumMap = new HashMap<>();
 
-    // initialize 'remCanNums' as a HashSet starting with all candidates
-    // remCandNums = candidateNums.boxed()
-    //                            .collect(Collectors.toCollection(HashSet::new));
-
-    // HashMap<Integer, ArrayList<Integer>> divsSumMap = new HashMap<Integer, ArrayList<Integer>>();
-    HashMap<Integer, ArrayList<Integer>> divsSumMap = new HashMap<>();
-
-    candidateNums.forEach((num) -> {
+    IntStream.range(1, 10_000)
+             .forEach((num) -> {
       Integer sumDivs = sumProperDivs(num);
 
-      List<Integer> amicables = divsSumMap.get(sumDivs);
+      LinkedList<Integer> amicables = divsSumMap.get(sumDivs);
 
       if (amicables == null) {
-        amicables = new List<Integer>();
+        amicables = new LinkedList<Integer>();
 
         divsSumMap.put(sumDivs, amicables);
       }
@@ -52,22 +43,40 @@ public abstract class Set3 {
       amicables.add(num);
     });
 
-    sumAmicables = 0;
-    divsSumMap.values
-              .forEach((amicables) -> {
-      if (amicables.size > 1) {
+    sumAmicableNumbers = 0;
+    for (LinkedList<Integer> amicables : divsSumMap.values()) {
+      if (amicables.size() > 1) {
 
+        for (Integer amicableNum : amicables) {
+          
+        }
 
-        // amicables.reduce(0, Integer::sum);
+        
       }
-    });
+    }
+              .stream()
+              .filter((amicables) -> {
+                amicables.size() > 1;
+              })
+              .reduce(Integer.valueOf(0), Integer::sum);
+              // .reduce(0, (amicables) -> {
+
+//                      });
+
+      // if (amicables.size() > 1) {
+        // amicables.forEach((amicableNum) -> {
+        // });
+        // for (Integer amicableNum : amicables) {
+        //   sumAmicables += amicableNum;
+        // }
+      // }
+    // });
 
       // System.out.println("sum:  " + commonSum.toString());
       // System.out.println("divs: " + amicables.toString());
     // sum final set of amicable numbers
     // return amicableNums.parallelStream()
     //                    .reduce(0, Integer::sum);
-    return 42;
   }
 
   static private Integer sumProperDivs(int num) {

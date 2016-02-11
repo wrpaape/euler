@@ -7,6 +7,7 @@
 // import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream;
+import java.util.stream.Collectors;
 
 public abstract class Set3 {
   /**********************************************************************************
@@ -24,22 +25,30 @@ public abstract class Set3 {
    **********************************************************************************/
   public static Integer problem21() { 
 		Set<Integer> amicableNums; // stores accumulated amicable numbers 
-	  int baseNum;               // control counter for main loop
+		Set<Integer> remNums;      // diff set of {1, ..., 9_999} and 'amicableNums' 
 	  int nextNum;               // intermediate tested for amicability with 'baseNum'
 
+    Set<Integer> CandidateNums;
 
-    // from a base number of 1 to 9_999...
-    for (base = 1; base < 10_000; base++) {
-      while () {
-        
-      }
-      
+    CandidateNums = IntStream
+                    .range(1, 10_000)
+                    .collect(Collectors.toSet());
+
+    for (baseNum : CandidateNums) {
+      System.out.println(baseNum);
     }
+    
+    // from a base number of 1 to 9_999...
+    // IntStream.range(1, 10_000).forEach(baseNum -> {
+    //   System.out.println(n);
+    // });
 
     // sum final set of amicable numbers
-    return amicableNums
-           .parallelStream()
-           .reduce(0, Integer::sum);
+    // return amicableNums
+    //        .parallelStream()
+    //        .reduce(0, Integer::sum);
+
+    return 42;
   }
 
   private int sumProperDivs(int num) {

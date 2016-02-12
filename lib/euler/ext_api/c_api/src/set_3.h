@@ -19,11 +19,11 @@ struct NameNode {
   struct NameNode *next_ptr;
 };
 
-struct NameBucket {
-  struct NameNode *head_ptr;
-};
+/* struct NameBucket { */
+/*   struct NameNode *head_ptr; */
+/* }; */
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
 void problem_22(char *result_buffer);
-struct NameBucket *load_buckets(void);
+struct NameNode **load_buckets(void);

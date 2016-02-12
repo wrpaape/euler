@@ -26,77 +26,82 @@
  ************************************************************************************/
 void problem_22(char *result_buffer)
 {
-  struct LoadInfo *load_info = load_names();          /* load names from txt file */
-  struct NameTup *name_tups = load_info -> name_tups; /* set pointer to 'name_tups' */
-  const size_t num_names    = load_info -> num_names; /* set total count of names */
+  /* struct NameBucket *name_buckets = load_buckets();       /1* load names from txt file *1/ */
+  /* struct NameNode *name_tups = name_buckets -> name_tups; /1* set pointer to 'name_tups' *1/ */
+  /* const size_t num_names    = name_buckets -> num_names;  /1* set total count of names *1/ */
 
-
-  printf("first name:  %s\n",  name_tups[0].name);
-  printf("first score: %hu\n", name_tups[0].score);
-  printf("last name:   %s\n",  name_tups[num_names - 1].name);
-  printf("last score:  %hu\n", name_tups[num_names - 1].score);
-  printf("num_names:   %lu\n", num_names); 
+  /* printf("first name:  %s\n",  name_tups[0].name); */
+  /* printf("first score: %hu\n", name_tups[0].score); */
+  /* printf("last name:   %s\n",  name_tups[num_names - 1].name); */
+  /* printf("last score:  %hu\n", name_tups[num_names - 1].score); */
+  /* printf("num_names:   %lu\n", num_names); */ 
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
-struct LoadInfo *load_names(void)
-{
-  FILE *names_file;           /* pointer to raw data file object */
-  struct LoadInfo *load_info; /* points to final LoadInfo 'load_info' */
-  struct NameTup *name_tups;  /* NameTup array referenced by 'load_info' */
-  size_t name_i;              /* running counter of scanned names */
-  char scan_char;             /* holds next char scanned from file */
-  unsigned short *score_ptr;  /* points to accumulating 'score' of current NameTup */
-  char *char_ptr;             /* points to current char of current NameTup 'name' */
+/* struct NameBucket *load_buckets(void) */
+/* { */
+/*   FILE *names_file;           /1* pointer to raw data file object *1/ */
+/*   struct NameBucket *buckets; /1* 26 length array of NameNode lists *1/ */
+/*   struct NameBucket *name_buckets; /1* points to final pre-sorted NameNodes *1/ */
+/*   struct NameNode *name_tups;  /1* NameNode array referenced by 'name_buckets' *1/ */
+/*   size_t name_i;              /1* running counter of scanned names *1/ */
+/*   char scan_char;             /1* holds next char scanned from file *1/ */
+/*   long long *score_ptr;  /1* points to accumulating 'score' of current NameNode *1/ */
+/*   char *char_ptr;             /1* points to current char of current NameNode 'name' *1/ */
 
-  /* conservative estimate of required memory to safely load in data */
-  const size_t SIZE_NAME_TUPS = sizeof(struct NameTup) * SAFE_LEN_NAMES;
-  const size_t SIZE_LOAD_INFO = sizeof(struct LoadInfo);
+/*   /1* conservative estimate of required memory to safely load in data *1/ */
+/*   const size_t SIZE_NODE_POOL = sizeof(struct NameNode) * SAFE_LEN_NAMES; */
+/*   const size_t SIZE_BUCKETS   = sizeof(struct NameBucket) * 26; */
   
-  /* open the names data txt file */
-  names_file = fopen(NAMES_FILENAME, "r");
-  if (names_file == NULL) {
-    file_error(NAMES_FILENAME);
-  }
-  /* allocate memory for 'load_info' */
-  load_info = malloc(SIZE_LOAD_INFO);
-  if (load_info == NULL) {
-    mem_error(SIZE_LOAD_INFO);
-  }
-  /* allocate memory for 'name_tups' array */
-  name_tups = malloc(SIZE_NAME_TUPS);
-  if (name_tups == NULL) {
-    mem_error(SIZE_NAME_TUPS);
-  }
+/*   /1* open the names data txt file *1/ */
+/*   handle_fopen(names_file, NAMES_FILENAME, "r"); */
+/*   /1* names_file = fopen(NAMES_FILENAME, "r"); *1/ */
+/*   /1* if (names_file == NULL) { *1/ */
+/*   /1*   file_error(NAMES_FILENAME); *1/ */
+/*   /1* } *1/ */
 
-  fseek(names_file, 1, SEEK_SET); /* skip first opening quotation mark */
-  scan_char = fgetc(names_file);  /* scan in first 'name' char */
-  name_i    = 0;                  /* initialize name counter */
-  while (scan_char != EOF) {
-    score_ptr = &name_tups[name_i].score; /* point to 'score' of current NameTup */
-    char_ptr  = name_tups[name_i].name;   /* point to start of 'name' buffer */
+/*   /1* allocate memory for 'name_buckets', initialize head pointers to 'NULL' *1/ */
+/*   handle_calloc(name_buckets, 26, sizeof(struct NameBucket)); */
+/*   /1* name_buckets = calloc(SIZE_LOAD_INFO); *1/ */
+/*   /1* if (name_buckets == NULL) { *1/ */
+/*   /1*   mem_error(SIZE_LOAD_INFO); *1/ */
+/*   /1* } *1/ */
 
-    /* until next closing quotation mark is found... */
-    while (scan_char != '\"') {
-      *score_ptr += (scan_char - '@'); /* add char value of 'scan_char' to score */
-      *char_ptr   = scan_char;         /* set next 'name' char */
-      ++char_ptr;                      /* point to next empty 'name' char */
-      scan_char   = fgetc(names_file); /* scan in next 'scan_char' */
-    }
+/*   /1* allocate memory for 'name_tups' array *1/ */
+/*   handle_malloc(name_tups, sizeof(struct NameNode) * SAFE_LEN_NAMES); */
+/*   /1* name_tups = malloc(SIZE_NODE_POOL); *1/ */
+/*   /1* if (name_tups == NULL) { *1/ */
+/*   /1*   mem_error(SIZE_NODE_POOL); *1/ */
+/*   /1* } *1/ */
 
-    *char_ptr = '\0';               /* terminate completed 'name' string */
-    ++name_i;                       /* increment name counter */
-    fseek(names_file, 2, SEEK_CUR); /* skip comma delim and next opening '"' */
-    scan_char = fgetc(names_file);  /* scan in next 'name' char */
-  }
+/*   fseek(names_file, 1, SEEK_SET); /1* skip first opening quotation mark *1/ */
+/*   scan_char = fgetc(names_file);  /1* scan in first 'name' char *1/ */
+/*   name_i    = 0;                  /1* initialize name counter *1/ */
+/*   while (scan_char != EOF) { */
+/*     score_ptr = &name_tups[name_i].score; /1* point to 'score' of current NameNode *1/ */
+/*     char_ptr  = name_tups[name_i].name;   /1* point to start of 'name' buffer *1/ */
 
-  fclose(names_file); /* close file */
+/*     /1* until next closing quotation mark is found... *1/ */
+/*     while (scan_char != '\"') { */
+/*       *score_ptr += (scan_char - '@'); /1* add char value of 'scan_char' to score *1/ */
+/*       *char_ptr   = scan_char;         /1* set next 'name' char *1/ */
+/*       ++char_ptr;                      /1* point to next empty 'name' char *1/ */
+/*       scan_char   = fgetc(names_file); /1* scan in next 'scan_char' *1/ */
+/*     } */
 
-  load_info -> name_tups = name_tups; /* reference loaded info */
-  load_info -> num_names = name_i;
+/*     *char_ptr = '\0';               /1* terminate completed 'name' string *1/ */
+/*     ++name_i;                       /1* increment name counter *1/ */
+/*     fseek(names_file, 2, SEEK_CUR); /1* skip comma delim and next opening '"' *1/ */
+/*     scan_char = fgetc(names_file);  /1* scan in next 'name' char *1/ */
+/*   } */
 
-  return load_info; /* return scanned data */
-}
+/*   fclose(names_file); /1* close file *1/ */
+
+/*   name_buckets -> name_tups = name_tups; /1* reference loaded info *1/ */
+/*   name_buckets -> num_names = name_i; */
+
+/*   return name_buckets; /1* return scanned data *1/ */
+/* } */

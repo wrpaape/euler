@@ -30,10 +30,11 @@ void problem_67(char *result_buffer)
 
   tri_mat  = load_triangle(); /* load in triangle numbers from txt file */
 
-  head_ptr = (struct BranchNode **) malloc(B_NODE_PTR_BYTES);
-  if (head_ptr == NULL) {
-    mem_error(B_NODE_PTR_BYTES);
-  }
+  handle_malloc(head_ptr, sizeof(struct BranchNode *));
+  /* head_ptr = (struct BranchNode **) malloc(B_NODE_PTR_BYTES); */
+  /* if (head_ptr == NULL) { */
+  /*   mem_error(B_NODE_PTR_BYTES); */
+  /* } */
 
   *head_ptr = init_branches(tri_mat[NUM_TRI_ROWS - 1]); /* set init sums = last row */
 
@@ -44,10 +45,12 @@ void problem_67(char *result_buffer)
     for (col_i = 1; col_i < num_cols; ++col_i) {
       prev_node = next_node;              /* set 'prev_node' to last 'next_node' */
       next_node = prev_node -> next_node; /* set 'next_node' to next in list */
-      fork_node = (struct BranchNode *) malloc(BRANCH_NODE_BYTES);
-      if (fork_node == NULL) {
-        mem_error(BRANCH_NODE_BYTES);
-      }
+
+      handle_malloc(fork_node, sizeof(struct BranchNode));
+      /* fork_node = (struct BranchNode *) malloc(BRANCH_NODE_BYTES); */
+      /* if (fork_node == NULL) { */
+      /*   mem_error(BRANCH_NODE_BYTES); */
+      /* } */
       memcpy(fork_node, next_node, BRANCH_NODE_BYTES);
 
       /* insert 'fork_node' between 'prev_node' and 'next_node' */
@@ -92,26 +95,29 @@ int **load_triangle(void)
   int row_i;
   int col_i;
   
-  /* open the triangle data txt file */
-  tri_file = fopen(TRI_FILENAME, "r");
-  if (tri_file == NULL) {
-    file_error(TRI_FILENAME);
-  }
+  /* open the triangle data txt file for reading */
+  handle_fopen(tri_file, TRI_FILENAME, "r");
+  /* tri_file = fopen(TRI_FILENAME, "r"); */
+  /* if (tri_file == NULL) { */
+  /*   file_error(TRI_FILENAME); */
+  /* } */
 
   /* allocate memory for row pointers of 'tri_mat' */
-  row_bytes = sizeof(int *) * NUM_TRI_ROWS;
-  tri_mat   = (int **) malloc(row_bytes);
-  if (tri_mat == NULL) {
-    mem_error(row_bytes);
-  }
+  handle_malloc(tri_mat, sizeof(int *) * NUM_TRI_ROWS);
+  /* row_bytes = sizeof(int *) * NUM_TRI_ROWS; */
+  /* tri_mat   = (int **) malloc(row_bytes); */
+  /* if (tri_mat == NULL) { */
+  /*   mem_error(row_bytes); */
+  /* } */
 
   /* for (row_i = 0, num_cols = 3; row_i < NUM_TRI_ROWS; ++row_i, ++num_cols) { */
   for (row_i = 0, num_cols = 1; row_i < NUM_TRI_ROWS; ++row_i, ++num_cols) {
-    col_bytes = sizeof(int) * num_cols;
-    tri_row   = (int *) malloc(col_bytes);
-    if (tri_row == NULL) {
-      mem_error(col_bytes);
-    }
+    handle_malloc(tri_row, sizeof(int) * num_cols);
+    /* col_bytes = sizeof(int) * num_cols; */
+    /* tri_row   = (int *) malloc(col_bytes); */
+    /* if (tri_row == NULL) { */
+    /*   mem_error(col_bytes); */
+    /* } */
 
     /* scan file top to bottom */
     for (col_i = 0; col_i < num_cols; ++col_i) {
@@ -137,10 +143,11 @@ struct BranchNode *init_branches(int *base_row)
   /* working backwards from the last index of the 'base_row' of 'tri_mat' */
   for (col_i = NUM_TRI_ROWS - 1; col_i > -1; --col_i) {
     /* allocate memory for new branch node */
-    prev_node = (struct BranchNode *) malloc(BRANCH_NODE_BYTES);
-    if (prev_node == NULL) {
-      mem_error(BRANCH_NODE_BYTES);
-    }
+    handle_malloc(prev_node, sizeof(struct BranchNode));
+    /* prev_node = (struct BranchNode *) malloc(BRANCH_NODE_BYTES); */
+    /* if (prev_node == NULL) { */
+    /*   mem_error(BRANCH_NODE_BYTES); */
+    /* } */
 
     /* initialize new node in list */
     prev_node -> sum       = base_row[col_i];

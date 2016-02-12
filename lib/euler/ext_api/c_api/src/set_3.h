@@ -15,17 +15,22 @@
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
-struct NameTup {
+struct NameNode {
   char name[SIZE_NAME_BUF];
-  unsigned short score;
+  long long score;
+  struct NameNode *next_ptr;
 };
 
-struct LoadInfo {
-  struct NameTup *name_tups;
-  size_t num_names;
+struct NameBucket {
+  struct NameNode *head_ptr;
 };
+
+/* struct LoadInfo { */
+/*   struct NameBucket *name_tups; */
+/*   size_t num_names; */
+/* }; */
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
 void problem_22(char *result_buffer);
-struct LoadInfo *load_names(void);
+struct NameBucket *load_buckets(void);

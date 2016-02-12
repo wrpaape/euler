@@ -20,6 +20,6 @@
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-static inline void handle_malloc(void *ptr, const size_t total_bytes);
-static inline void handle_calloc(void *ptr, const size_t count, const size_t indiv_bytes);
-static inline void handle_fopen(FILE *ptr, const char *filename, const char *mode);
+extern inline void handle_malloc(void *ptr, const size_t total_bytes);
+extern inline void handle_calloc(void *ptr, const size_t count, const size_t indiv_bytes);
+extern inline void handle_fopen(FILE *ptr, const char *filename, const char *mode);

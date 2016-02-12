@@ -87,10 +87,11 @@ void problem_13(char *result_buffer)
   const unsigned int DIG_MAT[100][50] = DIGITS;
 
   /* allocate memory for 50 digits + 2 extra digits for overflow, init all to 0 */
-  result = calloc(52, sizeof(unsigned int));
-  if (result == NULL) {
-    mem_error(sizeof(unsigned int) * 52);
-  }
+  handle_calloc(result, 52, sizeof(unsigned int));
+  /* result = calloc(52, sizeof(unsigned int)); */
+  /* if (result == NULL) { */
+  /*   mem_error(sizeof(unsigned int) * 52); */
+  /* } */
 
   /* staring from the ones digits, add next number to 'result', propogating overflow */
   for (off_dig = 51; off_dig > 1; --off_dig) {
@@ -315,10 +316,11 @@ struct DayNode *init_day_cycle(void)
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
   };
   /* allocate contiguous memory for a week's worth of DayNodes */
-  day_cycle = malloc(DAY_CYCLE_SIZE);
-  if (day_cycle == NULL) {
-    mem_error(DAY_CYCLE_SIZE);
-  }
+  handle_malloc(day_cycle, sizeof(struct DayNode) * DAYS_PER_WEEK);
+  /* day_cycle = malloc(DAY_CYCLE_SIZE); */
+  /* if (day_cycle == NULL) { */
+  /*   mem_error(DAY_CYCLE_SIZE); */
+  /* } */
   /* For every day of the week, starting on Monday... */
   day_i = 0;
   while (1) {

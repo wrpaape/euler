@@ -27,20 +27,17 @@
  ************************************************************************************/
 void problem_22(char *result_buffer)
 {
-  struct NameNode **buckets = load_buckets();       /* load names from txt file */
-  /* struct NameNode *name_tups = buckets -> name_tups; /1* set pointer to 'name_tups' *1/ */
-  /* const size_t num_names    = buckets -> num_names;  /1* set total count of names *1/ */
+  /* load names from txt file into an array of lists sorted by starting name char */
+  struct NameNode **buckets = load_buckets();
 
 
-  printf("buckets[12] -> name:  %s\n",   buckets[12] -> name);
-  printf("buckets[12] -> score: %lld\n", buckets[12] -> score);
+  while (buckets[12] != NULL) {
+    printf("buckets[12] -> name:  %s\n",   buckets[12] -> name);
+    printf("buckets[12] -> score: %lld\n", buckets[12] -> score);
 
+    buckets[12] = buckets[12] -> next_ptr;
+  }
 
-  /* printf("first name:  %s\n",  name_tups[0].name); */
-  /* printf("first score: %hu\n", name_tups[0].score); */
-  /* printf("last name:   %s\n",  name_tups[num_names - 1].name); */
-  /* printf("last score:  %hu\n", name_tups[num_names - 1].score); */
-  /* printf("num_names:   %lu\n", num_names); */ 
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
@@ -49,20 +46,14 @@ void problem_22(char *result_buffer)
  ************************************************************************************/
 struct NameNode **load_buckets(void)
 {
-  FILE *names_file;                /* pointer to raw data file object */
-  struct NameNode **buckets; /* 26 length array of NameNode lists */
-  struct NameNode *node_ptr;       /* points to next free space of NameNode pool */
-  struct NameNode **head_dptr;  /* points to head of NameNode list in bucket */
-  /* size_t name_i;                   /1* running counter of scanned names *1/ */
-  /* char char_slot; */
-  char scan_char;                  /* holds next char scanned from file */
-  long long *score_ptr;  /* points to accumulating 'score' of current NameNode */
-  char *char_ptr;        /* points to current char of current NameNode 'name' */
+  FILE *names_file;            /* pointer to raw data file object */
+  struct NameNode **buckets;   /* 26 length array of NameNode lists */
+  struct NameNode *node_ptr;   /* points to next free space of NameNode pool */
+  struct NameNode **head_dptr; /* points to head of NameNode list in bucket */
+  char scan_char;              /* holds next char scanned from file */
+  long long *score_ptr;        /* points to accumulating 'score' of NameNode */
+  char *char_ptr;              /* points to current char of NameNode's 'name' */
 
-  /* conservative estimate of required memory to safely load in data */
-  /* const size_t SIZE_NODE_POOL = sizeof(struct NameNode) * SAFE_LEN_NAMES; */
-  /* const size_t SIZE_BUCKETS   = sizeof(struct NameBucket) * 26; */
-  
   /* open the names data txt file in read mode */
   names_file   = handle_fopen(NAMES_FILENAME, "r");
   /* allocate memory for 'buckets', initialize head pointers to 'NULL' */
@@ -72,10 +63,8 @@ struct NameNode **load_buckets(void)
 
   fseek(names_file, 1, SEEK_SET); /* skip first opening quotation mark */
   scan_char = fgetc(names_file);  /* scan in first 'name' char */
-  /* name_i    = 0;                  /1* initialize name counter *1/ */
   /* while there are remaining names... */
   while (scan_char != EOF) {
-
     /* link the next NameNode to the bucket corresponding to its name's first char */
     head_dptr = &buckets[scan_char - 'A'];
 
@@ -94,13 +83,12 @@ struct NameNode **load_buckets(void)
     }
 
     *char_ptr = '\0';               /* terminate completed 'name' string */
-    /* ++name_i;                       /1* increment name counter *1/ */
     ++node_ptr;                     /* point to next free node in NameNode pool */
     fseek(names_file, 2, SEEK_CUR); /* skip comma delim and next opening '"' */
     scan_char = fgetc(names_file);  /* scan in next 'name' char */
-
-    break; /* test */
   }
+
+  /* free(node_ptr);     /1* free remaining unused memory pool *1/ */
 
   fclose(names_file); /* close file */
 

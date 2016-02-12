@@ -26,13 +26,16 @@
  ************************************************************************************/
 void problem_22(char *result_buffer)
 {
-  struct LoadInfo *info_ptr; /* points to final LoadInfo result */
-  struct NameTup *name_tups; /* NameTup array referenced by 'load_info' */
-  info_ptr = load_names();      /* load in names from txt file */
+  struct LoadInfo *load_info = load_names();          /* load names from txt file */
+  struct NameTup *name_tups = load_info -> name_tups; /* set pointer to 'name_tups' */
+  const size_t num_names    = load_info -> num_names; /* set total count of names */
 
-  printf("first name:  %s\n",  info_ptr -> name_tups -> name);
-  printf("first score: %hu\n", info_ptr -> name_tups -> score);
-  printf("num_names:   %lu\n", info_ptr -> num_names);
+
+  printf("first name:  %s\n",  name_tups[0].name);
+  printf("first score: %hu\n", name_tups[0].score);
+  printf("last name:   %s\n",  name_tups[num_names - 1].name);
+  printf("last score:  %hu\n", name_tups[num_names - 1].score);
+  printf("num_names:   %lu\n", num_names); 
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
@@ -41,13 +44,13 @@ void problem_22(char *result_buffer)
  ************************************************************************************/
 struct LoadInfo *load_names(void)
 {
-  FILE *names_file;            /* pointer to raw data file object */
-  struct LoadInfo *result_ptr; /* points to final LoadInfo 'result' */
-  struct NameTup *name_tups;   /* NameTup array referenced by 'result' */
-  size_t name_i;               /* running counter of scanned names */
-  char scan_char;              /* holds next char scanned from file */
-  unsigned short *score_ptr;   /* points to accumulating 'score' of current NameTup */
-  char *char_ptr;              /* points to current char of current NameTup 'name' */
+  FILE *names_file;           /* pointer to raw data file object */
+  struct LoadInfo *load_info; /* points to final LoadInfo 'load_info' */
+  struct NameTup *name_tups;  /* NameTup array referenced by 'load_info' */
+  size_t name_i;              /* running counter of scanned names */
+  char scan_char;             /* holds next char scanned from file */
+  unsigned short *score_ptr;  /* points to accumulating 'score' of current NameTup */
+  char *char_ptr;             /* points to current char of current NameTup 'name' */
 
   /* conservative estimate of required memory to safely load in data */
   const size_t SIZE_NAME_TUPS = sizeof(struct NameTup) * SAFE_LEN_NAMES;
@@ -58,9 +61,9 @@ struct LoadInfo *load_names(void)
   if (names_file == NULL) {
     file_error(NAMES_FILENAME);
   }
-  /* allocate memory for 'result' */
-  result_ptr = malloc(SIZE_LOAD_INFO);
-  if (result_ptr == NULL) {
+  /* allocate memory for 'load_info' */
+  load_info = malloc(SIZE_LOAD_INFO);
+  if (load_info == NULL) {
     mem_error(SIZE_LOAD_INFO);
   }
   /* allocate memory for 'name_tups' array */
@@ -97,9 +100,9 @@ struct LoadInfo *load_names(void)
   /*   .num_names = name_i */
   /* }; */
 
-  /* result_ptr = &result; */
-  result_ptr -> name_tups = name_tups;
-  result_ptr -> num_names = name_i;
+  /* load_info = &result; */
+  load_info -> name_tups = name_tups;
+  load_info -> num_names = name_i;
 
-  return result_ptr; /* return scanned data */
+  return load_info; /* return scanned data */
 }

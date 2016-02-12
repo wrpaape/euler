@@ -1,26 +1,20 @@
 /************************************************************************************
- *                                    set_7.h                                       *
+ *                                    set_3.h                                       *
  *                                                                                  *
  * Houses preprocessor directives, constant declarations, and function prototypes   *
- * needed in module 'set_7.c'.                                                      *
+ * needed in module 'set_3.c'.                                                      *
  ************************************************************************************/
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
 #include "sets.h"
 
-#define NUM_TRI_ROWS 100
-#define TRI_FILENAME "data/set_7-prob_67-data.txt"
+#define NUM_NAMES 5000
+#define NAMES_FILENAME "data/set_3-prob_22-data.txt"
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
-struct BranchNode {
-  int sum;
-  struct BranchNode *next_node;
-};
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-void problem_67(char *result_buffer);
-int **load_triangle(void);
-struct BranchNode *init_branches(int *base_row);
+void problem_22(char *result_buffer);

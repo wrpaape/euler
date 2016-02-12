@@ -1,6 +1,7 @@
 CC 		 = gcc
 CFLAGS = -c
-../c_api : c_api.o set_2.o set_3.o set_7.o
+
+../c_api : c_api.o sets.o set_2.o set_3.o set_7.o
 				$(CC) -o $@ $^
 
 c_api.o : c_api.c c_api.h sets.h set_2.h set_3.h set_7.h
@@ -15,8 +16,8 @@ set_3.o : set_3.c set_3.h sets.h
 set_7.o : set_7.c set_7.h sets.h
 				$(CC) $(CFLAGS) set_7.c
 
-# sets.o: sets.c sets.h
-# 				$(CC) $(CFLAGS) sets.c
+sets.o: sets.c sets.h
+				$(CC) $(CFLAGS) sets.c
 
 clean :
 				$(RM) ../c_api *.o *~

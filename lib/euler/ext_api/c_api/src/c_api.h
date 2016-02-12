@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <time.h>
 #include "errors.h"
-#include "sets.h"
 #include "set_2.h"
 #include "set_3.h"
 #include "set_7.h"

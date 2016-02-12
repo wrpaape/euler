@@ -7,8 +7,6 @@
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
-#include "sets.h"
-
 #define SAFE_LEN_NAMES 6000
 #define SIZE_NAME_BUF 16
 #define NAMES_FILENAME "data/set_3-prob_22-data.txt"

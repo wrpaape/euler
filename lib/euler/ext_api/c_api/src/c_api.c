@@ -8,6 +8,13 @@
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
 #include "c_api.h"
+#include "sets.h"
+/************************************************************************************
+ *                            INLINE FUNCTION PROTOTYPES                            *
+ ************************************************************************************/
+/* extern inline void handle_malloc(void *ptr, const size_t total_bytes); */
+/* extern inline void handle_calloc(void *ptr, const size_t count, const size_t indiv_bytes); */
+/* extern inline void handle_fopen(FILE *ptr, const char *filename, const char *mode); */
 /************************************************************************************
  *                                  MAIN FUNCTION                                   *
  ************************************************************************************/

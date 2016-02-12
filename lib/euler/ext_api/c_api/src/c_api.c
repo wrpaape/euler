@@ -113,7 +113,7 @@ void time_func(void (*func_ptr)(char *))
   clock_t time_start;
   clock_t time_stop;
   clock_t time_elapsed;
-  char result_buffer[LEN_RES_BUF];
+  char result_buffer[SIZE_RES_BUF];
 
   time_start = clock();
   func_ptr(result_buffer);

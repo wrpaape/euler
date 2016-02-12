@@ -47,7 +47,7 @@ struct NameBucket *load_buckets(void)
   FILE *names_file;                /* pointer to raw data file object */
   struct NameBucket *name_buckets; /* 26 length array of NameNode lists */
   struct NameNode *node_ptr;       /* points to next free space of NameNode pool */
-  /* size_t name_i;                   /1* running counter of scanned names *1/ */
+  size_t name_i;                   /* running counter of scanned names */
   char scan_char;                  /* holds next char scanned from file */
   long long *score_ptr;  /* points to accumulating 'score' of current NameNode */
   char *char_ptr;        /* points to current char of current NameNode 'name' */

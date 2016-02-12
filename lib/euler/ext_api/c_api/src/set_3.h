@@ -15,13 +15,10 @@
  ************************************************************************************/
 struct NameNode {
   char name[SIZE_NAME_BUF];
-  long long score;
+  int char_score;
+  int sort_score;
   struct NameNode *next_ptr;
 };
-
-/* struct NameBucket { */
-/*   struct NameNode *head_ptr; */
-/* }; */
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/

@@ -150,7 +150,6 @@ void *sort_buckets(void *params_ptr)
 
     temp_dptr = &that_ptr; /* set 'temp_dptr' to point to 'that_ptr' */
     head_dptr = &that_ptr; /* anchor 'head_dptr' to head of list */
-
     while (1) {
 
     /* set next 'this_ptr', pluck from list, and bridge gap */

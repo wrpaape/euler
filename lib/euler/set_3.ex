@@ -37,20 +37,20 @@ defmodule Euler.Set3 do
   """
   # def problem_22, do: CAPI.call(~w(3 22))
   def problem_22 do
-    ~w(data set_3-prob_22-data.txt)
-    |> Path.join
-    |> Path.expand(Application.get_env(:euler, :c_api_dir))
-    |> File.read!
-    |> String.split(~w(" ,), trim: true)
-    |> Enum.sort
-    |> Enum.reduce({0, 1}, fn(name, {sum_scores, index}) ->
+    :euler
+    |> Application.get_env(:c_api_dir)
+    |> Path.join("data/set_3-prob_22-data.txt") # fetch data file stored in 'c_api' directory
+    |> File.read!                               # read in data
+    |> String.split(~w(" ,), trim: true)        # split into individual names
+    |> Enum.sort                                # sort alphabetically
+    |> Enum.reduce({0, 1}, fn(name, {sum_name_scores, index}) ->
       char_score =
         name
-        |> String.to_char_list
-        |> Enum.reduce(0, &(&1 + &2 - ?@))
+        |> String.to_char_list                            # decompose bitstring to list of ASCII chars
+        |> Enum.reduce(0, &(&1 + &2 - ?@))                # sum offset of each from '@' ('A' => 1, 'Z' => 26) => add to acc
       
-      {sum_scores + (char_score * index), index + 1}
+      {sum_name_scores + (char_score * index), index + 1} # mult by index to calc 'name score' => add to acc, inc index
     end)
-    |> elem(0)
+  |> elem(0) # take first elem of acc tuple, the total of all name scores
   end
 end

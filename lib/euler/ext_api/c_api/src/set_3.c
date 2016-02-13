@@ -52,6 +52,11 @@ void problem_22(char *result_buffer)
                           (void *) &sort_params_arr[q_i]);
   }
 
+  /* await threads */
+  for (q_i = 0; q_i < 4; ++q_i) {
+    handle_pthread_join(sort_threads[q_i], NULL);
+  }
+
 
   /* while (buckets[25] != NULL) { */
   /*   printf("buckets[25] -> name:       %s\n", buckets[25] -> name); */
@@ -59,8 +64,6 @@ void problem_22(char *result_buffer)
   /*   printf("buckets[25] -> sort_score: %d\n", buckets[25] -> sort_score); */
   /*   buckets[25] = buckets[25] -> next_ptr; */
   /* } */
-
-  sleep(1);
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }

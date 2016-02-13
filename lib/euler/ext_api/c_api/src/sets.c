@@ -18,6 +18,7 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          const pthread_attr_t *attr,
                                          void *(*start_routine)(void *),
                                          void *arg);
+extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

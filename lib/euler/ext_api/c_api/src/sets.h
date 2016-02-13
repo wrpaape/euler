@@ -62,12 +62,12 @@ inline FILE *handle_fopen(const char *filename, const char *mode)
   return ptr;
 }
 
-inline void handle_pthread_create(pthread_t *thread,
+inline void handle_pthread_create(pthread_t *thread_ptr,
                                   const pthread_attr_t *attr,
                                   void *(*start_routine)(void *),
                                   void *arg)
 {
-  int return_code = pthread_create(thread, attr, start_routine, arg);
+  int return_code = pthread_create(thread_ptr, attr, start_routine, arg);
 
   if (return_code != 0) {
     fprintf(stderr, FORMAT_ERROR(pthread_create failure\n\n  return code: "%d"),
@@ -76,3 +76,13 @@ inline void handle_pthread_create(pthread_t *thread,
   }
 }
 
+inline void handle_pthread_join(pthread_t thread, void **return_value)
+{
+  int return_code = pthread_join(thread, return_value);
+
+  if (return_code != 0) {
+    fprintf(stderr, FORMAT_ERROR(pthread_join failure\n\n  return code: "%d"),
+        return_code);
+    exit(1);
+  }
+}

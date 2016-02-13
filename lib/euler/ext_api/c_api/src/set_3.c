@@ -129,9 +129,9 @@ void *sort_buckets(void *params_ptr)
   const int span             = params -> span;
 
   struct NameNode **head_dptr;
-  struct NameNode *this_ptr;
-  struct NameNode *that_ptr;
   struct NameNode **that_dptr;
+  struct NameNode *that_ptr;
+  struct NameNode *this_ptr;
 
   for (int bucket_i = 0; bucket_i < count; ++bucket_i) {
 
@@ -145,22 +145,42 @@ void *sort_buckets(void *params_ptr)
       continue;
     }
 
-    head_dptr = &that_ptr;
 
-    while (this_ptr != NULL) {
-      /* if 'this_ptr''s name is ordered before 'that_ptr''s name alphabetically... */
-      if(strcmp(this_ptr -> name,
-                that_ptr -> name) < 0) {
+    /* pop 'this_ptr' from list and bridge gap */
+    that_ptr -> next_ptr = this_ptr -> next_ptr;
 
-        that_ptr -> next_ptr = this_ptr -> next_ptr; /* swap 'next_ptr's */
+    that_dptr = &that_ptr; /* set 'that_dptr' to point to 'that_ptr' */
+    head_dptr = that_dptr; /* anchor 'head_dptr' to head of list */
 
-        *that_dptr = this_ptr;             /* point prev node to 'this_ptr' */
-        that_ptr   = *head_dptr;           /* reset 'that_ptr' to start at head */
-        this_ptr   = this_ptr -> next_ptr; /* advance 'this_ptr' to next node */
+    while (1) {
+      while (1) {
+        /* if 'this_ptr''s name comes before 'that_ptr''s name... */
+        if(strcmp(this_ptr -> name,
+                  that_ptr -> name) < 0) {
+          /* insert 'this_ptr' before 'that_ptr' and break */
+          that_ptr -> next_ptr = this_ptr -> next_ptr; /* swap 'next_ptr's */
+          *that_dptr = this_ptr;                       /* bridge to 'this_ptr' */
+          break;
+        }
+        /* else advance 'that_ptr' and update 'that_dptr' */
+        that_ptr = that_ptr -> next_ptr;
+        /* if traversed entire list... */
+        if (that_ptr == NULL) {
+          (*that_dptr) -> next_ptr = this_ptr; /* append 'this_ptr' to end */
+          break;
+        }
+        that_dptr = &that_ptr;
       }
 
-      that_ptr = that_ptr -> next_ptr;
-      
+      this_ptr = this_ptr -> next_ptr; /* advance 'this_ptr' to next node */
+
+      /* if traversed entire list... */
+      if (this_ptr == NULL) {
+        break; /* entire bucket 'interval[bucket_i]' has been sorted */
+      }
+
+      that_dptr = head_dptr;  /* reset 'that_dptr' to 'head_ptr' */
+      that_ptr  = *that_dptr; /* deference 'that_ptr' from 'that_dptr' */
     }
 
     /* */

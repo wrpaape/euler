@@ -68,6 +68,7 @@ inline void handle_pthread_create(pthread_t *thread,
                                   void *arg)
 {
   int return_code = pthread_create(thread, attr, start_routine, arg);
+
   if (return_code != 0) {
     fprintf(stderr, FORMAT_ERROR(pthread_create failure\n\n  return code: "%d"),
         return_code);

@@ -6,6 +6,7 @@
 /************************************************************************************
  *                             PREPROCESSOR DIRECTIVES                              *
  ************************************************************************************/
+#include <unistd.h>
 #include "sets.h"
 #include "set_3.h"
 /************************************************************************************
@@ -27,50 +28,39 @@
  ************************************************************************************/
 void problem_22(char *result_buffer)
 {
-  pthread_t sort_threads[NUM_SORT_THREADS];
-
-  int bucket_spans[NUM_SORT_THREADS] = BUCKET_SPANS {
-    [0 ...            (NUM_SORT_THREADS / 2 - 1)] = (26 / NUM_SORT_THREADS),
-    [(NUM_SORT_THREADS / 2) ... NUM_SORT_THREADS] = ((26 / NUM_SORT_THREADS) + (26 % NUM_SORT_THREADS))
+  struct SortParams sort_params_arr[4] = {
+    [0 ... 1] = { .span = 7 },
+    [2 ... 3] = { .span = 6 },
   };
+  pthread_t sort_threads[4];
+  int q_i;
+  int offset;
+  int spans[4] = {7, 7, 6, 6};
 
-
-  /* pthread_t q2_thread; */
-  /* pthread_t q3_thread; */
-  /* pthread_t q4_thread; */
-
-  struct SortArgs q1_arg = {
-    .bucket_span = 7;
-  };
-
-  struct SortArgs q2_arg = {
-    .bucket_span = 7;
-  };
-
-  struct SortArgs q3_arg = {
-    .bucket_span = 7;
-  };
 
   /* load names from txt file into an array of lists sorted by starting name char */
   struct NameNode **buckets;
 
   buckets = load_buckets();
 
-  pthread_create
+  for (q_i = 0, offset = 0; q_i < 4; ++q_i, offset += spans[q_i]) {
+    sort_params_arr[q_i].interval = &buckets[offset];
 
-  sort_buckets(buckets);
-
-
-
-
-
-  while (buckets[25] != NULL) {
-    printf("buckets[25] -> name:       %s\n", buckets[25] -> name);
-    printf("buckets[25] -> score: %d\n", buckets[25] -> score);
-    printf("buckets[25] -> sort_score: %d\n", buckets[25] -> sort_score);
-    buckets[25] = buckets[25] -> next_ptr;
+    handle_pthread_create(&sort_threads[q_i],
+                          NULL,
+                          sort_buckets,
+                          (void *) &sort_params_arr[q_i]);
   }
 
+
+  /* while (buckets[25] != NULL) { */
+  /*   printf("buckets[25] -> name:       %s\n", buckets[25] -> name); */
+  /*   printf("buckets[25] -> score: %d\n", buckets[25] -> score); */
+  /*   printf("buckets[25] -> sort_score: %d\n", buckets[25] -> sort_score); */
+  /*   buckets[25] = buckets[25] -> next_ptr; */
+  /* } */
+
+  sleep(1);
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
@@ -129,11 +119,20 @@ struct NameNode **load_buckets(void)
 
 
 
-void sort_buckets(struct SortArgs *args)
+void *sort_buckets(void *params_ptr)
 {
+  struct SortParams *params;
   struct NameNode **interval;
   int span;
 
-  interval = SortArgs
+  params   = (struct SortParams *)params_ptr;
+  interval = params -> interval;
+  span     = params -> span;
 
+  printf("interval: %p\n", interval);
+  printf("span:     %d\n", span);
+  printf("interval[0] -> head_ptr -> name: %s\n", interval[0] -> name);
+  fflush(stdout);
+
+  return NULL;
 }

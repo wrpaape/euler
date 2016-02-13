@@ -19,13 +19,13 @@ struct NameNode {
   struct NameNode *next_ptr;
 };
 
-struct SortArgs {
-  struct NameNode **bucket_interval;
-  int bucket_span;
+struct SortParams {
+  struct NameNode **interval;
+  int span;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
 void problem_22(char *result_buffer);
 struct NameNode **load_buckets(void);
-void sort_buckets(struct SortArgs *args);
+void *sort_buckets(void *arg_ptr);

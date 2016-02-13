@@ -17,7 +17,7 @@ extern inline FILE *handle_fopen(const char *filename, const char *mode);
 extern inline void handle_pthread_create(pthread_t *thread,
                                          const pthread_attr_t *attr,
                                          void *(*start_routine)(void *),
-                                         void *arg);
+                                         void *arg)
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

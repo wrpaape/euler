@@ -35,5 +35,22 @@ defmodule Euler.Set3 do
 
   iex> Euler.Set3.problem_22
   """
-  def problem_22, do: CAPI.call(~w(3 22))
+  # def problem_22, do: CAPI.call(~w(3 22))
+  def problem_22 do
+    ~w(data set_3-prob_22-data.txt)
+    |> Path.join
+    |> Path.expand(Application.get_env(:euler, :c_api_dir))
+    |> File.read!
+    |> String.split(~w(" ,), trim: true)
+    |> Enum.sort
+    |> Enum.reduce({0, 1}, fn(name, {sum_scores, index}) ->
+      char_score =
+        name
+        |> String.to_char_list
+        |> Enum.reduce(0, &(&1 + &2 - ?@))
+      
+      {sum_scores + (char_score * index), index + 1}
+    end)
+    |> elem(0)
+  end
 end

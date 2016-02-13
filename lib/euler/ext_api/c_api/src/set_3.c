@@ -43,7 +43,7 @@ void problem_22(char *result_buffer)
 
   buckets = load_buckets();
 
-  for (q_i = 0, offset = 0; q_i < 4; ++q_i, offset += spans[q_i]) {
+  for (q_i = 0, offset = 0; q_i < 1; ++q_i, offset += spans[q_i]) {
     sort_params_arr[q_i].interval = &buckets[offset];
 
     handle_pthread_create(&sort_threads[q_i],
@@ -53,17 +53,16 @@ void problem_22(char *result_buffer)
   }
 
   /* await threads */
-  for (q_i = 0; q_i < 4; ++q_i) {
+  for (q_i = 0; q_i < 1; ++q_i) {
     handle_pthread_join(sort_threads[q_i], NULL);
   }
 
 
-  /* while (buckets[25] != NULL) { */
-  /*   printf("buckets[25] -> name:       %s\n", buckets[25] -> name); */
-  /*   printf("buckets[25] -> score: %d\n", buckets[25] -> score); */
-  /*   printf("buckets[25] -> sort_score: %d\n", buckets[25] -> sort_score); */
-  /*   buckets[25] = buckets[25] -> next_ptr; */
-  /* } */
+  while (buckets[25] != NULL) {
+    printf("buckets[25] -> name:  %s\n", buckets[25] -> name);
+    printf("buckets[25] -> score: %d\n", buckets[25] -> score);
+    buckets[25] = buckets[25] -> next_ptr;
+  }
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
@@ -124,80 +123,76 @@ struct NameNode **load_buckets(void)
 
 void *sort_buckets(void *params_ptr)
 {
-  struct SortParams params   = (struct SortParams *)params_ptr;
-  struct NameNode **interval = params -> interval;
-  const int span             = params -> span;
+  struct SortParams *params = (struct SortParams *)params_ptr;
+  struct NameNode **buckets = params -> interval;
+  const int span            = params -> span;
 
-  struct NameNode **prev_head;
-  struct NameNode *prev_this;
-  struct NameNode *prev_that;
-  struct NameNode *that_ptr;
+  struct NameNode **head_anchor;
+  struct NameNode **that_anchor;
+  struct NameNode *next_this_ptr;
   struct NameNode *this_ptr;
+  struct NameNode *that_ptr;
 
-  for (int bucket_i = 0; bucket_i < count; ++bucket_i) {
-
-    prev_this = interval[bucket_i];
-    if (prev_this == NULL) {
+  for (int bucket_i = 0; bucket_i < span; ++bucket_i) {
+    prev_this_ptr = buckets[bucket_i];
+    if (prev_this_ptr == NULL) {
       continue;
     }
 
-    this_ptr = prev_this -> next_ptr;
-    if (this_ptr == NULL) {
-      continue;
-    }
+    head_anchor = &prev_this_ptr;
 
-    prev_head = &prev_head;
+    this_ptr = prev_this_ptr -> next_ptr;
 
-    temp_dptr = &that_ptr; /* set 'temp_dptr' to point to 'that_ptr' */
-    head_dptr = &that_ptr; /* anchor 'head_dptr' to head of list */
-    while (1) {
+    while (this_ptr != NULL) {
+      puts("this_ptr not NULL, plucking from list:");
+      printf("this_ptr -> name:      %s\n", this_ptr -> name);
+      printf("prev_this_ptr -> name: %s\n", prev_this_ptr -> name);
+      sleep(1);
 
-    /* set next 'this_ptr', pluck from list, and bridge gap */
-    temp_dptr  = &this_ptr;
-    this_ptr   = this_ptr -> next_ptr;
-    *temp_dptr = this_ptr;
+      prev_this_ptr -> next_ptr = this_ptr -> next_ptr;
+      prev_this_ptr = prev_this_ptr -> next_ptr;
+      that_anchor  = head_anchor;
+      that_ptr     = *that_anchor;
 
+      puts("plucked from list and bridged gap:");
+      printf("this_ptr -> name:      %s\n", this_ptr -> name);
+      printf("prev_this_ptr -> name: %s\n", prev_this_ptr -> name);
+      sleep(1);
 
+      while (strcmp(that_ptr -> name,
+                    this_ptr -> name) < 0) {
+        printf("that_ptr -> name: %s\n", that_ptr -> name);
+        printf("this_ptr -> name: %s\n", this_ptr -> name);
+        puts("advancing that!");
+        sleep(1);
 
-      temp_dptr = head_dptr;  /* reset 'temp_dptr' to 'head_ptr' */
-      that_ptr  = *temp_dptr; /* deference 'that_ptr' from 'temp_dptr' */
+        that_anchor = &that_ptr;
+        that_ptr    = that_ptr -> next_ptr;
 
-      while (1) {
-        /* if 'this_ptr''s name comes before 'that_ptr''s name... */
-        if(strcmp(this_ptr -> name,
-                  that_ptr -> name) < 0) {
-          /* insert 'this_ptr' before 'that_ptr' and break */
-          that_ptr -> next_ptr = this_ptr -> next_ptr; /* swap 'next_ptr's */
-          *temp_dptr = this_ptr;                       /* bridge to 'this_ptr' */
-          break;
-        }
-        /* else advance 'that_ptr' and update 'temp_dptr' */
-        that_ptr = that_ptr -> next_ptr;
-        /* if traversed entire list... */
         if (that_ptr == NULL) {
-          (*temp_dptr) -> next_ptr = this_ptr; /* append 'this_ptr' to end */
+          puts("end of list, breaking!");
+          sleep(1);
           break;
         }
-        temp_dptr = &that_ptr;
       }
 
-      this_ptr = this_ptr -> next_ptr; /* advance 'this_ptr' to next node */
+      puts("inserting this_ptr in front of that_anchor:");
+      printf("(*that_anchor) -> name: %s\n", (*that_anchor) -> name);
+      printf("this_ptr -> name:       %s\n", this_ptr -> name);
+      sleep(1);
 
-      /* if traversed entire list... */
-      if (this_ptr == NULL) {
-        break; /* entire bucket 'interval[bucket_i]' has been sorted */
-      }
-    }
+      (*that_anchor) -> next_ptr = this_ptr;
+      this_ptr       -> next_ptr = that_ptr;
 
-    /* */
-    that_ptr -> next_ptr = this_ptr -> next_ptr;
 
+      puts("advancing this_ptr:");
+      this_ptr = prev_this_ptr -> next_ptr; /* set next 'this_ptr' */
     }
   }
 
-  printf("interval: %p\n", interval);
+  printf("buckets: %p\n",  buckets);
   printf("span:     %d\n", span);
-  printf("interval[0] -> head_ptr -> name: %s\n", interval[0] -> name);
+  printf("buckets[0] -> head_ptr -> name: %s\n", buckets[0] -> name);
   fflush(stdout);
 
   return NULL;

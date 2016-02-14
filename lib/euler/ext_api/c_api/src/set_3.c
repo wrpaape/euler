@@ -158,26 +158,19 @@ void *sort_buckets(void *params_ptr)
 
       sleep(1);
 
+      prev_this_ptr -> next_ptr = this_ptr -> next_ptr;
+
       if (strcmp(this_ptr -> name,
                  (*head)  -> name) < 0) {
 
-        temp_ptr = this_ptr -> next_ptr;
-
-        this_ptr -> next_ptr = (*head) -> next_ptr;
-
-        (*head) -> next_ptr = temp_ptr;
-
-        temp_ptr = *head;
+        this_ptr -> next_ptr = *head;
 
         *head = this_ptr;
 
-        prev_this_ptr -> next_ptr = temp_ptr;
+        this_ptr = prev_this_ptr -> next_ptr;
 
         continue;
       }
-
-
-      prev_this_ptr -> next_ptr = this_ptr -> next_ptr;
 
 
       prev_that_ptr = *head;
@@ -190,7 +183,13 @@ void *sort_buckets(void *params_ptr)
         prev_that_ptr = that_ptr;
         that_ptr = that_ptr -> next_ptr;
       }
+
+      prev_that_ptr -> next_ptr = this_ptr;
+
+      this_ptr -> next_ptr = that_ptr;
     
+
+      this_ptr = prev_this_ptr -> next_ptr;
 
     }
   }

@@ -58,11 +58,11 @@ void problem_22(char *result_buffer)
   }
 
 
-  while (buckets[25] != NULL) {
-    printf("buckets[25] -> name:  %s\n", buckets[25] -> name);
-    printf("buckets[25] -> score: %d\n", buckets[25] -> score);
-    buckets[25] = buckets[25] -> next_ptr;
-  }
+  /* while (buckets[25] != NULL) { */
+  /*   printf("buckets[25] -> name:  %s\n", buckets[25] -> name); */
+  /*   printf("buckets[25] -> score: %d\n", buckets[25] -> score); */
+  /*   buckets[25] = buckets[25] -> next_ptr; */
+  /* } */
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
@@ -123,10 +123,8 @@ struct NameNode **load_buckets(void)
 
 void *sort_buckets(void *params_ptr)
 {
-  struct SortParams *params = (struct SortParams *)params_ptr;
-  struct NameNode **buckets = params -> interval;
-  const int span            = params -> span;
-
+  struct SortParams *params;
+  struct NameNode **bucket_ptr;
   struct NameNode *temp_ptr;
   struct NameNode *next_ptr;
   struct NameNode *next_next_ptr;
@@ -134,13 +132,21 @@ void *sort_buckets(void *params_ptr)
   struct NameNode *new_prev_ptr;
   struct NameNode *new_next_ptr;
 
-  /* for (int bucket_i = 0; bucket_i < span; ++bucket_i) { */
-  for (int bucket_i = 25; bucket_i < 26; ++bucket_i) {
+  params     = (struct SortParams *) params_ptr;
+  bucket_ptr = params -> interval;
 
-    new_head_ptr = buckets[bucket_i];
+  /* for (int rem_buckets = params -> span; rem_buckets > 0; ++bucket_ptr, --rem_buckets) { */
+  for (int rem_buckets = 1; rem_buckets > 0; ++bucket_ptr, --rem_buckets) {
+
+    new_head_ptr = *bucket_ptr;
 
     if (new_head_ptr == NULL) {
       continue;
+    }
+    puts("old bucket:");
+    temp_ptr = *bucket_ptr;
+    for (temp_ptr = new_head_ptr; temp_ptr != NULL; temp_ptr = temp_ptr -> next_ptr) {
+      printf("  %s\n", temp_ptr -> name);
     }
 
     next_ptr = new_head_ptr -> next_ptr;
@@ -148,20 +154,6 @@ void *sort_buckets(void *params_ptr)
     new_head_ptr -> next_ptr = NULL;
 
     while (next_ptr != NULL) {
-
-      
-      temp_ptr = new_head_ptr;
-      printf("next_ptr -> name: %s\ntop ten:\n", next_ptr -> name);
-      for (int i = 0; i < 10; ++i) {
-        printf("%2d. %s\n", i, temp_ptr -> name);
-        temp_ptr = temp_ptr -> next_ptr;
-        if (!temp_ptr) {
-          break;
-        }
-      }
-
-      sleep(1);
-
 
 
       next_next_ptr = next_ptr -> next_ptr;
@@ -191,11 +183,13 @@ void *sort_buckets(void *params_ptr)
       next_ptr = next_next_ptr;
     }
 
+    *bucket_ptr = new_head_ptr;
 
-
-
-
-
+    puts("\nnew bucket:");
+    temp_ptr = *bucket_ptr;
+    for (temp_ptr = new_head_ptr; temp_ptr != NULL; temp_ptr = temp_ptr -> next_ptr) {
+      printf("  %s\n", temp_ptr -> name);
+    }
   }
 
 

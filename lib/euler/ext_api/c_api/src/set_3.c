@@ -127,107 +127,64 @@ void *sort_buckets(void *params_ptr)
   struct NameNode **buckets = params -> interval;
   const int span            = params -> span;
 
-  struct NameNode **head_anchor;
   struct NameNode **that_anchor;
-  struct NameNode *prev_this_ptr;
+  struct NameNode *new_head_ptr;
+  struct NameNode *old_head_ptr;
   struct NameNode *this_ptr;
   struct NameNode *that_ptr;
 
-  struct NameNode *ptr;
-  int i;
-
+  /* puts("old list"); */
+  /* int i = 0; */
+  /* while (buckets[25] != NULL && i++ < 100) { */
+  /*   printf("%-2d. %s\n", i, buckets[25] -> name); */
+  /*   buckets[25] = buckets[25] -> next_ptr; */
+  /* } */
   /* for (int bucket_i = 0; bucket_i < span; ++bucket_i) { */
   for (int bucket_i = 25; bucket_i < 26; ++bucket_i) {
-    prev_this_ptr = buckets[bucket_i];
-    if (prev_this_ptr == NULL) {
+    new_head_ptr = buckets[bucket_i];
+
+    if (new_head_ptr == NULL) {
       continue;
     }
 
-    head_anchor = &prev_this_ptr;
+    old_head_ptr = new_head_ptr;
 
-    this_ptr = prev_this_ptr -> next_ptr;
+    while (old_head_ptr != NULL) {
+      old_head_ptr = old_head_ptr -> next_ptr; /* advance to next node in old list */
 
-    while (this_ptr != NULL && i < 100) {
-      ptr = buckets[25];
-      i   = 0;
-      while (ptr != NULL) {
-        ++i;
-        printf("%d. %s |", i, ptr -> name);
-        ptr = ptr -> next_ptr;
-      }
+      this_ptr    = old_head_ptr;  /* copy next value to be sorted into new list */
+      that_anchor = &new_head_ptr; /* start comparison at head of new list */
+      that_ptr    = new_head_ptr;
 
-      puts("\nthis_ptr not NULL, plucking from list:");
-      printf("  this_ptr -> name:          %s\n", this_ptr -> name);
-      printf("  prev_this_ptr -> name:     %s\n", prev_this_ptr -> name);
-      printf("  (*head_anchor) -> name:    %s\n", (*head_anchor) -> name);
-      printf("  prev_this_ptr:             %p\n", prev_this_ptr);
-      printf("  this_ptr:                  %p\n", this_ptr);
-      printf("  prev_this_ptr -> next_ptr: %p\n", prev_this_ptr -> next_ptr);
-      printf("  head_anchor:               %p\n", head_anchor);
-      printf("  *head_anchor:              %p\n", *head_anchor);
+      printf("new_head_ptr -> name %s\n", new_head_ptr -> name);
 
-      prev_this_ptr -> next_ptr = this_ptr -> next_ptr;
-      prev_this_ptr = prev_this_ptr -> next_ptr;
-
-      that_anchor = head_anchor;
-
-      puts("plucked from list, bridged gap, and advanced prev_this_ptr!");
-      printf("  this_ptr -> name:          %s\n", this_ptr -> name);
-      printf("  prev_this_ptr -> name:     %s\n", prev_this_ptr -> name);
-      printf("  (*head_anchor) -> name:    %s\n", (*head_anchor) -> name);
-      printf("  prev_this_ptr:             %p\n", prev_this_ptr);
-      printf("  this_ptr:                  %p\n", this_ptr);
-      printf("  prev_this_ptr -> next_ptr: %p\n", prev_this_ptr -> next_ptr);
-      printf("  head_anchor:               %p\n", head_anchor);
-      printf("  *head_anchor:              %p\n", *head_anchor);
-      sleep(1);
-
-      while (strcmp((*that_ptr) -> name,
-                    this_ptr -> name) < 0) {
-        puts("\nadvancing that!");
-        printf("  (*that_ptr) -> name: %s\n", (*that_ptr) -> name);
-        printf("  this_ptr -> name:    %s\n", this_ptr -> name);
-        sleep(1);
-
-        that_anchor = ((*that_anchor) -> next_ptr);
+      /* while this comes after that... */
+      while (strcmp(this_ptr -> name,
+                    that_ptr -> name) > 0) {
+        /* advance that */
+        that_anchor = &(*that_anchor) -> next_ptr;
+        /* that_anchor = &that_ptr; */
         that_ptr    = that_ptr -> next_ptr;
 
+        /* break if at end of list, this is the new caboose */
         if (that_ptr == NULL) {
-          puts("end of list, breaking!");
-          sleep(1);
           break;
         }
       }
-
-      puts("\ninserting this_ptr in front of that_anchor:");
-      printf("  (*that_anchor) -> name:     %s\n", (*that_anchor) -> name);
-      printf("  this_ptr -> name:           %s\n", this_ptr -> name);
-      printf("  this_ptr:                   %p\n", this_ptr);
-      printf("  that_ptr:                   %p\n", that_ptr);
-      printf("  (*that_anchor) -> next_ptr: %p\n", (*that_anchor) -> next_ptr);
-      sleep(1);
-
-      (*that_anchor) -> next_ptr = this_ptr;
+      /* insert this before that */
       this_ptr       -> next_ptr = that_ptr;
-
-      puts("insertion complete!");
-      printf("  (*that_anchor) -> name:     %s\n", (*that_anchor) -> name);
-      printf("  this_ptr -> name:           %s\n", this_ptr -> name);
-      printf("  this_ptr:                   %p\n", this_ptr);
-      printf("  that_ptr:                   %p\n", that_ptr);
-      printf("  (*that_anchor) -> next_ptr: %p\n", (*that_anchor) -> next_ptr);
-      sleep(1);
-
-
-      puts("\nadvancing this_ptr:");
-      this_ptr = prev_this_ptr -> next_ptr; /* set next 'this_ptr' */
+      (*that_anchor) -> next_ptr = this_ptr;
     }
-  }
 
-  printf("buckets: %p\n",  buckets);
-  printf("span:     %d\n", span);
-  printf("buckets[0] -> head_ptr -> name: %s\n", buckets[0] -> name);
-  fflush(stdout);
+    puts("\nnew list");
+    int i = 0;
+    while (new_head_ptr != NULL && i++ < 100) {
+      printf("%-2d. %s\n", i, new_head_ptr -> name);
+      new_head_ptr = new_head_ptr -> next_ptr;
+    }
+
+    buckets[bucket_i] = new_head_ptr; /* swap old list for new, sorted list */
+  }
 
   return NULL;
 }

@@ -150,7 +150,6 @@ void *sort_buckets(void *params_ptr)
     while (this_ptr != NULL) {
 
       temp_ptr = *head;
-
       printf("\nthis_ptr -> name: %s\n  top 20:\n", this_ptr -> name);
       for (int i = 0; i < 20; ++i) {
         printf("%2d. %s\n", i, temp_ptr -> name);
@@ -162,16 +161,17 @@ void *sort_buckets(void *params_ptr)
       if (strcmp(this_ptr -> name,
                  (*head)  -> name) < 0) {
 
-        temp_ptr = (*head) -> next_ptr;
+        temp_ptr = this_ptr -> next_ptr;
 
+        this_ptr -> next_ptr = (*head) -> next_ptr;
 
-        prev_this_ptr -> next_ptr = *head;
+        (*head) -> next_ptr = temp_ptr;
 
-        (*head) -> next_ptr = this_ptr -> next_ptr;
+        temp_ptr = *head;
 
         *head = this_ptr;
 
-        this_ptr = temp_ptr;
+        prev_this_ptr -> next_ptr = temp_ptr;
 
         continue;
       }
@@ -192,11 +192,6 @@ void *sort_buckets(void *params_ptr)
       }
     
 
-      prev_that_ptr -> next_ptr = this_ptr;
-
-      this_ptr -> next_ptr = that_ptr;
-
-      this_ptr = prev_this_ptr -> next_ptr;
     }
   }
 

@@ -28,78 +28,105 @@
  ************************************************************************************/
 void problem_22(char *result_buffer)
 {
-  struct SortParams sort_params_arr[4] = {
+  struct SortParams params_arr[4] = {
     [0 ... 1] = { .span = 7 },
-    [2 ... 3] = { .span = 6 },
+    [2 ... 3] = { .span = 6 }
   };
   pthread_t sort_threads[4];
   int q_i;
-  int offset;
-  int spans[4] = {7, 7, 6, 6};
-
+  int bucket_i;
+  int name_i;
+  int sum_name_scores;
+  struct NameNode *head_ptr;
 
   /* load names from txt file into an array of lists sorted by starting name char */
   struct NameNode **buckets;
 
   buckets = load_buckets();
 
-  for (q_i = 0, offset = 0; q_i < 1; ++q_i, offset += spans[q_i]) {
-    sort_params_arr[q_i].interval = &buckets[offset];
+  for (q_i = 0, bucket_i = 0; q_i < 4; bucket_i += params_arr[q_i].span, ++q_i) {
+    params_arr[q_i].interval = &buckets[bucket_i];
 
     handle_pthread_create(&sort_threads[q_i],
                           NULL,
                           sort_buckets,
-                          (void *) &sort_params_arr[q_i]);
+                          (void *) &params_arr[q_i]);
   }
 
   /* await threads */
-  for (q_i = 0; q_i < 1; ++q_i) {
+  for (q_i = 0; q_i < 4; ++q_i) {
     handle_pthread_join(sort_threads[q_i], NULL);
   }
 
+  sum_name_scores = 0;
+  name_i = 1;
+  /* calculate sum of name scores from sorted names */
+  for (bucket_i = 0; bucket_i < 26; ++bucket_i) {
+    head_ptr = buckets[bucket_i];
 
-  sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
+    while (head_ptr != NULL) {
+      sum_name_scores += (head_ptr -> score * name_i);
+      ++name_i;
+      head_ptr = head_ptr -> next_ptr;
+    }
+  }
+
+  sprintf(result_buffer, "%d", sum_name_scores); /* copy score total to buffer */
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
 struct NameNode **load_buckets(void)
 {
-  FILE *names_file;            /* pointer to raw data file object */
-  struct NameNode **buckets;   /* 26 length array of NameNode lists */
-  struct NameNode *node_ptr;   /* points to next free space of NameNode pool */
-  struct NameNode **head_dptr; /* points to head of NameNode list in bucket */
-  char scan_char;              /* holds next char scanned from file */
+  FILE *names_file;           /* pointer to raw data file object */
+  struct NameNode **buckets;  /* 26 length array of NameNode lists */
+  struct NameNode *node_ptr;  /* points to next free space of NameNode pool */
+  char slot_char;             /* corresponds to proper bucket index of next name */
+  char scan_char;             /* holds next char scanned from file */
+  char *char_ptr;             /* points to current char of NameNode's 'name' */
   int *score_ptr;             /* points to accumulating 'score' of NameNode */
-  char *char_ptr;              /* points to current char of NameNode's 'name' */
 
   /* open the names data txt file in read mode */
-  names_file   = handle_fopen(NAMES_FILENAME, "r");
+  names_file = handle_fopen(NAMES_FILENAME, "r");
   /* allocate memory for 'buckets', initialize head pointers to 'NULL' */
-  buckets      = handle_calloc(26, sizeof(struct NameNode *));
+  buckets    = handle_calloc(26, sizeof(struct NameNode *));
   /* allocate sufficient pool of memory for NameNodes */
-  node_ptr     = handle_malloc(sizeof(struct NameNode) * SAFE_LEN_NAMES);
+  node_ptr   = handle_malloc(sizeof(struct NameNode) * SAFE_LEN_NAMES);
 
+  /* read in raw data */
   fseek(names_file, 1, SEEK_SET); /* skip first opening quotation mark */
   scan_char = fgetc(names_file);  /* scan in first 'name' char */
+
+
   /* while there are remaining names... */
   while (scan_char != EOF) {
     /* link the next NameNode to the bucket corresponding to its name's first char */
-    head_dptr = &buckets[scan_char - 'A']; /* point to 'new_head_ptr' of proper bucket */
-    node_ptr -> next_ptr = *head_dptr;     /* point NameNode to old head of bucket */
-    *head_dptr           = node_ptr;       /* set NameNode as new head of bucket */
+    slot_char = scan_char - 'A'; /* bucket index = 'scan_char''s offset from 'A' */
+
+    /* push new node into its bucket */
+    node_ptr -> next_ptr = buckets[slot_char]; /* append bucket to NameNode */
+    buckets[slot_char]   = node_ptr;           /* set NameNode as new bucket head */
     
     /* assign temporary pointers to minimize refs/derefs */
+    char_ptr  = node_ptr -> name;     /* point to start of 'name' buffer */
     score_ptr = &(node_ptr -> score); /* point to 'score' */
-    char_ptr  = node_ptr -> name;               /* point to start of 'name' buffer */
 
+    /* init score to 'slot_char''s char value */
+    *score_ptr = (slot_char + 1);
 
-    /* until next closing quotation mark is found... */
-    while (scan_char != '\"') {
+    /* ignore first char, sorting will compare against only bucket members */
+
+    while (1) {
+      /* starting with second char... */
+      scan_char = fgetc(names_file); /* scan in next 'scan_char' */
+      /* if closing quotation mark is found... */
+      if (scan_char == '\"') {
+        break; /* name has been completely scanned, break */
+      }
+
       *score_ptr += (scan_char - '@'); /* add char value of 'scan_char' */
       *char_ptr   = scan_char;         /* set next 'name' char */
       ++char_ptr;                      /* point to next empty 'name' char */
-      scan_char   = fgetc(names_file); /* scan in next 'scan_char' */
     }
 
     *char_ptr = '\0';               /* terminate completed 'name' string */
@@ -126,19 +153,21 @@ void *sort_buckets(void *params_ptr)
   struct NameNode *prev_ptr;     /* prev node in sorted list, points to 'that_ptr' */
   int rem_buckets;               /* indicates remaining unsorted buckets in interval */
 
-  params      = (struct SortParams *) params_ptr;
-  bucket_ptr  = params -> interval;
+  /* retrieve params from pthread args */
+  params     = (struct SortParams *) params_ptr; 
+  bucket_ptr = params -> interval;
 
   /* for all consecutive NameNode buckets this thread is responsible for... */
   for (rem_buckets = params -> span; rem_buckets > 0; ++bucket_ptr, --rem_buckets) {
+    new_head_ptr = *bucket_ptr; /* init sorted list as bucket head node */
+
     /* if there are no nodes in the bucket, continue to the next one */
-    new_head_ptr = *bucket_ptr;
     if (new_head_ptr == NULL) {
       continue;
     }
 
-    old_head_ptr = new_head_ptr -> next_ptr; /* set next in line to second node */
-    new_head_ptr -> next_ptr = NULL;         /* init sorted list as head node */
+    old_head_ptr = new_head_ptr -> next_ptr; /* pop head node from bucket */
+    new_head_ptr -> next_ptr = NULL;         /* terminate new sorted list */
 
     /* while there are nodes left in the unsorted bucket... */
     while (old_head_ptr != NULL) {

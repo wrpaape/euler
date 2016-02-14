@@ -127,33 +127,76 @@ void *sort_buckets(void *params_ptr)
   struct NameNode **buckets = params -> interval;
   const int span            = params -> span;
 
-  struct NameNode **prev_this;
-  struct NameNode **this;
-  struct NameNode **that;
+  struct NameNode **head;
+  struct NameNode *prev_this_ptr;
+  struct NameNode *prev_that_ptr;
+  struct NameNode *this_ptr;
+  struct NameNode *that_ptr;
   struct NameNode *temp_ptr;
 
-  for (int bucket_i = 0; bucket_i < span; ++bucket_i) {
+  /* for (int bucket_i = 0; bucket_i < span; ++bucket_i) { */
+  for (int bucket_i = 25; bucket_i < 26; ++bucket_i) {
 
-    this = &buckets[bucket_i];
+    prev_this_ptr = buckets[bucket_i];
 
-    while ((*this) != NULL) {
-      prev_this = this;
-      this = &((*this) -> next_ptr);
+    if (prev_this_ptr == NULL) {
+      continue;
+    }
 
-      (*prev_this) -> next_ptr = (*this) -> next_ptr;
+    head = &prev_this_ptr;
 
-      that = &buckets[bucket_i];
+    this_ptr = prev_this_ptr -> next_ptr;
 
-      while (strcmp((*this) -> name,
-                    (*that) -> name) > 0) {
+    while (this_ptr != NULL) {
 
-        that = &((*that) -> next_ptr);
-        if ((*that) == NULL) {
-          break;
-        }
+      temp_ptr = *head;
+
+      printf("\nthis_ptr -> name: %s\n  top 20:\n", this_ptr -> name);
+      for (int i = 0; i < 20; ++i) {
+        printf("%2d. %s\n", i, temp_ptr -> name);
+        temp_ptr = temp_ptr -> next_ptr;
+      }
+
+      sleep(1);
+
+      if (strcmp(this_ptr -> name,
+                 (*head)  -> name) < 0) {
+
+        temp_ptr = (*head) -> next_ptr;
+
+
+        prev_this_ptr -> next_ptr = *head;
+
+        (*head) -> next_ptr = this_ptr -> next_ptr;
+
+        *head = this_ptr;
+
+        this_ptr = temp_ptr;
+
+        continue;
       }
 
 
+      prev_this_ptr -> next_ptr = this_ptr -> next_ptr;
+
+
+      prev_that_ptr = *head;
+      that_ptr = prev_that_ptr -> next_ptr;
+
+      while ((that_ptr != NULL) &&
+             (strcmp(this_ptr -> name,
+                     that_ptr -> name) > 0)) {
+
+        prev_that_ptr = that_ptr;
+        that_ptr = that_ptr -> next_ptr;
+      }
+    
+
+      prev_that_ptr -> next_ptr = this_ptr;
+
+      this_ptr -> next_ptr = that_ptr;
+
+      this_ptr = prev_this_ptr -> next_ptr;
     }
   }
 

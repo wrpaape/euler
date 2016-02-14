@@ -127,64 +127,36 @@ void *sort_buckets(void *params_ptr)
   struct NameNode **buckets = params -> interval;
   const int span            = params -> span;
 
-  struct NameNode **that_anchor;
-  struct NameNode *new_head_ptr;
-  struct NameNode *old_head_ptr;
-  struct NameNode *this_ptr;
-  struct NameNode *that_ptr;
+  struct NameNode **prev_this;
+  struct NameNode **this;
+  struct NameNode **that;
+  struct NameNode *temp_ptr;
 
-  /* puts("old list"); */
-  /* int i = 0; */
-  /* while (buckets[25] != NULL && i++ < 100) { */
-  /*   printf("%-2d. %s\n", i, buckets[25] -> name); */
-  /*   buckets[25] = buckets[25] -> next_ptr; */
-  /* } */
-  /* for (int bucket_i = 0; bucket_i < span; ++bucket_i) { */
-  for (int bucket_i = 25; bucket_i < 26; ++bucket_i) {
-    new_head_ptr = buckets[bucket_i];
+  for (int bucket_i = 0; bucket_i < span; ++bucket_i) {
 
-    if (new_head_ptr == NULL) {
-      continue;
-    }
+    this = &buckets[bucket_i];
 
-    old_head_ptr = new_head_ptr;
+    while ((*this) != NULL) {
+      prev_this = this;
+      this = &((*this) -> next_ptr);
 
-    while (old_head_ptr != NULL) {
-      old_head_ptr = old_head_ptr -> next_ptr; /* advance to next node in old list */
+      (*prev_this) -> next_ptr = (*this) -> next_ptr;
 
-      this_ptr    = old_head_ptr;  /* copy next value to be sorted into new list */
-      that_anchor = &new_head_ptr; /* start comparison at head of new list */
-      that_ptr    = new_head_ptr;
+      that = &buckets[bucket_i];
 
-      printf("new_head_ptr -> name %s\n", new_head_ptr -> name);
+      while (strcmp((*this) -> name,
+                    (*that) -> name) > 0) {
 
-      /* while this comes after that... */
-      while (strcmp(this_ptr -> name,
-                    that_ptr -> name) > 0) {
-        /* advance that */
-        that_anchor = &(*that_anchor) -> next_ptr;
-        /* that_anchor = &that_ptr; */
-        that_ptr    = that_ptr -> next_ptr;
-
-        /* break if at end of list, this is the new caboose */
-        if (that_ptr == NULL) {
+        that = &((*that) -> next_ptr);
+        if ((*that) == NULL) {
           break;
         }
       }
-      /* insert this before that */
-      this_ptr       -> next_ptr = that_ptr;
-      (*that_anchor) -> next_ptr = this_ptr;
-    }
 
-    puts("\nnew list");
-    int i = 0;
-    while (new_head_ptr != NULL && i++ < 100) {
-      printf("%-2d. %s\n", i, new_head_ptr -> name);
-      new_head_ptr = new_head_ptr -> next_ptr;
-    }
 
-    buckets[bucket_i] = new_head_ptr; /* swap old list for new, sorted list */
+    }
   }
+
 
   return NULL;
 }

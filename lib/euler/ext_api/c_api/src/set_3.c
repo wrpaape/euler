@@ -127,71 +127,75 @@ void *sort_buckets(void *params_ptr)
   struct NameNode **buckets = params -> interval;
   const int span            = params -> span;
 
-  struct NameNode **head;
-  struct NameNode *prev_this_ptr;
-  struct NameNode *prev_that_ptr;
-  struct NameNode *this_ptr;
-  struct NameNode *that_ptr;
   struct NameNode *temp_ptr;
+  struct NameNode *next_ptr;
+  struct NameNode *next_next_ptr;
+  struct NameNode *new_head_ptr;
+  struct NameNode *new_prev_ptr;
+  struct NameNode *new_next_ptr;
 
   /* for (int bucket_i = 0; bucket_i < span; ++bucket_i) { */
   for (int bucket_i = 25; bucket_i < 26; ++bucket_i) {
 
-    prev_this_ptr = buckets[bucket_i];
+    new_head_ptr = buckets[bucket_i];
 
-    if (prev_this_ptr == NULL) {
+    if (new_head_ptr == NULL) {
       continue;
     }
 
-    head = &prev_this_ptr;
+    next_ptr = new_head_ptr -> next_ptr;
 
-    this_ptr = prev_this_ptr -> next_ptr;
+    new_head_ptr -> next_ptr = NULL;
 
-    while (this_ptr != NULL) {
+    while (next_ptr != NULL) {
 
-      temp_ptr = *head;
-      printf("\nthis_ptr -> name: %s\n  top 20:\n", this_ptr -> name);
-      for (int i = 0; i < 20; ++i) {
+      
+      temp_ptr = new_head_ptr;
+      printf("next_ptr -> name: %s\ntop ten:\n", next_ptr -> name);
+      for (int i = 0; i < 10; ++i) {
         printf("%2d. %s\n", i, temp_ptr -> name);
         temp_ptr = temp_ptr -> next_ptr;
+        if (!temp_ptr) {
+          break;
+        }
       }
 
       sleep(1);
 
-      prev_this_ptr -> next_ptr = this_ptr -> next_ptr;
 
-      if (strcmp(this_ptr -> name,
-                 (*head)  -> name) < 0) {
 
-        this_ptr -> next_ptr = *head;
+      next_next_ptr = next_ptr -> next_ptr;
 
-        *head = this_ptr;
+      if (strcmp(next_ptr     -> name,
+                 new_head_ptr -> name) < 0) {
 
-        this_ptr = prev_this_ptr -> next_ptr;
+        next_ptr -> next_ptr = new_head_ptr;
+        new_head_ptr = next_ptr;
 
-        continue;
+      } else {
+        new_prev_ptr = new_head_ptr;
+        new_next_ptr = new_prev_ptr -> next_ptr;
+
+        while (new_next_ptr != NULL &&
+               (strcmp(next_ptr     -> name,
+                       new_next_ptr -> name) > 0)) {
+
+          new_prev_ptr = new_next_ptr;
+          new_next_ptr = new_next_ptr -> next_ptr;
+        }
+
+        new_prev_ptr -> next_ptr = next_ptr;
+        next_ptr -> next_ptr = new_next_ptr;
       }
 
-
-      prev_that_ptr = *head;
-      that_ptr = prev_that_ptr -> next_ptr;
-
-      while ((that_ptr != NULL) &&
-             (strcmp(this_ptr -> name,
-                     that_ptr -> name) > 0)) {
-
-        prev_that_ptr = that_ptr;
-        that_ptr = that_ptr -> next_ptr;
-      }
-
-      prev_that_ptr -> next_ptr = this_ptr;
-
-      this_ptr -> next_ptr = that_ptr;
-    
-
-      this_ptr = prev_this_ptr -> next_ptr;
-
+      next_ptr = next_next_ptr;
     }
+
+
+
+
+
+
   }
 
 

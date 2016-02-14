@@ -58,12 +58,6 @@ void problem_22(char *result_buffer)
   }
 
 
-  /* while (buckets[25] != NULL) { */
-  /*   printf("buckets[25] -> name:  %s\n", buckets[25] -> name); */
-  /*   printf("buckets[25] -> score: %d\n", buckets[25] -> score); */
-  /*   buckets[25] = buckets[25] -> next_ptr; */
-  /* } */
-
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
 /************************************************************************************
@@ -91,7 +85,7 @@ struct NameNode **load_buckets(void)
   /* while there are remaining names... */
   while (scan_char != EOF) {
     /* link the next NameNode to the bucket corresponding to its name's first char */
-    head_dptr = &buckets[scan_char - 'A']; /* point to 'head_ptr' of proper bucket */
+    head_dptr = &buckets[scan_char - 'A']; /* point to 'new_head_ptr' of proper bucket */
     node_ptr -> next_ptr = *head_dptr;     /* point NameNode to old head of bucket */
     *head_dptr           = node_ptr;       /* set NameNode as new head of bucket */
     
@@ -123,75 +117,66 @@ struct NameNode **load_buckets(void)
 
 void *sort_buckets(void *params_ptr)
 {
-  struct SortParams *params;
-  struct NameNode **bucket_ptr;
-  struct NameNode *temp_ptr;
-  struct NameNode *next_ptr;
-  struct NameNode *next_next_ptr;
-  struct NameNode *new_head_ptr;
-  struct NameNode *new_prev_ptr;
-  struct NameNode *new_next_ptr;
+  struct SortParams *params;     /* pthread arg struct */
+  struct NameNode **bucket_ptr;  /* points to current head of unsorted bucket list */
+  struct NameNode *old_head_ptr; /* head of unsorted bucket */
+  struct NameNode *new_head_ptr; /* head of sorted list */
+  struct NameNode *this_ptr;     /* node from bucket to be inserted into sorted list */
+  struct NameNode *that_ptr;     /* comparison node when traversing sorted list */
+  struct NameNode *prev_ptr;     /* prev node in sorted list, points to 'that_ptr' */
+  int rem_buckets;               /* indicates remaining unsorted buckets in interval */
 
-  params     = (struct SortParams *) params_ptr;
-  bucket_ptr = params -> interval;
+  params      = (struct SortParams *) params_ptr;
+  bucket_ptr  = params -> interval;
 
-  /* for (int rem_buckets = params -> span; rem_buckets > 0; ++bucket_ptr, --rem_buckets) { */
-  for (int rem_buckets = 1; rem_buckets > 0; ++bucket_ptr, --rem_buckets) {
-
+  /* for all consecutive NameNode buckets this thread is responsible for... */
+  for (rem_buckets = params -> span; rem_buckets > 0; ++bucket_ptr, --rem_buckets) {
+    /* if there are no nodes in the bucket, continue to the next one */
     new_head_ptr = *bucket_ptr;
-
     if (new_head_ptr == NULL) {
       continue;
     }
-    puts("old bucket:");
-    temp_ptr = *bucket_ptr;
-    for (temp_ptr = new_head_ptr; temp_ptr != NULL; temp_ptr = temp_ptr -> next_ptr) {
-      printf("  %s\n", temp_ptr -> name);
-    }
 
-    next_ptr = new_head_ptr -> next_ptr;
+    old_head_ptr = new_head_ptr -> next_ptr; /* set next in line to second node */
+    new_head_ptr -> next_ptr = NULL;         /* init sorted list as head node */
 
-    new_head_ptr -> next_ptr = NULL;
+    /* while there are nodes left in the unsorted bucket... */
+    while (old_head_ptr != NULL) {
+      /* pop next head from bucket to be compared and inserted into sorted list */
+      this_ptr     = old_head_ptr;
+      old_head_ptr = old_head_ptr -> next_ptr;
 
-    while (next_ptr != NULL) {
-
-
-      next_next_ptr = next_ptr -> next_ptr;
-
-      if (strcmp(next_ptr     -> name,
+      /* if 'this_ptr''s  name comes before 'new_head_ptr''s name... */
+      if (strcmp(this_ptr     -> name,
                  new_head_ptr -> name) < 0) {
 
-        next_ptr -> next_ptr = new_head_ptr;
-        new_head_ptr = next_ptr;
-
-      } else {
-        new_prev_ptr = new_head_ptr;
-        new_next_ptr = new_prev_ptr -> next_ptr;
-
-        while (new_next_ptr != NULL &&
-               (strcmp(next_ptr     -> name,
-                       new_next_ptr -> name) > 0)) {
-
-          new_prev_ptr = new_next_ptr;
-          new_next_ptr = new_next_ptr -> next_ptr;
-        }
-
-        new_prev_ptr -> next_ptr = next_ptr;
-        next_ptr -> next_ptr = new_next_ptr;
+        /* make 'this_ptr' the new head of sorted list and continue */
+        this_ptr -> next_ptr = new_head_ptr;
+        new_head_ptr = this_ptr;
+        continue;
       }
 
-      next_ptr = next_next_ptr;
+      /* otherwise traverse the sorted list until a home for 'this_ptr' is found */
+      prev_ptr = new_head_ptr;
+      that_ptr = prev_ptr -> next_ptr;
+
+      /* while there are nodes remaining, and 'this_ptr''s name comes after 'that_ptr''s name...*/
+      while (that_ptr != NULL &&
+             (strcmp(this_ptr -> name,
+                     that_ptr -> name) > 0)) {
+
+        /* advance the comparison node 'that_ptr' and its prev node */
+        prev_ptr = that_ptr;
+        that_ptr = that_ptr -> next_ptr;
+      }
+
+      /* insert 'this_ptr' between 'prev_ptr' and 'that_ptr' and continue */
+      prev_ptr -> next_ptr = this_ptr;
+      this_ptr -> next_ptr = that_ptr;
     }
 
-    *bucket_ptr = new_head_ptr;
-
-    puts("\nnew bucket:");
-    temp_ptr = *bucket_ptr;
-    for (temp_ptr = new_head_ptr; temp_ptr != NULL; temp_ptr = temp_ptr -> next_ptr) {
-      printf("  %s\n", temp_ptr -> name);
-    }
+    *bucket_ptr = new_head_ptr; /* point bucket at new sorted list */
   }
 
-
-  return NULL;
+  return NULL; /* must return something for pthread routine */
 }

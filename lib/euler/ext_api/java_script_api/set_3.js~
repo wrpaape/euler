@@ -29,13 +29,15 @@ module.exports = {
 	 **********************************************************************************/
   problem23: function() {
 
-    const HARD_UPPER_LIMIT = 28124;
+    const UPPER_LIMIT = 28124;
+    const LOWER_LIMIT = 24;
 
     var abundants, // array of accumulated abundant numbers in descending order
         sumBigTwo, // sum of the current two largest abundant numbers
         sumMinTwo, // sum of the two smallest abundant numbers
         resultSum, // sum of result set of numbers adhering to problem condition
         maxBigAbd, // equal to 'n' - 12, used to reduce search pool for prob condition
+        minSmlAbd, // 
         minIndex,  // index of smallest abundant number, 12 
         capIndex,  // index of last largest abundant when testing if 'n' ε result set
         bigIndex,  // index of current larger of pair of test abundant numbers
@@ -51,63 +53,75 @@ module.exports = {
     sumBigTwo = 0;   // arbitrary low value, will be overriden after first is found
 
     // generate abundant numbers until can adding two largest > 28123
-    for (n = 13; sumBigTwo < HARD_UPPER_LIMIT; n++) {
+    for (n = 13; sumBigTwo < UPPER_LIMIT; n++) {
       if (isAbundant(n)) {
         sumBigTwo = n + abundants[0]; // set 'sumBigTwo' to 'n' + last largest
         abundants.unshift(n);         // unshift 'n' into head as new largest abundant
       }
     }
 
-    // position 'minIndex' to point to last member of abundants (12)
-    minIndex  = abundants.length - 1;
 
-    // position 'capIndex' to point to larger of smallest pair of abundant numbers
-    capIndex  = minIndex - 1;
-
-    // smallest two abundant numbers are 12 and second to last from 'abundants'
-    sumMinTwo = 12 + abundants[capIndex];
-
-    // init resultSum to sum of all numbers smaller than 'sumMinTwo'
+    // init 'resultSum' to 0
     resultSum = 0;
-    for (n = 1; n < sumMinTwo; n++) {
-      resultSum += n;
-    }
 
-    // while n < smallest number expressable as the sum of 2 abundant numbers...
-    for (maxBigAbd = n - 12; n < HARD_UPPER_LIMIT; n++, maxBigAbd++) {
-      // adjust 'capIndex' while n > (abundants[capIndex] + 12)
-      while (maxBigAbd > abundants[capIndex] && capIndex > 0) {
-        capIndex--;
+    // position 'capIndex' to point to largest abundant number
+    capIndex  = 0;
+
+    // set 'minIndex' to point to last element of 'abundants' (12)
+    minIndex = abundants.length - 1;
+
+    // // smallest two abundant numbers are last (12) and second to last from 'abundants'
+    // sumMinTwo = 12 + abundants[minIndex - 1];
+
+    // while n > smallest number expressable as the sum of 2 abundant numbers...
+    for (n = UPPER_LIMIT - 1, maxBigAbd = n - 12;
+         n > LOWER_LIMIT;
+         n--, maxBigAbd--) {
+
+      while (abundants[capIndex] > maxBigAbd) {
+        capIndex++;
       }
-      
-      bigIndex = capIndex;
 
-      // TODO fix this shit VVVVVVVV
-      while (true) {
-        smlMatch = n - abundants[bigIndex];
+      for (minSmlAbd = n - abundants[capIndex];
+          abundants[minIndex] < minSmlAbd;
+          minIndex--);
+
+
+      for (bigIndex = capIndex, smlMatch = n - abundants[bigIndex], ; true; bigIndex++) {
+
+        smlMatch = n - abundants[bigIndex]; // small abundant s.t. small + big = n
 
         for (smlIndex = minIndex;
-             abundants[smlIndex] < smlMatch;
-             smlIndex--) {
-          continue;
-        }
+             abundants[smlIndex] < smlMatch; // until sum of big and small >= n...
+             smlIndex--); // decrement 'smlIndex' (increase small abundant)
 
-          // console.log("smlIndex: " + smlIndex);
-          // console.log("smlAbund: " + abundants[smlIndex]);
-          // console.log("bigIndex: " + smlIndex);
-          // console.log("bigAbund: " + abundants[bigIndex]);
-          // console.log("n:        " + n);
-
-        if (smlIndex <= bigIndex) {
+        if (smlIndex < bigIndex) {
+          // console.log("*******************************");
+          // console.log("no match found for n:   " + n);
+          // console.log("smlIndex:   " + smlIndex);
+          // console.log("bigIndex:   " + bigIndex);
+          // console.log("capIndex:   " + capIndex);
+          // console.log("abundants[smlIndex]: " + abundants[smlIndex]);
+          // console.log("abundants[bigIndex]: " + abundants[bigIndex]);
+          // console.log("*******************************");
           resultSum += n;
           break;
-
-        } else if (abundants[smlIndex] == smlMatch) {
-          break;
         }
 
-        bigIndex++;
+        if (abundants[smlIndex] == smlMatch) {
+          // console.log("match found for n:   " + n);
+          // console.log("abundants[smlIndex]: " + abundants[smlIndex]);
+          // console.log("abundants[bigIndex]: " + abundants[bigIndex]);
+          break;
+        }
       }
+    }
+
+    console.log(abundants);
+
+    while (n > 1) {
+      --n;
+      resultSum += n;
     }
 
     return resultSum;

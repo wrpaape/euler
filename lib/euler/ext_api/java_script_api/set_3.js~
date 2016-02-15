@@ -32,30 +32,42 @@ module.exports = {
     const HARD_UPPER_LIMIT = 28124;
 
     var abundants, // array of accumulated abundant numbers in descending order
+        sumBigTwo, // sum of the current two largest abundant numbers
         resultSum, // result accumulator
-        n;         // generic counter used to find next abundant number
+        n;         // generic counter
 
 
 
-    abundants = [3, 2]; // init abundants with first 2 abundant numbers
+    abundants = [12]; // init abundants with smallest 2 abundant numbers
+    sumBigTwo = 12;
 
-    n = 4; // starting at 4...
+    n = 1; // starting at 4...
 
     // condition to stop generating abundant numbers
-    while ((abundants[0] + abundants[1]) < HARD_UPPER_LIMIT) {
+    while (sumBigTwo < HARD_UPPER_LIMIT) {
       if (isAbundant(n)) {
+        console.log("n: " + n);
+        console.log("n: " + n);
+
+        sumBigTwo = n + abundants[0]; // next sumBigTwo = n + last largest abundant
         abundants.unshift(n);
+
+        break;
       }
-      
       n++;
     }
 
-    var sum = abundants.reduce(function (acc, el) {
-      return acc + el;
-    })
 
-    return sum;
+    // resultSum = 0;
+    // for (n = HARD_UPPER_LIMIT - 1; n > 0; n--) {
+      
+    // }
 
+    console.log("abundants:" + abundants);
+
+    return 42;
+
+    // helper functions
     function isAbundant(n) {
       var smallDiv,
           minBigDiv,
@@ -65,9 +77,7 @@ module.exports = {
       minBigDiv = n;
       sumDivs   = smallDiv;
 
-      while (smallDiv < minBigDiv) {
-        smallDiv++;
-
+      for (smallDiv = 2; smallDiv < minBigDiv; smallDiv++) {
         if (n % smallDiv == 0) {
           minBigDiv = n / smallDiv;
 
@@ -76,10 +86,9 @@ module.exports = {
       }
 
       // account for extra addition when minBigDiv == smallDiv == sqrt(n)
-      if (minBigDiv == smallDiv) {
+      if (minBigDiv == (smallDiv - 1)) {
         sumDivs -= minBigDiv;
       }
-
 
       return (sumDivs > n); // n is abundant if the sum of n's proper divisors > n
     }

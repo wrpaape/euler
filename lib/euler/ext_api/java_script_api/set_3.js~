@@ -36,7 +36,8 @@ module.exports = {
         sumMinTwo, // sum of the two smallest abundant numbers
         resultSum, // sum of result set of numbers adhering to problem condition
         maxBigAbd, // equal to 'n' - 12, used to reduce search pool for prob condition
-        capIndex, // index of last largest abundant when testing if 'n' ε result set
+        minIndex,  // index of smallest abundant number, 12 
+        capIndex,  // index of last largest abundant when testing if 'n' ε result set
         bigIndex,  // index of current larger of pair of test abundant numbers
         smlIndex,  // index of current smaller of pair of test abundant numbers
         smlMatch,  // required abundant number to meet prob condition for 'bigIndex'
@@ -57,8 +58,11 @@ module.exports = {
       }
     }
 
+    // position 'minIndex' to point to last member of abundants (12)
+    minIndex  = abundants.length - 1;
+
     // position 'capIndex' to point to larger of smallest pair of abundant numbers
-    capIndex  = abundants.length - 2;
+    capIndex  = minIndex - 1;
 
     // smallest two abundant numbers are 12 and second to last from 'abundants'
     sumMinTwo = 12 + abundants[capIndex];
@@ -69,41 +73,41 @@ module.exports = {
       resultSum += n;
     }
 
-    maxBigAbd = n + 12;
     // while n < smallest number expressable as the sum of 2 abundant numbers...
-    while (n < HARD_UPPER_LIMIT) {
+    for (maxBigAbd = n - 12; n < HARD_UPPER_LIMIT; n++, maxBigAbd++) {
       // adjust 'capIndex' while n > (abundants[capIndex] + 12)
-      while (maxBigAbd > abundants[capIndex] capIndex > 0) {
+      while (maxBigAbd > abundants[capIndex] && capIndex > 0) {
         capIndex--;
       }
       
-      console.log(n, capIndex, maxBigAbd, abundants[capIndex]);
-
       bigIndex = capIndex;
-      smlIndex = 0;
 
+      // TODO fix this shit VVVVVVVV
       while (true) {
         smlMatch = n - abundants[bigIndex];
 
-        smlIndex = 0;
-        while (abundants[smlIndex] < smlMatch) {
-          smlIndex++;
+        for (smlIndex = minIndex;
+             abundants[smlIndex] < smlMatch;
+             smlIndex--) {
+          continue;
         }
 
+          // console.log("smlIndex: " + smlIndex);
+          // console.log("smlAbund: " + abundants[smlIndex]);
+          // console.log("bigIndex: " + smlIndex);
+          // console.log("bigAbund: " + abundants[bigIndex]);
+          // console.log("n:        " + n);
 
-        if (smlIndex >= bigIndex) {
-          continue;
+        if (smlIndex <= bigIndex) {
+          resultSum += n;
+          break;
 
         } else if (abundants[smlIndex] == smlMatch) {
-          resultSum += n;
           break;
         }
 
-        bigIndex--;
+        bigIndex++;
       }
-
-      n++
-      maxBigAbd++;
     }
 
     return resultSum;

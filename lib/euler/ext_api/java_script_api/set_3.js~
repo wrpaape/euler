@@ -33,24 +33,15 @@ module.exports = {
     const LOWER_LIMIT = 24;
 
     var abundants, // array of accumulated abundant numbers in descending order
-        maxSum,    // sum of the current two largest abundant numbers
-        sumMinTwo, // sum of the two smallest abundant numbers
         resultSum, // sum of result set of numbers adhering to problem condition
         maxBigAbd, // equal to 'n' - 12, used to reduce search pool for prob condition
-        midAbd,    //
-        maxAbd,    //
-        minBigAbd, // 
-        minSmlAbd, // 
-        midIndex,  // 
-        isTarget,  // 
-        cutoff,  // 
-        minIndex,  // index of smallest abundant number, 12 
+        isTargetNum,  // 
+        cutoff,    // 
         maxIndex,  // index of last largest abundant when testing if 'n' ε result set
         bigIndex,  // index of current larger of pair of test abundant numbers
         smlIndex,  // index of current smaller of pair of test abundant numbers
         smlMatch,  // required abundant number to meet prob condition for 'bigIndex'
         bigAbund,  // larger of abundant number pair (abundants[bigIndex])
-        smlAbund,  // smaller of abundant number pair (abundants[smlIndex])
         n;         // generic counter
 
 
@@ -71,69 +62,51 @@ module.exports = {
     // position 'maxIndex' to point to largest abundant number
     maxIndex = abundants.length - 1;
 
-    maxAbd  = abundants[maxIndex];
-
-
-    // set 'minIndex' to point to last element of 'abundants' (12)
-    minIndex = 0;
-
-    // // smallest two abundant numbers are last (12) and second to last from 'abundants'
 
     // while n > smallest number expressable as the sum of 2 abundant numbers...
     for (n = UPPER_LIMIT - 1, maxBigAbd = n - 12;
          n > LOWER_LIMIT;
          n--, maxBigAbd--) {
 
-      // if (maxAbd > maxBigAbd) {
-      //   do {
-      //     maxIndex--;
-      //   } while (abundants[maxIndex] > maxBigAbd);
-
-      //   maxAbd = abundants[maxIndex];
-      // }
-
 
       while (abundants[maxIndex] > maxBigAbd) {
         maxIndex--;
       }
 
-      isTarget = true;
+      isTargetNum = true;
 
       for (bigIndex = maxIndex, bigAbund = abundants[bigIndex];
-           (bigAbund * 2) >= n;
+           (bigAbund * 2) >= n;                                 // break if bigAbund * 2 < n
            bigIndex--, bigAbund = abundants[bigIndex]) {
 
         smlMatch = n - bigAbund;
 
-        for (smlIndex = minIndex;
-             abundants[smlIndex] < smlMatch;
-             smlIndex++);
+        // increment 'smlIndex' until bigAbund + abundants[smlIndex] >= n
+        for (smlIndex = 0; abundants[smlIndex] < smlMatch; smlIndex++);
 
-
+        // if bigAbund + abundants[smlIndex] == n, 'n' fails the problem condition
         if (abundants[smlIndex] == smlMatch) {
-          isTarget = false;
+          isTargetNum = false;
           break;
         }
       }
 
-      if (isTarget) {
-        // results.unshift(n);
+      if (isTargetNum) {
         resultSum += n;
       }
     }
 
 
+    // add sum of the remaining numbers under 24 (23, 22, ... 1)
     while (n > 1) {
       n--;
-      results.unshift(n);
       resultSum += n;
     }
 
-    console.log(abundants.slice(-10));
-
     return resultSum;
 
-    // helper functions
+
+    // helper function, returns 'true' if 'n' is an abundant number, 'false' if not
     function isAbundant(n) {
       var smallDiv,
           minBigDiv,

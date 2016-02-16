@@ -90,23 +90,24 @@ void problem_22(char *result_buffer)
  * What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5,  *
  * 6, 7, 8 and 9?																																		*
  ************************************************************************************/
-static jmp_buf done_buff;
+static jmp_buf done_buff; // jump buffer to break from deep call stack in 'do_permute'
 void problem_24(char *result_buffer)
 {
   long perm_count;
+  int jump_value;
   char first_perm[] = "0123456789";
   char dig_buff[11];
-  int jump_value;
    
-  perm_count = 0;
-  
-  jump_value = setjmp(done_buff);
+  perm_count = 0;                 // initialize count of generated permutations to 0
+  jump_value = setjmp(done_buff); // set jump point to recursion root
 
+  // if just starting program...
   if (jump_value == 0) {
-    do_permute(11, first_perm, dig_buff, &perm_count);
+    do_permute(11, first_perm, dig_buff, &perm_count); // begin generating perms
   }
 
-  sprintf(result_buffer, "%s", dig_buff); /* copy millionth permutation to buffer */
+  // otherwise permutation generation is complete
+  sprintf(result_buffer, "%s", dig_buff); // copy millionth permutation to buffer
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
@@ -118,38 +119,37 @@ void do_permute(int num_rem_digs,
 {
   // if single digit remains...
   if (num_rem_digs == 1) {
-      ++(*perm_count);       // permutation complete → inc counter
       *dig_buff = *rem_digs; // copy final digit to the buffer
+      ++(*perm_count);       // permutation complete → increment counter
 
-    // TODO handle return from call stack
+    // one million permutations have been generated...
     if (*perm_count == 1e6) {
-      /* printf("dig_buff: %s\n", dig_buff - 10); // print digits */
-      /* exit(0); */
-      longjmp(done_buff, 1); // return to main routine
+      longjmp(done_buff, 1); // break from call stack so that result can be returned
     }
 
-    return;
+    // otherwise continue permutation generation
+    return; // return one level in call stack
   }
 
-  // if at least two digits remain...
-  char *next_digs;
-  int head_i;
-  int tail_i;
+  // otherwise at least two digits remain...
+  char *next_digs; // next array of remaining digits in ascending order
+  int head_i;      // points to next smallest number to be selected in permutation
 
   --num_rem_digs; // decrement count of remaining digits
 
-  for (head_i = 0, tail_i = 1; head_i < num_rem_digs; ++head_i, ++tail_i) {
+  // for all remaining digits, in ascending order...
+  for (head_i = 0; head_i < num_rem_digs; ++head_i) {
+    *dig_buff = rem_digs[head_i];            // copy next smallest digit to buffer
+    next_digs = handle_malloc(num_rem_digs); // allocate memory for next 'rem_digs'
 
-    *dig_buff = rem_digs[head_i];            // copy head digit to buffer
-
-    next_digs = handle_malloc(num_rem_digs); // allocate memory for next digits
-
-    memcpy(next_digs,          rem_digs,          head_i);
-    memcpy(&next_digs[head_i], &rem_digs[tail_i], num_rem_digs - head_i);
-
+    // copy up to but not including head digit from current 'rem_digs' to 'next_digs'
+    memcpy(next_digs,          rem_digs,              head_i); 
+    // copy remaining digits after head digit to 'next_digs'
+    memcpy(&next_digs[head_i], &rem_digs[head_i + 1], num_rem_digs - head_i);
+    // continue permutation
     do_permute(num_rem_digs, next_digs, &dig_buff[1], perm_count);
-
-    free(next_digs);                        // free malloc on return to stack
+    // free malloc on return to stack
+    free(next_digs);
   }
 }
 

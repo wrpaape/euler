@@ -92,25 +92,27 @@ void problem_22(char *result_buffer)
  ************************************************************************************/
 void problem_23(char *result_buffer)
 {
-	int perm_count;
-	int base_i;
-  int swap_i;
-  int final_swap_i;
-  int upstream_i;
+
+  long perm_count;
+  int base_root_i;
+  int perm_root_i;
+  int last_perm_i;
   char digits[10] = "0123456789";
-  char temp;
+  char perm_digit;
 
-	for (perm_count = 1; perm_count < 1e6; ++perm_count) {
-    for (base_i = 0; base_i < 10; ++base_i) {
-      final_swap_i = base_i + 1;
+  for (base_root_i = 0; base_root_i < 10; ++base_root_i) {
+    last_perm_i = base_root_i + 2;
 
-      for (swap_i = 8; swap_i > final_swap_i; --swap_i) {
-        
-        for (upstream_i = swap_i; upstream_i < 9)
-      }
+    for (perm_root_i = 9; perm_root_i > last_perm_i; --perm_root_i) {
+      perm_digit              = digits[perm_root_i];
+      digits[perm_root_i]     = digits[perm_root_i - 1];
+      digits[perm_root_i - 1] = perm_digit;
 
+
+
+      
+      for (upstream_i = perm_root_i; upstream_i < 9)
     }
-
 	  
 	}
 
@@ -119,6 +121,11 @@ void problem_23(char *result_buffer)
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
+void do_permute(char root_i, char **digits, long perm_count)
+{
+}
+
+
 struct NameNode **load_buckets(void)
 {
   FILE *names_file;          /* pointer to raw data file object */

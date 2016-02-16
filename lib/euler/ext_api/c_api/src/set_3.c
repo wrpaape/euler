@@ -121,11 +121,11 @@ void problem_23(char *result_buffer)
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
 void do_permute(int num_rem_digs,
-                struct DigitNode *digs_head_ptr,
+                char *digs_head_ptr,
                 char *dig_buff_ptr,
                 long *perm_count_ptr)
 {
-  *dig_buff_ptr = digs_head_ptr -> value; // copy next smallest digit to the buffer
+  *dig_buff_ptr = *digs_head_ptr; // copy next smallest digit to the buffer
 
   // if that was the last digit...
   if (num_rem_digs == 1) {
@@ -140,11 +140,6 @@ void do_permute(int num_rem_digs,
     }
   }
   // if at least one digit remains...
-  struct DigitNode **node_ptrs;
-  struct DigitNode *digs_tail_ptr;
-  struct DigitNode *head_ptr;
-  struct DigitNode *prev_ptr;
-  struct DigitNode *node_ptr;
   int head_i;
   int node_i;
 
@@ -164,7 +159,7 @@ void do_permute(int num_rem_digs,
 
     node_ptr = head_ptr;
     for (node_i = 0; node_i < head_i; ++node_i) {
-      node_ptr -> 
+      node_ptr -> next_ptr
 
 
     }

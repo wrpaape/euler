@@ -97,32 +97,68 @@ void problem_23(char *result_buffer)
   int base_root_i;
   int perm_root_i;
   int last_perm_i;
-  char digits[10] = "0123456789";
-  char perm_digit;
+  char dig_buff[] = "0123456789";
+  char digit;
+  struct DigitNode *initial_digits;
+  struct DigitNode *curr_digit;
+   
+  initial_digits = handle_malloc(sizeof(struct DigitNode) * 10);
+  curr_digit     = initial_digits;
 
-  for (base_root_i = 0; base_root_i < 10; ++base_root_i) {
-    last_perm_i = base_root_i + 2;
+  /* initialize linked list of ordered digit chars 0-9 */
+  for (digit = '0'; digit < ':'; ++digit) {
+    curr_digit -> value = digit;
+    curr_digit = curr_digit -> next_ptr;
+  }
+  curr_digit -> next = NULL; /* terminate list */
 
-    for (perm_root_i = 9; perm_root_i > last_perm_i; --perm_root_i) {
-      perm_digit              = digits[perm_root_i];
-      digits[perm_root_i]     = digits[perm_root_i - 1];
-      digits[perm_root_i - 1] = perm_digit;
-
-
-
-      
-      for (upstream_i = perm_root_i; upstream_i < 9)
-    }
-	  
-	}
+  perm_count = 0;
+  do_permute(initial_digits, dig_buff, &perm_count);
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
-void do_permute(char root_i, char **digits, long perm_count)
+void do_permute(int num_rem_digs,
+                struct DigitNode *digs_head_ptr,
+                char *dig_buff_ptr,
+                long *perm_count_ptr)
 {
+  *dig_buff_ptr = digs_head_ptr -> value; // copy next smallest digit to the buffer
+
+  // if that was the last digit...
+  if (num_rem_digs == 1) {
+    ++(*perm_count_ptr);                        // permutation complete → inc counter
+    free(digs_head_ptr);                        // delete head node
+    printf("dig_buff: %s\n", dig_buff_ptr - 9); // print digits
+
+    // TODO handle return from nesting
+    if (*perm_count_ptr == 1e6) {
+      exit(0)
+      return;
+    }
+  }
+  struct DigitNode *digs_tail_ptr;
+  struct DigitNode *next_head_ptr;
+  struct DigitNode *prev_ptr;
+  struct DigitNode *curr_ptr;
+  struct DigitNode **next_digs_heads;
+  int del_i;
+
+
+
+  ++dig_buff_ptr;                            // point to next slot in buffer
+  --num_rem_digs;                            // decrement count of remaining digits
+  digs_tail_ptr = digs_head_ptr -> next_ptr; // point to remaining digits
+  free(digs_head_ptr);                       // delete head node
+
+  next_digs_heads = handle_malloc(sizeof(DigitNode *) * num_rem_digs);
+
+  for (del_i = 0, del_i < num_rem_digs, ++del_i) {
+    prev_ptr = next_digs_heads[del_i];
+
+
 }
 
 

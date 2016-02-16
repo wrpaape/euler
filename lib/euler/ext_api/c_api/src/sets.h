@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <pthread.h>
+#include <setjmp.h>
 
 #define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
 /************************************************************************************

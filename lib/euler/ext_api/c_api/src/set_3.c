@@ -90,36 +90,23 @@ void problem_22(char *result_buffer)
  * What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5,  *
  * 6, 7, 8 and 9?																																		*
  ************************************************************************************/
+static jmp_buf done_buff;
 void problem_24(char *result_buffer)
 {
-
   long perm_count;
-  int head_i;
-  int tail_i;
   char first_perm[] = "0123456789";
   char dig_buff[11];
-  char *base_digs;
+  int jump_value;
    
-
-
-  /* for (head_i = 0, tail_i = 1; head_i < 10; ++head_i, ++tail_i) { */
-  /*   base_digs = handle_malloc(10); // allocate memory for next digits */
-
-  /*   *base_digs = first_perm[head_i]; */
-
-  /*   memcpy(&base_digs[1],      first_perm,          head_i); */
-  /*   memcpy(&base_digs[tail_i], &first_perm[tail_i], 10 - head_i); */
-
-  /*   do_permute(10, base_digs, dig_buff, &perm_count); */
-
-  /*   free(base_digs); */
-  /* } */
-
   perm_count = 0;
-  do_permute(10, first_perm, dig_buff, &perm_count);
+  
+  jump_value = setjmp(done_buff);
 
+  if (jump_value == 0) {
+    do_permute(11, first_perm, dig_buff, &perm_count);
+  }
 
-  sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
+  sprintf(result_buffer, "%s", dig_buff); /* copy millionth permutation to buffer */
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
@@ -129,42 +116,40 @@ void do_permute(int num_rem_digs,
                 char *dig_buff,
                 long *perm_count)
 {
-  *dig_buff = *rem_digs; // copy next smallest digit to the buffer
-
-  // if that was the last digit...
+  // if single digit remains...
   if (num_rem_digs == 1) {
-    ++(*perm_count); // permutation complete → inc counter
+      ++(*perm_count);       // permutation complete → inc counter
+      *dig_buff = *rem_digs; // copy final digit to the buffer
 
     // TODO handle return from call stack
     if (*perm_count == 1e6) {
-      printf("dig_buff: %s\n",    dig_buff - 9); // print digits
-      exit(0);
+      /* printf("dig_buff: %s\n", dig_buff - 10); // print digits */
+      /* exit(0); */
+      longjmp(done_buff, 1); // return to main routine
     }
 
     return;
   }
 
-  // if at least another digit remains...
+  // if at least two digits remain...
   char *next_digs;
   int head_i;
   int tail_i;
 
-  ++rem_digs;     // point to remaining digits
-  ++dig_buff;     // point to next slot in buffer
   --num_rem_digs; // decrement count of remaining digits
 
-
   for (head_i = 0, tail_i = 1; head_i < num_rem_digs; ++head_i, ++tail_i) {
+
+    *dig_buff = rem_digs[head_i];            // copy head digit to buffer
+
     next_digs = handle_malloc(num_rem_digs); // allocate memory for next digits
 
-    *next_digs = rem_digs[head_i];
+    memcpy(next_digs,          rem_digs,          head_i);
+    memcpy(&next_digs[head_i], &rem_digs[tail_i], num_rem_digs - head_i);
 
-    memcpy(&next_digs[1],      rem_digs,          head_i);
-    memcpy(&next_digs[tail_i], &rem_digs[tail_i], num_rem_digs - head_i);
+    do_permute(num_rem_digs, next_digs, &dig_buff[1], perm_count);
 
-    do_permute(num_rem_digs, next_digs, dig_buff, perm_count);
-
-    free(next_digs);
+    free(next_digs);                        // free malloc on return to stack
   }
 }
 

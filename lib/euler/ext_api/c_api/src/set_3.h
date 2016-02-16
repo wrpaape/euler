@@ -38,4 +38,4 @@ void *sort_buckets(void *arg_ptr);
 void do_permute(int num_rem_digs,
                 struct DigitNode *digs_head_ptr,
                 char *dig_buff_ptr,
-                long *perm_count_ptr)
+                long *perm_count_ptr);

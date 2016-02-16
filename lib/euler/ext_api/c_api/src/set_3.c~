@@ -135,28 +135,39 @@ void do_permute(int num_rem_digs,
 
     // TODO handle return from nesting
     if (*perm_count_ptr == 1e6) {
-      exit(0)
+      exit(0);
       return;
     }
   }
+  // if at least one digit remains...
+  struct DigitNode **node_ptrs;
   struct DigitNode *digs_tail_ptr;
-  struct DigitNode *next_head_ptr;
+  struct DigitNode *head_ptr;
   struct DigitNode *prev_ptr;
-  struct DigitNode *curr_ptr;
-  struct DigitNode **next_digs_heads;
-  int del_i;
+  struct DigitNode *node_ptr;
+  int head_i;
+  int node_i;
 
-
-
-  ++dig_buff_ptr;                            // point to next slot in buffer
-  --num_rem_digs;                            // decrement count of remaining digits
   digs_tail_ptr = digs_head_ptr -> next_ptr; // point to remaining digits
   free(digs_head_ptr);                       // delete head node
+  ++dig_buff_ptr;                            // point to next slot in buffer
+  --num_rem_digs;                            // decrement count of remaining digits
 
-  next_digs_heads = handle_malloc(sizeof(DigitNode *) * num_rem_digs);
+  // first recurse with the original tail copy
+  do_permute(num_rem_digs, digs_tail_ptr, dig_buff_ptr, perm_count_ptr);
 
-  for (del_i = 0, del_i < num_rem_digs, ++del_i) {
-    prev_ptr = next_digs_heads[del_i];
+  /* node_ptrs = handle_malloc(sizeof(DigitNode *) * num_rem_digs); */
+  // for the remaining tail digits
+  const size_t SIZE_NEXT_DIGS = sizeof(DigitNode) * num_rem_digs;
+  for (head_i = 1, head_i < num_rem_digs, ++head_i) {
+    head_ptr = handle_malloc(SIZE_NEXT_DIGS); // allocate memory for next list
+
+    node_ptr = head_ptr;
+    for (node_i = 0; node_i < head_i; ++node_ptr, ++node_i) {
+
+
+    }
+
 
 
 }

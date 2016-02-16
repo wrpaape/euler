@@ -29,20 +29,20 @@ module.exports = {
 	 **********************************************************************************/
   problem23: function() {
 
-    const UPPER_LIMIT = 28123;
-    const LOWER_LIMIT = 24;
+    const UPPER_LIMIT = 28123; // all numbers > 'UPPER_LIMIT' fail problem criteria
+    const LOWER_LIMIT = 24;    // smallest number representable by the sum of 2 abunds
 
-    var abundants, // array of accumulated abundant numbers in descending order
-        resultSum, // sum of result set of numbers adhering to problem condition
-        maxBigAbd, // equal to 'n' - 12, used to reduce search pool for prob condition
-        isTargetNum,  // 
-        genCutoff,    // 
-        maxIndex,  // index of last largest abundant when testing if 'n' ε result set
-        bigIndex,  // index of current larger (or equal) of pair of test abund nums
-        smlIndex,  // index of current smaller (or equal) of pair of test abund nums
-        smlMatch,  // required abundant number to meet prob condition for 'bigIndex'
-        bigAbund,  // larger of abundant number pair (abundants[bigIndex])
-        n;         // generic counter
+    var abundants,   // array of accumulated abundant numbers in descending order
+        genCutoff,   // highest potential abundant number needed for problem domain
+        n,           // generic counter
+        resultSum,   // sum of result set of numbers adhering to problem condition
+        maxIndex,    // index of last largest abundant when testing if 'n' ε result set
+        maxBigAbd,   // equal to 'n' - 12, used as upper bound of search pool
+        isTargetNum, // true if 'n' cannot be represented as the sum of 2 abunds
+        bigIndex,    // index of current larger (or equal) of pair of test abund nums
+        smlIndex,    // index of current smaller (or equal) of pair of test abund nums
+        smlMatch,    // required abundant number to meet prob condition for 'bigIndex'
+        bigAbund;    // larger of abundant number pair (abundants[bigIndex])
 
 
     abundants = [12];             // init abundants with smallest abundant number
@@ -101,7 +101,7 @@ module.exports = {
       resultSum += n;
     }
 
-    return resultSum;
+    return resultSum; // return final result
 
 
     // helper function, returns 'true' if 'n' is an abundant number, 'false' if not

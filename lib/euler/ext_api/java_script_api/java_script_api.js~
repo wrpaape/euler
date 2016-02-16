@@ -26,7 +26,7 @@ function main(setNum, probNum) {
     process.exit(1);
   }
 
-  // ensure request problem set exists
+  // ensure requested problem set exists
   try {
     setMod = require('./set_' + setNum);
   } catch (e) {

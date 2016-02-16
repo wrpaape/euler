@@ -99,7 +99,7 @@ void problem_24(char *result_buffer)
   char dig_buff[11];
    
   perm_count = 0;                 // initialize count of generated permutations to 0
-  jump_value = setjmp(done_buff); // set jump point to recursion root
+  jump_value = setjmp(done_buff); // set jump point to root of recursion
 
   // if just starting program...
   if (jump_value == 0) {
@@ -107,16 +107,12 @@ void problem_24(char *result_buffer)
   }
 
   // otherwise permutation generation is complete
-  sprintf(result_buffer, "%s", dig_buff); // copy millionth permutation to buffer
+  strcpy(result_buffer, dig_buff); // copy millionth permutation to buffer
 }
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
-void do_permute(int num_rem_digs,
-                char *rem_digs,
-                char *dig_buff,
-                long *perm_count)
-{
+void do_permute(int num_rem_digs, char *rem_digs, char *dig_buff, long *perm_count) {
   // if single digit remains...
   if (num_rem_digs == 1) {
       *dig_buff = *rem_digs; // copy final digit to the buffer

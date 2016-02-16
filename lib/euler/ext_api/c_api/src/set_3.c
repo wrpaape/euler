@@ -75,6 +75,47 @@ void problem_22(char *result_buffer)
 
   sprintf(result_buffer, "%d", sum_name_scores); /* copy score total to buffer */
 }
+
+
+/************************************************************************************
+ *                                  - problem_23 -                                  *
+ * 																																									*
+ * A permutation is an ordered arrangement of objects. For example, 3124 is one     *
+ * possible permutation of the digits 1, 2, 3 and 4. If all of the permutations are *
+ * listed numerically or alphabetically, we call it lexicographic order. The				*
+ * lexicographic permutations of 0, 1 and 2 are:																		*
+ * 																																									*
+ *                        012   021   102   120   201   210                         *
+ * 																																									*
+ * What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5,  *
+ * 6, 7, 8 and 9?																																		*
+ ************************************************************************************/
+void problem_23(char *result_buffer)
+{
+	int perm_count;
+	int base_i;
+  int swap_i;
+  int final_swap_i;
+  int upstream_i;
+  char digits[10] = "0123456789";
+  char temp;
+
+	for (perm_count = 1; perm_count < 1e6; ++perm_count) {
+    for (base_i = 0; base_i < 10; ++base_i) {
+      final_swap_i = base_i + 1;
+
+      for (swap_i = 8; swap_i > final_swap_i; --swap_i) {
+        
+        for (upstream_i = swap_i; upstream_i < 9)
+      }
+
+    }
+
+	  
+	}
+
+  sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
+}
 /************************************************************************************
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/

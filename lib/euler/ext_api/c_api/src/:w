@@ -96,24 +96,22 @@ void problem_24(char *result_buffer)
   long perm_count;
   int head_i;
   int tail_i;
-  char first_perm[] = "0123456789";
-  char dig_buff[11];
-  char *base_digs;
+  char ordered_digits[] = "0123456789";
+  char *dig_buff;
+  char *rem_digs;
    
 
 
-  perm_count = 0;
+  for (head_i = 0, tail_i = 1; head_i < 9; ++head_i, ++tail_i) {
+    next_digs = handle_malloc(9); // allocate memory for next digits
 
-  for (head_i = 0, tail_i = 1; head_i < 10; ++head_i, ++tail_i) {
-    base_digs = handle_malloc(10); // allocate memory for next digits
+    memcpy(next_digs,          &rem_digs[head_i], 1);
+    memcpy(&next_digs[1],      rem_digs,          head_i);
+    memcpy(&next_digs[tail_i], &rem_digs[tail_i], 9 - head_i);
 
-    *base_digs = first_perm[head_i];
-
-    memcpy(&base_digs[1],      first_perm,          head_i);
-    memcpy(&base_digs[tail_i], &first_perm[tail_i], 10 - head_i);
-
-    do_permute(10, base_digs, dig_buff, &perm_count);
+    do_permute(9, next_digs, dig_buff, perm_count);
   }
+
 
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
@@ -157,9 +155,7 @@ void do_permute(int num_rem_digs,
   for (head_i = 0, tail_i = 1; head_i < num_rem_digs; ++head_i, ++tail_i) {
     next_digs = handle_malloc(num_rem_digs); // allocate memory for next digits
 
-    /* memcpy(next_digs,          &rem_digs[head_i], 1); */
-    *next_digs = rem_digs[head_i];
-
+    memcpy(next_digs,          &rem_digs[head_i], 1);
     memcpy(&next_digs[1],      rem_digs,          head_i);
     memcpy(&next_digs[tail_i], &rem_digs[tail_i], num_rem_digs - head_i);
 

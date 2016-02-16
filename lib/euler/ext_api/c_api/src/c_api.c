@@ -89,8 +89,8 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
           time_func(problem_22);
           break;
 
-        case 23:
-          time_func(problem_23);
+        case 24:
+          time_func(problem_24);
           break;
 
         default:

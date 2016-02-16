@@ -78,7 +78,7 @@ void problem_22(char *result_buffer)
 
 
 /************************************************************************************
- *                                  - problem_23 -                                  *
+ *                                  - problem_24 -                                  *
  * 																																									*
  * A permutation is an ordered arrangement of objects. For example, 3124 is one     *
  * possible permutation of the digits 1, 2, 3 and 4. If all of the permutations are *
@@ -90,7 +90,7 @@ void problem_22(char *result_buffer)
  * What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5,  *
  * 6, 7, 8 and 9?																																		*
  ************************************************************************************/
-void problem_23(char *result_buffer)
+void problem_24(char *result_buffer)
 {
 
   long perm_count;
@@ -98,22 +98,14 @@ void problem_23(char *result_buffer)
   int perm_root_i;
   int last_perm_i;
   char dig_buff[] = "0123456789";
-  char digit;
-  struct DigitNode *initial_digits;
-  struct DigitNode *curr_digit;
+  char *rem_digs;
    
-  initial_digits = handle_malloc(sizeof(struct DigitNode) * 10);
-  curr_digit     = initial_digits;
+  rem_digs = handle_malloc(10);
+  memcpy(rem_digs, dig_buff, 10);
 
-  /* initialize linked list of ordered digit chars 0-9 */
-  for (digit = '0'; digit < ':'; ++digit) {
-    curr_digit -> value = digit;
-    curr_digit = curr_digit -> next_ptr;
-  }
-  curr_digit -> next = NULL; /* terminate list */
 
   perm_count = 0;
-  do_permute(initial_digits, dig_buff, &perm_count);
+  do_permute(10, rem_digs, dig_buff, &perm_count);
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
 }
@@ -121,51 +113,58 @@ void problem_23(char *result_buffer)
  *                                HELPER FUNCTIONS                                  *
  ************************************************************************************/
 void do_permute(int num_rem_digs,
-                char *digs_head_ptr,
-                char *dig_buff_ptr,
-                long *perm_count_ptr)
+                char *rem_digs,
+                char *dig_buff,
+                long *perm_count)
 {
-  *dig_buff_ptr = *digs_head_ptr; // copy next smallest digit to the buffer
+  *dig_buff = *rem_digs; // copy next smallest digit to the buffer
+  /* free(rem_digs);        // delete char */
 
   // if that was the last digit...
   if (num_rem_digs == 1) {
-    ++(*perm_count_ptr);                        // permutation complete → inc counter
-    free(digs_head_ptr);                        // delete head node
-    printf("dig_buff: %s\n", dig_buff_ptr - 9); // print digits
+    ++(*perm_count);                        // permutation complete → inc counter
+    printf("dig_buff: %s\n", dig_buff - 9); // print digits
+
 
     // TODO handle return from nesting
-    if (*perm_count_ptr == 1e6) {
+    if (*perm_count == 1e6) {
       exit(0);
-      return;
     }
+
+    return;
   }
-  // if at least one digit remains...
+
+  // if at least another digit remains...
+  char *next_digs;
   int head_i;
-  int node_i;
+  int tail_i;
 
-  digs_tail_ptr = digs_head_ptr -> next_ptr; // point to remaining digits
-  free(digs_head_ptr);                       // delete head node
-  ++dig_buff_ptr;                            // point to next slot in buffer
-  --num_rem_digs;                            // decrement count of remaining digits
-
-  // first recurse with the original tail copy
-  do_permute(num_rem_digs, digs_tail_ptr, dig_buff_ptr, perm_count_ptr);
-
-  /* node_ptrs = handle_malloc(sizeof(DigitNode *) * num_rem_digs); */
-  // for the remaining tail digits
-  const size_t SIZE_NEXT_DIGS = sizeof(DigitNode) * num_rem_digs;
-  for (head_i = 1, head_i < num_rem_digs, ++head_i) {
-    head_ptr = handle_malloc(SIZE_NEXT_DIGS); // allocate memory for next list
-
-    node_ptr = head_ptr;
-    for (node_i = 0; node_i < head_i; ++node_i) {
-      node_ptr -> next_ptr
+  ++rem_digs;     // point to remaining digits
+  ++dig_buff;     // point to next slot in buffer
+  --num_rem_digs; // decrement count of remaining digits
 
 
+  for (head_i = 0, tail_i = 1; head_i < num_rem_digs; ++head_i, ++tail_i) {
+    next_digs = handle_malloc(num_rem_digs); // allocate memory for next digits
+
+    next_digs[0] = rem_digs[head_i];
+    memcpy(&next_digs[1],      rem_digs,          head_i);
+    memcpy(&next_digs[tail_i], &rem_digs[tail_i], num_rem_digs - head_i);
+
+    puts("\nnext_digs:");
+    for (int i = 0; i < num_rem_digs; ++i) {
+      printf("%c", next_digs[i]);
     }
 
+    sleep(1);
 
+    do_permute(num_rem_digs, next_digs, dig_buff, perm_count);
+  }
 
+  // delete original copy of remaining digits
+  for (head_i = 0; head_i < num_rem_digs; ++head_i) {
+    /* free(&rem_digs[head_i]); */
+  }
 }
 
 

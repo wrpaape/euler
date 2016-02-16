@@ -102,18 +102,21 @@ void problem_24(char *result_buffer)
    
 
 
+  /* for (head_i = 0, tail_i = 1; head_i < 10; ++head_i, ++tail_i) { */
+  /*   base_digs = handle_malloc(10); // allocate memory for next digits */
+
+  /*   *base_digs = first_perm[head_i]; */
+
+  /*   memcpy(&base_digs[1],      first_perm,          head_i); */
+  /*   memcpy(&base_digs[tail_i], &first_perm[tail_i], 10 - head_i); */
+
+  /*   do_permute(10, base_digs, dig_buff, &perm_count); */
+
+  /*   free(base_digs); */
+  /* } */
+
   perm_count = 0;
-
-  for (head_i = 0, tail_i = 1; head_i < 10; ++head_i, ++tail_i) {
-    base_digs = handle_malloc(10); // allocate memory for next digits
-
-    *base_digs = first_perm[head_i];
-
-    memcpy(&base_digs[1],      first_perm,          head_i);
-    memcpy(&base_digs[tail_i], &first_perm[tail_i], 10 - head_i);
-
-    do_permute(10, base_digs, dig_buff, &perm_count);
-  }
+  do_permute(10, first_perm, dig_buff, &perm_count);
 
 
   sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
@@ -127,13 +130,12 @@ void do_permute(int num_rem_digs,
                 long *perm_count)
 {
   *dig_buff = *rem_digs; // copy next smallest digit to the buffer
-  /* free(rem_digs);        // delete char */
 
   // if that was the last digit...
   if (num_rem_digs == 1) {
     ++(*perm_count); // permutation complete → inc counter
 
-    // TODO handle return from nesting
+    // TODO handle return from call stack
     if (*perm_count == 1e6) {
       printf("dig_buff: %s\n",    dig_buff - 9); // print digits
       exit(0);
@@ -161,12 +163,9 @@ void do_permute(int num_rem_digs,
     memcpy(&next_digs[tail_i], &rem_digs[tail_i], num_rem_digs - head_i);
 
     do_permute(num_rem_digs, next_digs, dig_buff, perm_count);
-  }
 
-  // delete original copy of remaining digits
-  /* for (head_i = 0; head_i < num_rem_digs; ++head_i) { */
-  /*   free(&rem_digs[head_i]); */
-  /* } */
+    free(next_digs);
+  }
 }
 
 

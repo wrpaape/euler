@@ -5,15 +5,13 @@
   (print `(set number ,set-num))
   (print `(problem number ,prob-num))))
 
-(defun get-argv ()
+(defun fetch-argv ()
   (or
    #+SBCL      *posix-argv*  
    #+LISPWORKS system:*line-arguments-list*
    #+CMU       extensions:*command-line-words
    nil))
 
-
 (and
-  (defparameter *argv* (get-argv))
-  (print *argv*)
-  (apply #'main (cdr *argv*)))
+  (defparameter *argv* (get-argv)) ; retrieve argv, including command as head
+  (apply #'main (cdr *argv*)))     ; apply argv tail to 'main' function

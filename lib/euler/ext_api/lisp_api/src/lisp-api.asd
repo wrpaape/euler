@@ -24,16 +24,15 @@
 ;;; OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 ;;; WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(defpackage #:lisp-api-system
-  (:use #:cl #:asdf))
-
-(in-package :lisp-api-system)
-
-(defsystem :lisp-api
+(defsystem #:lisp-api
   :version      "0.0.1"
-  :description  "api module connecting Elixir mix project 'euler' with problem solutions programmed in Common Lisp"
+  :description  "API module connecting Elixir mix project 'euler' with problem solutions programmed in Common Lisp"
   :author       "Reid Paape"
-  :serial t
-  :components   ((:file "sets")
-                 (:file "lisp-api")))
+  :components   ((:file "packages")
+                 (:file "sets"
+                        :depends-on ("packages"))
+                 (:file "set-3"
+                        :depends-on ("packages"))
+                 (:file "lisp-api"
+                        :depends-on ("packages"))))
 

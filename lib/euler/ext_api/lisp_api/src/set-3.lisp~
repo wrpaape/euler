@@ -1,0 +1,4 @@
+(in-package #:set-3)
+
+(defun problem-26 (argv)
+  (greet argv))

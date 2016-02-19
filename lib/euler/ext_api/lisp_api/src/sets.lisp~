@@ -1,29 +1,6 @@
 (in-package #:sets)
 
 (defun greet ()
-  (print "hello from set 3"))
+  "hello from set 3")
 
-
-(defun exit (&optional code)
-      "Programmatically exit the lisp image."
-      ;; This group from "clocc-port/ext.lisp"
-      #+sbcl (sb-ext:exit :code code)
-      #+allegro (excl:exit code)
-      #+clisp (#+lisp=cl ext:quit #-lisp=cl lisp:quit code)
-      #+cmu (ext:quit code)
-      #+cormanlisp (win32:exitprocess code)
-      #+gcl (lisp:bye code)                     ; XXX Or is it LISP::QUIT?
-      #+lispworks (lw:quit :status code)
-      #+lucid (lcl:quit code)
-      ;; This group from Maxima
-      #+kcl (lisp::bye)                         ; XXX Does this take an arg?
-      #+scl (ext:quit code)                     ; XXX Pretty sure this *does*.
-      #+(or openmcl mcl) (ccl::quit)
-      #+abcl (cl-user::quit)
-      #+ecl (si:quit)
-      ;; This group from <hebi...@math.uni.wroc.pl>
-      #+poplog (poplog::bye)                    ; XXX Does this take an arg?
-      #-(or sbcl allegro clisp cmu cormanlisp gcl
-            lispworks lucid kcl scl openmcl mcl abcl ecl)
-      (error 'not-implemented :proc (list 'exit code)))
 

@@ -1,16 +1,11 @@
 (in-package #:lisp-api)
 
-
-(define-condition set-num-not-provided-error
-                  (error)
-  (:report (lambda (stream)
-             (princ "Problem set number not provided." stream))))
+(define-condition set-num-not-provided-error (error) ()
+  (:report "Problem set number not provided."))
 
 
-(define-condition prob-num-not-provided-error
-                  (error)
-  (:report (lambda (stream)
-             (princ "Problem number not provided." stream))))
+(define-condition prob-num-not-provided-error (error) ()
+  (:report "Problem number not provided."))
 
 
 (define-condition set-does-not-exist-error
@@ -22,31 +17,16 @@
                      (set-does-not-exist-set-num condition)))))
 
 
-(define-condition problem-not-found-error
+(define-condition prob-not-found-error
                   (error)
                   ((prob-num :initarg :prob-num
-                             :reader  problem-not-found-prob-num)
-                   (set-pkg  :initarg :set-pkg
-                             :reader  problem-not-found-set-pkg))
+                             :reader  prob-not-found-prob-num)
+                   (set-num  :initarg :set-num
+                             :reader  prob-not-found-set-num))
   (:report (lambda (condition stream)
-             (format stream "Problem number \"~A\" not found in set ~A."
-                     (problem-not-found-prob-num condition)
-                     (problem-not-found-set-pkg  condition)))))
-
-(defvar *set-str* nil "dox")
-(defvar *set-pkg* nil "dox")
-(defvar *prob-str* nil "docs")
-(defvar *prob-fun* nil "docs")
-
-(defun main (argv)
-  (handler-case
-    (progn
-      (pop argv)
-      (if argv
-        (setf *set-str* (pop argv))
-        (error 'set-num-not-provided-error)))
-      
-      (condition () (exit 1))))
+             (format stream "Problem number \"~A\" not found in problem set \"~A\"."
+                     (prob-not-found-prob-num condition)
+                     (prob-not-found-set-num  condition)))))
 
 (defun exit (&optional code)
       "Programmatically exit the lisp image."
@@ -71,3 +51,39 @@
             lispworks lucid kcl scl openmcl mcl abcl ecl)
       (error 'not-implemented :proc (list 'exit code)))
 
+
+(defvar *set-num* nil "dox")
+(defvar *set-pkg* nil "dox")
+(defvar *prob-num* nil "docs")
+(defvar *prob-fun* nil "docs")
+
+(defun main (argv)
+  (handler-case
+      (progn
+        (pop argv)
+
+        (setf *set-num* (pop argv))
+
+        (unless *set-num* (error 'set-num-not-provided-error))
+
+        (setf *set-pkg* (find-package
+                          (concatenate 'string  "SET-" *set-num*)))
+
+        (unless *set-pkg* (error 'set-does-not-exist-error
+                                 :set-num *set-num*))
+
+        (setf *prob-num* (pop argv))
+
+        (unless *prob-num* (error 'prob-num-not-provided-error))
+
+        (setf *prob-fun* (find-symbol
+                           (concatenate 'string  "PROBLEM-" *prob-num*)
+                           *set-pkg*))
+
+        (unless *prob-fun* (error 'prob-not-found-error
+                                  :prob-num *prob-num*
+                                  :set-num  *set-num*))
+
+        (princ (funcall *prob-fun*)))
+
+    (condition () (exit 1))))

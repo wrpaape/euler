@@ -1,5 +1,4 @@
 (in-package #:sets)
-; (export '(greet))
 
-(defun greet (x)
-  (print `(hello ,x)))
+(defun greet ()
+  (print "hello from set 3"))

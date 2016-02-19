@@ -1,4 +1,9 @@
-(in-package :lisp-api)
+(in-package #:lisp-api)
 
-(defun main (argv)
-  (set-3:problem-26 argv))
+(defvar *problem-set-package* nil "dox")
+(defvar *problem-function*    nil "docs")
+
+(defun main (argv))
+
+(defun exit-on-error (msg)
+  (princ msg *error-output*))

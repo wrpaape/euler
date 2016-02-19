@@ -18,18 +18,10 @@
   "Dispatch appropriate problem function according to command line arguments ~
   'set-num' and 'prob-num'"
 
-  ;; wrap parsing process and function call in a condition handler
+  ;; wrap main forms in a condition handler
   (handler-case
-    (let ((prob-fun nil)
-          (res-tup  nil))
-
-      ;; parse the target problem function from input
-      (setf prob-fun
-            (parse-problem-function argv))
-
-      ;; time problem function
-      (setf res-cons-cell
-            (time-problem-function prob-fun))
+    (let* ((prob-fun     (parse-problem-function argv))      ;; parse cmd line argv
+          (res-cons-cell (time-problem-function  prob-fun))) ;; time problem function
 
       ;; delimit the results and time elapsed with a newline and print to stdout
       (format t
@@ -120,6 +112,7 @@
   
     ;; return target problem function
     prob-fun))
+
 
 ;;; **********************************************************************************
 ;;; *                                    - exit -                                    *

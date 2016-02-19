@@ -1,5 +1,5 @@
 (in-package #:sets)
-(export '(greet))
+; (export '(greet))
 
 (defun greet (x)
   (print `(hello ,x)))

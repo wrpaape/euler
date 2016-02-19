@@ -1,4 +1,4 @@
-(in-package #:sets)
+(in-package :sets)
 ; (export '(greet))
 
 (defun greet (x)

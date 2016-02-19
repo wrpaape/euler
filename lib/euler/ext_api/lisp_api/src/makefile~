@@ -1,6 +1,6 @@
 ../lisp-api: *.lisp *.asd
 		buildapp 					 	\
-				--asdf-path . 		 	\
+				--asdf-path ./ 		 	\
 				--load-system lisp-api	\
 				--entry lisp-api:main	\
 				--output ../lisp-api

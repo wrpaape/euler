@@ -1,18 +1,19 @@
-;;;; *********************************************************************************
-;;;; *                               - lisp-api.lisp -                               *
-;;;; *                                                                               *
-;;;; * Houses the main package of the lisp-api system, responsible for communication *
-;;;; * between Elixir Mix project 'euler' and problems solved in Common Lisp.        *
-;;;; *********************************************************************************
+;;;; ********************************************************************************
+;;;; *                               - lisp-api.lisp -                              *
+;;;; *                                                                              *
+;;;; * Houses the main package of the lisp-api system, responsible for              *
+;;;; * communication between Elixir Mix project 'euler' and problems solved in      *
+;;;; * Common Lisp.                                                                 *
+;;;; ********************************************************************************
 
 (in-package #:lisp-api)
 
-;;; **********************************************************************************
-;;; *                                    - main -                                    *
-;;; *                                                                                *
-;;; * External client interface, responsible for dispatch of input problem set and   *
-;;; * problem number to the appropriate problem function.                            *
-;;; **********************************************************************************
+;;; *********************************************************************************
+;;; *                                    - main -                                   *
+;;; *                                                                               *
+;;; * External client interface, responsible for dispatch of input problem set and  *
+;;; * problem number to the appropriate problem function.                           *
+;;; *********************************************************************************
 
 (defun main (argv)
   "Dispatch appropriate problem function according to command line arguments ~
@@ -20,8 +21,8 @@
 
   ;; wrap main forms in a condition handler
   (handler-case
-    (let* ((prob-fun     (parse-problem-function argv))      ;; parse cmd line argv
-          (res-cons-cell (time-problem-function  prob-fun))) ;; time problem function
+    (let* ((prob-fun      (parse-problem-function argv))      ;; parse cmd line argv
+           (res-cons-cell (time-problem-function  prob-fun))) ;; time prob-func
 
       ;; delimit the results and time elapsed with a newline and print to stdout
       (format t
@@ -29,22 +30,22 @@
               (car res-cons-cell)
               (cdr res-cons-cell)))
 
-    ;; if an error is signaled, report condition to stderr & exit with status code '1'
+    ;; if error signal → report condition to stderr and with status code '1'
     (condition (arg-error)
                  (princ arg-error *error-output*)
                  (exit 1))))
 
 
-;;; **********************************************************************************
-;;; *                           - time-problem-function -                            *
-;;; *                                                                                *
-;;; * Times a call to the input problem function 'prob-fun', returning a cons cell   *
-;;; * of the form:                                                                   *
-;;; *                            (result . time-elapsed)                             *
-;;; *                                                                                *
-;;; * where 'time-elapsed' is the time taken for 'prob-fun' to evaluate 'result',    *
-;;; * rounded to the nearest μs.                                                     *
-;;; **********************************************************************************
+;;; *********************************************************************************
+;;; *                           - time-problem-function -                           *
+;;; *                                                                               *
+;;; * Times a call to the input problem function 'prob-fun', returning a cons cell  *
+;;; * of the form:                                                                  *
+;;; *                            (result . time-elapsed)                            *
+;;; *                                                                               *
+;;; * where 'time-elapsed' is the time taken for 'prob-fun' to evaluate 'result',   *
+;;; * rounded to the nearest μs.                                                    *
+;;; *********************************************************************************
 
 (defun time-problem-function (prob-fun)
   "Times a call to the input problem function 'prob-fun', returning a cons cell of ~
@@ -61,11 +62,11 @@
 
     (list* result time-elapsed)))
 
-;;; **********************************************************************************
-;;; *                           - parse-problem-function -                           *
-;;; *                                                                                *
-;;; * Parses problem function symbol 'prob-fun' from command line input 'argv'.      *
-;;; **********************************************************************************
+;;; *********************************************************************************
+;;; *                           - parse-problem-function -                          *
+;;; *                                                                               *
+;;; * Parses problem function symbol 'prob-fun' from command line input 'argv'.     *
+;;; *********************************************************************************
 
 (defun parse-problem-function (argv)
   "Parses problem function symbol from command line input 'argv'."
@@ -114,14 +115,14 @@
     prob-fun))
 
 
-;;; **********************************************************************************
-;;; *                                    - exit -                                    *
-;;; *                                                                                *
-;;; * Responsible for "programmatically exit"ing the list image.  Taken from the     *
-;;; * common lisp wiki:                                                              *
-;;; *                                                                                *
-;;; *                      http://www.cliki.net/portable%20exit                      *
-;;; **********************************************************************************
+;;; *********************************************************************************
+;;; *                                    - exit -                                   *
+;;; *                                                                               *
+;;; * Responsible for "programmatically exit"ing the list image.  Taken from the    *
+;;; * common lisp wiki:                                                             *
+;;; *                                                                               *
+;;; *                      http://www.cliki.net/portable%20exit                     *
+;;; *********************************************************************************
 
 (defun exit (&optional code)
       "Programmatically exit the lisp image."
@@ -148,9 +149,9 @@
       (error 'not-implemented :proc (list 'exit code)))
 
 
-;;; **********************************************************************************
-;;; *                           EXIT CONDTION DEFINITIONS                            *
-;;; **********************************************************************************
+;;; *********************************************************************************
+;;; *                           EXIT CONDITION DEFINITIONS                          *
+;;; *********************************************************************************
 
 (define-condition set-num-not-provided-error (error) ()
   (:report "Problem set number not provided."))
@@ -179,4 +180,3 @@
              (format stream "Problem number \"~A\" not found in problem set \"~A\"."
                      (prob-not-found-prob-num condition)
                      (prob-not-found-set-num  condition)))))
-

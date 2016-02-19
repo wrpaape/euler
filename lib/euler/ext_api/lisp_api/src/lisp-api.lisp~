@@ -86,4 +86,7 @@
 
         (princ (funcall *prob-fun*)))
 
-    (condition () (exit 1))))
+    (condition (arg-error)
+               (progn
+                 (princ arg-error *error-output*)
+                 (exit 1)))))

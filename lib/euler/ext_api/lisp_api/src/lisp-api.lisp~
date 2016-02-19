@@ -15,50 +15,124 @@
 ;;; **********************************************************************************
 
 (defun main (argv)
+  "Dispatch appropriate problem function according to command line arguments ~
+  'set-num' and 'prob-num'"
+
+  ;; wrap parsing process and function call in a condition handler
   (handler-case
-      (let ((set-num nil)
-            (set-pkg nil)
-            (prob-num nil)
-            (prob-fun nil))
+    (let ((prob-fun nil)
+          (res-tup  nil))
 
-        (pop argv) ; remove cmd from argv
+      ;; parse the target problem function from input
+      (setf prob-fun
+            (parse-problem-function argv))
 
-        (setf set-num (pop argv))
+      ;; time problem function
+      (setf res-cons-cell
+            (time-problem-function prob-fun))
 
-        (unless set-num (error 'set-num-not-provided-error))
+      ;; delimit the results and time elapsed with a newline and print to stdout
+      (format t
+              "~D~%~S"
+              (car res-cons-cell)
+              (cdr res-cons-cell)))
 
-        (setf set-pkg (find-package
-                          (concatenate 'string  "SET-" set-num)))
-
-        (unless set-pkg (error 'set-does-not-exist-error
-                                 :set-num set-num))
-
-        (setf prob-num (pop argv))
-
-        (unless prob-num (error 'prob-num-not-provided-error))
-
-        (setf prob-fun (find-symbol
-                           (concatenate 'string  "PROBLEM-" prob-num)
-                           set-pkg))
-
-        (unless prob-fun (error 'prob-not-found-error
-                                  :prob-num prob-num
-                                  :set-num  set-num))
-
-        (princ (funcall prob-fun)))
-
+    ;; if an error is signaled, report condition to stderr & exit with status code '1'
     (condition (arg-error)
                  (princ arg-error *error-output*)
                  (exit 1))))
 
 
 ;;; **********************************************************************************
+;;; *                           - time-problem-function -                            *
+;;; *                                                                                *
+;;; * Times a call to the input problem function 'prob-fun', returning a cons cell   *
+;;; * of the form:                                                                   *
+;;; *                            (result . time-elapsed)                             *
+;;; *                                                                                *
+;;; * where 'time-elapsed' is the time taken for 'prob-fun' to evaluate 'result',    *
+;;; * rounded to the nearest μs.                                                     *
+;;; **********************************************************************************
+
+(defun time-problem-function (prob-fun)
+  "Times a call to the input problem function 'prob-fun', returning a cons cell of ~
+  the form:\n  (time-elapsed . result)\n where 'time-elapsed' is the time taken for ~
+  'prob-fun' to evaluate 'result', rounded to the nearest μs."
+
+  (let* ((time-start   (get-internal-real-time))
+         (result       (funcall prob-fun))
+         (time-stop    (get-internal-real-time))
+         (time-elapsed (round (* (/ (- time-stop
+                                       time-start)
+                                    INTERNAL-TIME-UNITS-PER-SECOND)
+                                 1e6))))
+
+    (list* result time-elapsed)))
+
+;;; **********************************************************************************
+;;; *                           - parse-problem-function -                           *
+;;; *                                                                                *
+;;; * Parses problem function symbol 'prob-fun' from command line input 'argv'.      *
+;;; **********************************************************************************
+
+(defun parse-problem-function (argv)
+  "Parses problem function symbol from command line input 'argv'."
+
+  (let ((set-num  nil)  ; string referencing package 'set-pkg'       ("3")
+        (set-pkg  nil)  ; package housing target problem function    ('SET-3)
+        (prob-num nil)  ; string referencing problem function        ("26")
+        (prob-fun nil)) ; function symbol of target problem function ('PROBLEM-26)
+
+    ;; remove cmd string from head of 'argv'
+    (pop argv)
+
+    ;; read in next arg
+    (setf set-num
+          (pop argv))
+
+    ;; if no more args, signal error condition
+    (unless set-num (error 'set-num-not-provided-error))
+
+    ;; find package referenced by 'set-num'
+    (setf set-pkg
+          (find-package (concatenate 'string  "SET-" set-num)))
+
+    ;; if can't be found, signal error condition
+    (unless set-pkg (error 'set-does-not-exist-error
+                           :set-num set-num))
+
+    ;; read in next arg
+    (setf prob-num
+          (pop argv))
+
+    ;; if no more args, signal error condition
+    (unless prob-num (error 'prob-num-not-provided-error))
+
+    ;; find function referenced by 'prob-num' in package 'set-pkg'
+    (setf prob-fun
+          (find-symbol (concatenate 'string  "PROBLEM-" prob-num)
+                       set-pkg))
+
+    ;; if can't be found, signal error condition
+    (unless prob-fun (error 'prob-not-found-error
+                              :prob-num prob-num
+                              :set-num  set-num))
+  
+    ;; return target problem function
+    prob-fun))
+
+;;; **********************************************************************************
 ;;; *                                    - exit -                                    *
 ;;; *                                                                                *
+;;; * Responsible for "programmatically exit"ing the list image.  Taken from the     *
+;;; * common lisp wiki:                                                              *
+;;; *                                                                                *
+;;; *                      http://www.cliki.net/portable%20exit                      *
 ;;; **********************************************************************************
 
 (defun exit (&optional code)
       "Programmatically exit the lisp image."
+
       ;; This group from "clocc-port/ext.lisp"
       #+sbcl (sb-ext:exit :code code)
       #+allegro (excl:exit code)

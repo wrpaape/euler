@@ -28,10 +28,13 @@ config :euler, [problems_per_module:  10,
                 java_script_api_dir:  Path.join(ext_api_dir, "java_script_api"),
                 java_script_api_prog: "java_script_api.js",
                 java_script_lang_tup: {"JavaScript", join_ansi.(~w(yellow_background black)a)},
-                ruby_lang_tup:        {"Ruby",  join_ansi.(~w(white_background red)a)},
+                ruby_lang_tup:        {"Ruby",  join_ansi.(~w(red_background white)a)},
                 ruby_cmd:             "ruby",
                 ruby_api_dir:         Path.join(ext_api_dir, "ruby_api"),
-                ruby_api_prog:        "ruby_api.rb"]
+                ruby_api_prog:        "ruby_api.rb",
+                lisp_lang_tup:        {"Common Lisp", join_ansi.(~w(magenta_background green)a)},
+                lisp_api_dir:         Path.join(ext_api_dir, "lisp_api"),
+                lisp_api_exe:         "lisp-api"]
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

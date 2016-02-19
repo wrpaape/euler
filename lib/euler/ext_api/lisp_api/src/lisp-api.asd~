@@ -28,11 +28,8 @@
   :version      "0.0.1"
   :description  "API module connecting Elixir mix project 'euler' with problem solutions programmed in Common Lisp"
   :author       "Reid Paape"
+  :serial t
   :components   ((:file "packages")
-                 (:file "sets"
-                        :depends-on ("packages"))
-                 (:file "set-3"
-                        :depends-on ("packages"))
-                 (:file "lisp-api"
-                        :depends-on ("packages"))))
-
+                 (:file "sets")
+                 (:file "set-3")
+                 (:file "lisp-api")))

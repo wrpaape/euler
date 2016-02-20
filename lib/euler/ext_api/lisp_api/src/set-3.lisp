@@ -45,8 +45,8 @@
             (push 0 base-digits)
             (incf base-rec-cyc))
 
-      (let ((rmdr    base-dividend)
-            (dig     nil)
+      (let ((dig     nil)
+            (rmdr    base-dividend)
             (digs    base-digits)
             (rec-cyc base-rec-cyc))
 
@@ -58,41 +58,36 @@
         (format t "digs:            ~S~%" digs)
         (force-output t)
 
-      (loop named divide do
-          (format t "before~%")
-          (format t "    dig:  ~D~%" dig)
-          (format t "    rmdr: ~D~%" rmdr)
-          (force-output t)
-
+      (loop named divide-and-carry do
         (multiple-value-setq (dig rmdr)
                              (floor rmdr d))
 
+          (format t "    dig:  ~D~%" dig)
+          (force-output t)
 
+          (when (eql rmdr 0)
+                (setf rec-cyc 0)
+                (return-from divide-and-carry))
 
           ; (when (or (and (eql dig  0)
           ;                (eql rmdr 0))
           ;           (member dig digs))
           ;       (return-from divide))
           (when (member dig digs)
-                (return-from divide))
+                (return-from divide-and-carry))
 
           (loop do
                 (setf rmdr (* rmdr 10))
                 while (< rmdr d))
 
-          (format t "after~%")
-          (format t "    dig:  ~D~%" dig)
-          (format t "    rmdr: ~D~%" rmdr)
-          (force-output t)
-
           (push dig digs)
 
           (incf rec-cyc))
 
-      (format t "  d:        ~D~%" d)
-      (format t "  rec-cyc:  ~D~%" rec-cyc)
-      (format t "  digs:     ~S~%" digs)
-      (force-output t)
+          (format t "  d:        ~D~%" d)
+          (format t "  rec-cyc:  ~D~%" rec-cyc)
+          (format t "  digs:     ~S~%" digs)
+          (force-output t)
                            
       (when (> rec-cyc max-rec-cyc)
             (setf max-rec-cyc     rec-cyc)

@@ -21,35 +21,38 @@
 
   ;; wrap main forms in a condition handler
   (handler-case
-    (let* ((prob-fun      (parse-problem-function argv))      ;; parse cmd line argv
-           (res-cons-cell (time-problem-function  prob-fun))) ;; time prob-func
 
-      ;; delimit the results and time elapsed with a newline and print to stdout
-      (format t
-              "~D~%~S"
-              (car res-cons-cell)
-              (cdr res-cons-cell)))
+      ;; parse the command line arguments, 'argv'
+      (let ((prob-fun (parse-problem-function argv)))
+
+         ;; time the target problem function, 'prob-fun'
+         (multiple-value-bind (result time-elapsed)
+                              (time-problem-function prob-fun)
+
+           ;; delimit the result and time elapsed with a newline and print to stdout
+           (format t "~D~%~S" result time-elapsed)))
 
     ;; if error signal → report condition to stderr and with status code '1'
     (condition (arg-error)
-                 (princ arg-error *error-output*)
-                 (exit 1))))
+      (princ arg-error *error-output*)
+      (exit 1))))
 
 
 ;;; *********************************************************************************
 ;;; *                           - time-problem-function -                           *
 ;;; *                                                                               *
-;;; * Times a call to the input problem function 'prob-fun', returning a cons cell  *
-;;; * of the form:                                                                  *
-;;; *                            (result . time-elapsed)                            *
+;;; * Times a call to the input problem function 'prob-fun', returning the values:  *
+;;; *                                                                               *
+;;; *                                    result                                     *
+;;; *                                 time-elapsed                                  *
 ;;; *                                                                               *
 ;;; * where 'time-elapsed' is the time taken for 'prob-fun' to evaluate 'result',   *
 ;;; * rounded to the nearest μs.                                                    *
 ;;; *********************************************************************************
 
 (defun time-problem-function (prob-fun)
-  "Times a call to the input problem function 'prob-fun', returning a cons cell of ~
-  the form:\n  (time-elapsed . result)\n where 'time-elapsed' is the time taken for ~
+  "Times a call to the input problem function 'prob-fun', returning the values:\n ~
+  \n  result\n  time-elapsed\n\nwhere 'time-elapsed' is the time taken for ~
   'prob-fun' to evaluate 'result', rounded to the nearest μs."
 
   (let* ((time-start   (get-internal-real-time))
@@ -60,7 +63,7 @@
                                     INTERNAL-TIME-UNITS-PER-SECOND)
                                  1e6))))
 
-    (list* result time-elapsed)))
+    (values result time-elapsed)))
 
 ;;; *********************************************************************************
 ;;; *                           - parse-problem-function -                          *

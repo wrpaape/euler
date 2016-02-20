@@ -33,36 +33,66 @@
   "Solves Project Euler problem 26: 'Reciprocal Cycles'"
 
 	(let ((base-dividend   100)
+        (base-digits     '(0))
+        (base-rec-cyc    1)
         (max-rec-cyc     6)
         (max-rec-cyc-dig 7))
 
     ;; loop over the remaining valid range of 'd'
 		(loop for d from 11 below 1000 do
 			(when (> d base-dividend)
-					  (setf base-dividend (* base-dividend 10)))
+					  (setf base-dividend (* base-dividend 10))
+            (push 0 base-digits)
+            (incf base-rec-cyc))
 
       (let ((rmdr    base-dividend)
-            (digs    '())
-            (rec-cyc 0))
+            (dig     nil)
+            (digs    base-digits)
+            (rec-cyc base-rec-cyc))
 
-      (loop named divide
-        (multiple-value-bind (dig rmdr)
-                             (floor rmdr d)
+        (format t "~%~%d:           ~D~%" d)
+        (format t "max-rec-cyc:     ~D~%" max-rec-cyc)
+        (format t "max-rec-cyc-dig: ~D~%" max-rec-cyc-dig)
+        (format t "base-dividend:   ~D~%" base-dividend)
+        (format t "rmdr:            ~D~%" rmdr)
+        (format t "digs:            ~S~%" digs)
+        (force-output t)
 
-          (when (or (and (eql dig  0)
-                         (eql rmdr 0))
-                    (member dig digs))
+      (loop named divide do
+          (format t "before~%")
+          (format t "    dig:  ~D~%" dig)
+          (format t "    rmdr: ~D~%" rmdr)
+          (force-output t)
+
+        (multiple-value-setq (dig rmdr)
+                             (floor rmdr d))
+
+
+
+          ; (when (or (and (eql dig  0)
+          ;                (eql rmdr 0))
+          ;           (member dig digs))
+          ;       (return-from divide))
+          (when (member dig digs)
                 (return-from divide))
 
-          (loop named next-rmdr
-            (setf rmdr (* rmdr 10))
-            (unless (< rmdr d)
-                    (return-from next-rmdr)))
+          (loop do
+                (setf rmdr (* rmdr 10))
+                while (< rmdr d))
+
+          (format t "after~%")
+          (format t "    dig:  ~D~%" dig)
+          (format t "    rmdr: ~D~%" rmdr)
+          (force-output t)
 
           (push dig digs)
 
-          (incf rec-cyc)))
+          (incf rec-cyc))
 
+      (format t "  d:        ~D~%" d)
+      (format t "  rec-cyc:  ~D~%" rec-cyc)
+      (format t "  digs:     ~S~%" digs)
+      (force-output t)
                            
       (when (> rec-cyc max-rec-cyc)
             (setf max-rec-cyc     rec-cyc)

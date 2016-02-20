@@ -33,35 +33,39 @@
   "Solves Project Euler problem 26: 'Reciprocal Cycles'"
 
 	(let ((base-dividend   100)
-        (base-digits     '(0))
-        (base-rec-cyc    1)
+        ; (base-digits     '(0))
+        ; (base-rec-cyc    1)
         (max-rec-cyc     6)
         (max-rec-cyc-dig 7))
 
     ;; loop over the remaining valid range of 'd'
-		(loop for d from 11 below 1000 do
+		; (loop for d from 11 below 1000 do
+		(loop for d from 380 below 381 do
 			(when (> d base-dividend)
-					  (setf base-dividend (* base-dividend 10))
-            (push 0 base-digits)
-            (incf base-rec-cyc))
+					  (setf base-dividend (* base-dividend 10)))
+            ; (push 0 base-digits)
+            ; (incf base-rec-cyc))
 
-      (let ((dig     nil)
-            (rmdr    base-dividend)
-            (digs    base-digits)
-            (rec-cyc base-rec-cyc))
+      (let ((base-remainder nil)
+            (rmdr           base-dividend)
+            (rec-cyc        0)
+            ; (digs           base-digits)
+            ; (rec-cyc        base-rec-cyc))
 
         (format t "~%~%d:           ~D~%" d)
         (format t "max-rec-cyc:     ~D~%" max-rec-cyc)
         (format t "max-rec-cyc-dig: ~D~%" max-rec-cyc-dig)
         (format t "base-dividend:   ~D~%" base-dividend)
         (format t "rmdr:            ~D~%" rmdr)
-        (format t "digs:            ~S~%" digs)
+        ; (format t "digs:            ~S~%" digs)
         (force-output t)
 
       (loop named divide-and-carry do
+        (setf rmdr)
         (multiple-value-setq (dig rmdr)
                              (floor rmdr d))
 
+          (format t "    rmdr: ~D~%" rmdr)
           (format t "    dig:  ~D~%" dig)
           (force-output t)
 

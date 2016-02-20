@@ -37,17 +37,12 @@
         (max-rec-cyc-dig 7))
 
     ;; loop over the remaining valid range of 'd'
-		(loop for d from 13 below 15
+		(loop for d from 1 below 1000
           do (when (> d base-dividend)
 					   (setf base-dividend (* base-dividend 10)))
 
              (let ((rmdr       (rem base-dividend d))
                    (prev-rmdrs '()))
-
-               ; (format t "~%~%d:           ~D~%" d)
-               ; (format t "max-rec-cyc:     ~D~%" max-rec-cyc)
-               ; (format t "max-rec-cyc-dig: ~D~%" max-rec-cyc-dig)
-               ; (force-output t)
 
                (loop named divide-and-carry
                      until (eql rmdr 0)
@@ -57,11 +52,6 @@
                                   while (< rmdr d))
 
                         (setf rmdr (rem rmdr d))
-
-                        (format t "    d:     ~D~%" d)
-                        (format t "    rmdr:  ~D~%" rmdr)
-                        (format t "    rmdrs: ~S~%" prev-rmdrs)
-                        (force-output t)
 
                         (loop for prev-rmdr in prev-rmdrs
                               for rec-cyc from 1
@@ -77,14 +67,11 @@
                                          (when (eql mult-prev-rmdr base-dividend)
                                                (incf rec-cyc trailing-zeros)))
 
-                        (format t "      rec-cyc:  ~D~%" rec-cyc)
-
                                        (when (> rec-cyc max-rec-cyc)
                                              (setf max-rec-cyc     rec-cyc)
                                              (setf max-rec-cyc-dig d))
 
                                        (return-from divide-and-carry))))))
-
     max-rec-cyc-dig))
 
 

@@ -37,7 +37,7 @@
 
     ;; loop over the remaining valid range of 'd'
 		(loop named traverse-search-interval
-          for d from 1 below 1000
+          for d from 11 below 1000
           do (let ((rmdr      1)
                    (rmdrs     (list 1))
                    (rec-cyc 0))
@@ -51,7 +51,6 @@
 
                           (when (eq rmdr 0)
                                 (return-from divide-and-carry))
-
 
                           (loop named traverse-remainders
                                 for prev-rmdr in rmdrs
@@ -68,14 +67,6 @@
                                                (setf max-rec-cyc rec-cyc)
                                                (setf solution-d  d))
                                          
-                                         ; (format t "~%d:     ~D~%" d)
-                                         ; (format t "rmdr:  ~S~%" rmdr)
-                                         ; (format t "rmdrs: ~S~%" rmdrs)
-                                         ; (format t "1.0 / d:    ~F~%" (/ 1.0 d))
-                                         ; (format t "rec-cyc:    ~D~%" rec-cyc)
-                                         ; (finish-output nil)
-                                         ; (sleep 1)
-
                                          (return-from divide-and-carry)))
 
                           (push rmdr rmdrs))))

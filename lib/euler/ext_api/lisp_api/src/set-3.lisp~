@@ -32,45 +32,75 @@
 (defun problem-26 ()
   "Solves Project Euler problem 26: 'Reciprocal Cycles'"
 
-	(let ((base-dividend   100)
-        (max-rec-cyc     6)
-        (max-rec-cyc-dig 7))
+	(let ((base-dividend 100)
+        (max-rec-cyc   6)
+        (solution-d    7))
 
     ;; loop over the remaining valid range of 'd'
-		(loop for d from 1 below 1000
+		(loop named traverse-search-interval
+          for d from 11 below 1000
           do (when (> d base-dividend)
-					   (setf base-dividend (* base-dividend 10)))
+                   (setf base-dividend (* base-dividend 10)))
 
-             (let ((rmdr       (rem base-dividend d))
-                   (prev-rmdrs '()))
+             (let ((rmdr      (rem base-dividend d))
+                   (rmdrs     '())
+                   (last-rmdr nil))
 
                (loop named divide-and-carry
                      until (eql rmdr 0)
-                     do (push rmdr prev-rmdrs)
+                     for len-rmdrs from 0
+                     do (let ((tail-rmdrs rmdrs))
 
-                        (loop do (setf rmdr (* rmdr 10))
-                                  while (< rmdr d))
+                          (loop named traverse-remainders
+                                for rec-cyc downfrom len-rmdrs
+                                while tail-rmdrs
+                                do (when (eql rmdr (car tail-rmdrs))
 
-                        (setf rmdr (rem rmdr d))
+                                         (loop named count-rec-zeros
+                                               for rec-zeros from 0
+                                               do (setf last-rmdr (* last-rmdr 10))
+                                                  (unless (< last-rmdr base-dividend)
+                                                          (when (eql last-rmdr base-dividend)
+                                                                (incf rec-cyc rec-zeros))
 
-                        (loop for prev-rmdr in prev-rmdrs
-                              for rec-cyc from 1
-                              do (when (eql rmdr prev-rmdr)
+                                                          (return-from count-rec-zeros)))
 
-                                       (let ((mult-prev-rmdr (* (car prev-rmdrs) 10))
-                                             (trailing-zeros 0))
+                                         (when (> rec-cyc max-rec-cyc)
+                                               (setf max-rec-cyc rec-cyc)
+                                               (setf solution-d  d))
 
-                                         (loop while (< mult-prev-rmdr base-dividend)
-                                               do (setf mult-prev-rmdr (* mult-prev-rmdr 10))
-                                                  (incf trailing-zeros))
+                                         (return-from divide-and-carry)))
 
-                                         (when (eql mult-prev-rmdr base-dividend)
-                                               (incf rec-cyc trailing-zeros)))
+                                   (setf tail-rmdrs (cdr tail-rmdrs)))
 
-                                       (when (> rec-cyc max-rec-cyc)
-                                             (setf max-rec-cyc     rec-cyc)
-                                             (setf max-rec-cyc-dig d))
+                        (setf tail-rmdrs (cons rmdr nil))
 
-                                       (return-from divide-and-carry))))))
+                        (setf last-rmdr rmdr)
 
-    max-rec-cyc-dig))
+                        (loop do (setf last-rmdr (* last-rmdr 10))
+                                  while (< last-rmdr d))
+
+                        (setf rmdr (rem last-rmdr d)))))
+
+    solution-d))
+
+                        ; (loop for prev-rmdr in prev-rmdrs
+                        ;       for rec-cyc from 1
+                        ;       do (when (eql rmdr prev-rmdr)
+
+                        ;                (let ((mult-prev-rmdr (* (car prev-rmdrs) 10))
+                        ;                      (trailing-zeros 0))
+
+                        ;                  (loop while (< mult-prev-rmdr base-dividend)
+                        ;                        do (setf mult-prev-rmdr (* mult-prev-rmdr 10))
+                        ;                           (incf trailing-zeros))
+
+                        ;                  (when (eql mult-prev-rmdr base-dividend)
+                        ;                        (incf rec-cyc trailing-zeros)))
+
+                        ;                (when (> rec-cyc max-rec-cyc)
+                        ;                      (setf max-rec-cyc     rec-cyc)
+                        ;                      (setf solution-d d))
+
+                                       ; (return-from divide-and-carry))))))
+

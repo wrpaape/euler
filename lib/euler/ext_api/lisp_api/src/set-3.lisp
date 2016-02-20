@@ -40,10 +40,10 @@
           for d from 1 below 1000
           do (let ((rmdr      1)
                    (rmdrs     (list 1))
-                   (len-digits 0))
+                   (rec-cyc 0))
 
                  (loop named divide-and-carry
-                       do (loop do (incf len-digits)
+                       do (loop do (incf rec-cyc)
                                    (setf rmdr (* rmdr 10))
                                 while (< rmdr d))
 
@@ -52,35 +52,35 @@
                           (when (eq rmdr 0)
                                 (return-from divide-and-carry))
 
-                          (let ((tail-rmdrs rmdrs)
-                                (rem-tail   (cdr rmdrs)))
 
-                            (loop named traverse-remainders
-                                  for rec-cyc downfrom len-digits
-                                  do (when (eql rmdr (car tail-rmdrs))
-                                           (when (> rec-cyc max-rec-cyc)
-                                                 (setf max-rec-cyc rec-cyc)
-                                                 (setf solution-d  d))
-                                           
-                                           (format t "~%d:     ~D~%" d)
-                                           (format t "rmdr:  ~S~%" rmdr)
-                                           (format t "rmdrs: ~S~%" rmdrs)
-                                           (format t "1.0 / d:    ~F~%" (/ 1.0 d))
-                                           (format t "len-digits: ~D~%" len-digits)
-                                           (format t "rec-cyc:    ~D~%" rec-cyc)
-                                           (finish-output nil)
-                                           (sleep 1)
+                          (loop named traverse-remainders
+                                for prev-rmdr in rmdrs
+                                do (when (eql rmdr prev-rmdr)
+                                         (setf prev-rmdr 1)
+                                         (loop until (eql prev-rmdr rmdr)
+                                               do (loop do (decf rec-cyc)
+                                                           (setf prev-rmdr (* prev-rmdr 10))
+                                                        while (< prev-rmdr d))
 
-                                           (return-from divide-and-carry))
+                                                  (setf prev-rmdr (rem prev-rmdr d)))
 
-                                     (unless rem-tail
-                                             (return-from traverse-remainders))
+                                         (when (> rec-cyc max-rec-cyc)
+                                               (setf max-rec-cyc rec-cyc)
+                                               (setf solution-d  d))
+                                         
+                                         ; (format t "~%d:     ~D~%" d)
+                                         ; (format t "rmdr:  ~S~%" rmdr)
+                                         ; (format t "rmdrs: ~S~%" rmdrs)
+                                         ; (format t "1.0 / d:    ~F~%" (/ 1.0 d))
+                                         ; (format t "rec-cyc:    ~D~%" rec-cyc)
+                                         ; (finish-output nil)
+                                         ; (sleep 1)
 
-                                     (setf tail-rmdrs rem-tail)
-                                     (setf rem-tail   (cdr rem-tail)))
+                                         (return-from divide-and-carry)))
 
-                            (rplacd tail-rmdrs (cons rmdr nil))))))
+                          (push rmdr rmdrs))))
 
+    (format t "max: ~D: ~%" max-rec-cyc)
     solution-d))
 
                                            ; (when (> rec-cyc max-rec-cyc)

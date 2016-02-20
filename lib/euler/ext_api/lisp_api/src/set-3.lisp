@@ -72,13 +72,5 @@
                                              (setf max-rec-cyc-dig d))
 
                                        (return-from divide-and-carry))))))
+
     max-rec-cyc-dig))
-
-
-                       ; (format t "~%d:        ~D~%" d)
-                       ; (format t "~%rmdr:     ~D~%" rmdr)
-                       ; (format t "~%rmdrs:    ~D~%" rmdrs)
-                       ; (format t "rec-cyc:  ~D~%" rec-cyc)
-                       ; (force-output t)
-                                    
-

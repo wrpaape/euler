@@ -33,7 +33,7 @@
   "Solves Project Euler problem 26: 'Reciprocal Cycles'"
 
 	(let ((base-dividend 100)
-        (init-len-digits 1)
+        (init-len-digits 2)
         (max-rec-cyc   6)
         (solution-d    7))
 
@@ -44,9 +44,6 @@
                    (incf init-len-digits)
                    (setf base-dividend (* base-dividend 10)))
 
-             (format t "d: ~D~%" d)
-             (finish-output nil)
-
              (let* ((last-rmdr  (rem base-dividend d))
                     (rmdrs      (list last-rmdr)))
 
@@ -56,17 +53,11 @@
 
                        do (let ((rmdr (* last-rmdr 10)))
 
-                            ; (format t "initial len-digits: ~D~%" len-digits)
-                            ; (finish-output nil)
-
                             (loop while (< rmdr d)
                                   do (incf len-digits)
                                      (setf rmdr (* rmdr 10)))
 
                             (setf rmdr (rem rmdr d))
-
-                            ; (when (eql rmdr 0)
-                            ;       (return-from divide-and-carry))
 
                             (let ((tail-rmdrs rmdrs)
                                   (rem-tail   (cdr rmdrs)))
@@ -79,12 +70,14 @@
                                                    (setf max-rec-cyc rec-cyc)
                                                    (setf solution-d  d))
 
-;                                              (format t "d:          ~D~%" d)
-;                                              (format t "1.0 / d:    ~F~%" (/ 1.0 d))
-;                                              (format t "len-digits: ~D~%" len-digits)
-;                                              (format t "rec-cyc:    ~D~%" rec-cyc)
-;                                              (finish-output nil)
-;                                              (sleep 1)
+                                             (format t "d:          ~D~%" d)
+                                             (format t "rmdr:  ~S~%" rmdr)
+                                             (format t "rmdrs: ~S~%" rmdrs)
+                                             (format t "1.0 / d:    ~F~%" (/ 1.0 d))
+                                             (format t "len-digits: ~D~%" len-digits)
+                                             (format t "rec-cyc:    ~D~%" rec-cyc)
+                                             (finish-output nil)
+                                             (sleep 1)
 
                                              (return-from divide-and-carry))
 
@@ -95,8 +88,8 @@
 
                             (setf last-rmdr rmdr))))))
 
-    (format t "solution-d:  ~D~%" solution-d)
-    (format t "max-rec-cyc: ~D~%" max-rec-cyc)
+    ; (format t "solution-d:  ~D~%" solution-d)
+    ; (format t "max-rec-cyc: ~D~%" max-rec-cyc)
     solution-d))
 
                                              ; (loop named count-rec-zeros

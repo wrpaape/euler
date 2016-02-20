@@ -29,8 +29,8 @@
          (multiple-value-bind (result time-elapsed)
                               (time-problem-function prob-fun)
 
-           ;; delimit the result and time elapsed with a newline and print to stdout
-           (format t "~D~%~S" result time-elapsed)))
+           ;; coerce the return values into ASCII format, delimit them with a newline, and print to stdout
+           (format t "~A~%~A" result time-elapsed)))
 
     ;; if error signal → report condition to stderr and with status code '1'
     (condition (arg-error)

@@ -32,92 +32,61 @@
 (defun problem-26 ()
   "Solves Project Euler problem 26: 'Reciprocal Cycles'"
 
-	(let ((max-rec-cyc   6)
-        (solution-d    7))
+	(let ((max-period 6)  ;; tracks the running longest decimal digit period (init to 6 given in word problem)
+        (solution-d 7)) ;; digit 'd' where '1 / d' produces the recurring cycle with period 'max-period'
 
     ;; loop over the remaining valid range of 'd'
-		(loop named traverse-search-interval
-          for d from 11 below 1000
-          do (let ((rmdr      1)
-                   (rmdrs     (list 1))
-                   (rec-cyc 0))
+		(loop for d from 11 below 1000
+          do (let ((rmdr      1)        ;; tracks the running long division remainder, init to first dividend '1'
+                   (rmdrs     (list 1)) ;; running list tracking history of remainders, init with 'rmdr'
+                   (quot-digs 0))       ;; running count of quotient digits, init to 0
 
+                 ;; process '1 / d' with standard long division
                  (loop named divide-and-carry
-                       do (loop do (incf rec-cyc)
+
+                       ;; multiply the last remainder 'rmdr' until it can serve as the next dividend, incrementing
+                       ;; 'quot-digs' by the required the decimal offset
+                       do (loop do (incf quot-digs)
                                    (setf rmdr (* rmdr 10))
                                 while (< rmdr d))
 
+                          ;; divide next dividend by 'd', update 'rmdr' to the integer remainder of this quotient
                           (setf rmdr (rem rmdr d))
 
-                          (when (eq rmdr 0)
+                          ;; if 'd' divides evenly into '1'...no recurrence cycle, digit period = 0 and needn't
+                          ;; be compared to current max → continue to next 'd'
+                          (when (eq rmdr 0)                     
                                 (return-from divide-and-carry))
 
-                          (loop named traverse-remainders
-                                for prev-rmdr in rmdrs
-                                do (when (eql rmdr prev-rmdr)
-                                         (setf prev-rmdr 1)
-                                         (loop until (eql prev-rmdr rmdr)
-                                               do (loop do (decf rec-cyc)
+                          ;; search list of previous remainders for an occurence of 'rmdr'
+                          (loop for prev-rmdr in rmdrs
+
+                                ;; if 'rdmr' is not unique, at least one full cycle of digits has been calculated
+                                do (when (eql rmdr prev-rmdr)             
+                                         (setf prev-rmdr 1)               ;; starting from the initial dividend...
+                                         (loop until (eql prev-rmdr rmdr) ;; until the matching 'rmdr' is found...
+
+                                               ;; restart long division, decrementing 'quot-digs' for each
+                                               ;; leading digit (offset)
+                                               do (loop do (decf quot-digs)
                                                            (setf prev-rmdr (* prev-rmdr 10))
                                                         while (< prev-rmdr d))
 
                                                   (setf prev-rmdr (rem prev-rmdr d)))
 
-                                         (when (> rec-cyc max-rec-cyc)
-                                               (setf max-rec-cyc rec-cyc)
+                                         ;; the final value of 'quot-digs' should now equal the digit period
+                                         ;; of the recurring cycle for '1 / d'
+
+                                         (when (> quot-digs max-period) ;; if period surpasses the current max...
+
+                                               ;; update 'solution-d' and its digit period
+                                               (setf max-period quot-digs)
                                                (setf solution-d  d))
                                          
-                                         (return-from divide-and-carry)))
+                                         (return-from divide-and-carry))) ;; continue to next 'd'
 
+                          ;; otherwise 'rmdr' is unique to 'rmdrs', push to head of list and continue dividing 
                           (push rmdr rmdrs))))
 
+    ;; digits 11 through 999 have been processed, return digit 'd' with the longest digit period
     solution-d))
-
-                                           ; (when (> rec-cyc max-rec-cyc)
-                                           ;       (setf max-rec-cyc rec-cyc)
-                                           ;       (setf solution-d  d))
-
-                                           ; (format t "~%d:     ~D~%" d)
-                                           ; (format t "rmdr:  ~S~%" rmdr)
-                                           ; (format t "rmdrs: ~S~%" rmdrs)
-                                           ; (format t "1.0 / d:    ~F~%" (/ 1.0 d))
-                                           ; (format t "len-digits: ~D~%" len-digits)
-                                           ; (format t "rec-cyc:    ~D~%" rec-cyc)
-                                           ; (finish-output nil)
-                                           ; (sleep 1)
-
-                                           ; (return-from divide-and-carry))
-
-
-                                     ; (setf tail-rmdrs rem-tail)
-                                     ; (setf rem-tail   (cdr rem-tail)))
-                                             ; (loop named count-rec-zeros
-                                             ;       for rec-zeros from 0
-                                             ;       do (setf last-rmdr (* last-rmdr 10))
-                                             ;          (unless (< last-rmdr base-dividend)
-                                             ;                  (when (eql last-rmdr base-dividend)
-                                             ;                        (incf rec-cyc rec-zeros))
-
-                                             ;                  (return-from count-rec-zeros)))
-
-
-                        ; (loop for prev-rmdr in prev-rmdrs
-                        ;       for rec-cyc from 1
-                        ;       do (when (eql rmdr prev-rmdr)
-
-                        ;                (let ((mult-prev-rmdr (* (car prev-rmdrs) 10))
-                        ;                      (trailing-zeros 0))
-
-                        ;                  (loop while (< mult-prev-rmdr base-dividend)
-                        ;                        do (setf mult-prev-rmdr (* mult-prev-rmdr 10))
-                        ;                           (incf trailing-zeros))
-
-                        ;                  (when (eql mult-prev-rmdr base-dividend)
-                        ;                        (incf rec-cyc trailing-zeros)))
-
-                        ;                (when (> rec-cyc max-rec-cyc)
-                        ;                      (setf max-rec-cyc     rec-cyc)
-                        ;                      (setf solution-d d))
-
-                                       ; (return-from divide-and-carry))))))
-

@@ -1,6 +1,6 @@
 (defpackage #:sets
     (:use #:common-lisp)
-    (:export #:greet))
+    (:export #:prime-sieve))
 
 
 (defpackage #:set-3

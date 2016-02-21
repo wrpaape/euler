@@ -123,4 +123,54 @@
 (defun problem-27 ()
   "Solves Project Euler problem 27: 'Quadratic Primes'"
 
-  'foo)
+  (let* ((primes  (init-primes))
+         (b-range (copy-list primes)))
+    
+    (format t "~S~%" primes)
+    (format t "~S~%" b-range)
+    
+    'foo))
+
+
+(defun init-primes ()
+  (let  ((primes '())
+         (n-tail (loop for n from 2 to 999
+                       collect n)))
+
+
+      (loop named prime-sieve
+            do (let ((prime ))
+                (setf n-tail (delete-if #'(lambda (n)
+                                           (eql (rem n prime) 0))
+                                       n-tail))
+               (unless n-tail
+                       (rplacd acc nil)
+                       (return-from prime-sieve))
+
+               (setf acc (cdr acc))
+               (setf acc (cons acc prime))
+               (setf prime (pop n-tail)))
+
+      primes)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -123,32 +123,23 @@
 (defun problem-27 ()
   "Solves Project Euler problem 27: 'Quadratic Primes'"
 
-  (let* ((primes  (prime-sieve 999))
-         (b-range (copy-list primes)))
+  (let* ((b-range (prime-sieve 999))   ;; generate valid range for b 
+         (primes  (copy-list primes))) ;; initialize prime number reference
     
-    (format t "~S~%" primes)
-    (format t "~S~%" b-range)
+    (let ((max-cons-primes  0)
+          (solution-product 0))
+
+      (loop for b in b-range
+            do (loop for a from 999 downto -999
+                     do (let ((cons-primes 1))
+                         (loop named count-cons-primes
+                               for n from 1
+                               do (let ((quad (+ (* n (+ n a))
+                                                 b)))
+                                    loop do
+
+
+                                    )))))
+           
     
-    'foo))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      solution-product)))

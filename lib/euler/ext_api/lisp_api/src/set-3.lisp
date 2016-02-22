@@ -142,14 +142,18 @@
                                                          ;; if 'quad' is outside the range of known primes...
                                                 (or (and (> quad max-prime-tested)
 
+                                                         ;; calculate primality, update 'primes'
+                                                         (let* ((old-max  max-prime-tested)
+                                                                (is-prime (update-primes-p primes
+                                                                                           old-max
+                                                                                           quad)))
 
-                                                         ;; calculate primality and update 'primes'
-                                                         (update-primes-p primes
-                                                                     max-prime-tested
-                                                                     quad)
+                                                           ;; update 'max-prime-tested' to 'quad'
+                                                           (setf max-prime-tested quad)
 
-                                                         ;; if 'quad' is prime, update 'max-prime-tested'
-                                                         (setf max-prime-tested quad))
+                                                           ;; return predicate result
+                                                           is-prime))
+
 
                                                     ;; otherwise check 'primes' for 'quad'
                                                     (loop for prime in primes
@@ -175,9 +179,9 @@
 ;;; *                                                                               *
 ;;; * Extends existing comprehensive list of prime numbers starting at 2, 'primes', *
 ;;; * from its last checked maximum, input 'next', to 'next-max'. If 'next-max' is  *
-;;; * prime, the updated version of 'primes'.  Otherwise nil is returned, however   *
-;;; * 'primes' will still be modified if any primes exist between 'next' and        *
-;;; * 'next-max'.                                                                   *
+;;; * prime, the updated version of 'primes' is returned, otherwise nil is          *
+;;; * returned. However, 'primes' will still be modified if any primes exist        *
+;;; * between 'next' and 'next-max'.                                                *
 ;;; *********************************************************************************
 
 (defun update-primes-p (primes next next-max)

@@ -1,31 +1,32 @@
-/************************************************************************************
- *                                     set_3.c                                      *
- *                                                                                  *
- * Module housing solutions to problems 21-30                                       *
- ************************************************************************************/
-/************************************************************************************
- *                             PREPROCESSOR DIRECTIVES                              *
- ************************************************************************************/
+/************************************************************************
+ *			    set_3.c					*
+ *									*
+ * Module housing solutions to problems 21-30                           *
+ ************************************************************************/
+/************************************************************************
+ *			PREPROCESSOR DIRECTIVES				*
+ ************************************************************************/
 #include <unistd.h>
 #include "sets.h"
 #include "set_3.h"
-/************************************************************************************
- *                               TOP LEVEL FUNCTIONS                                *
- ************************************************************************************/
-/************************************************************************************
- *                                  - problem_22 -                                  *
- * 																					*
- * Using names.txt (right click and 'Save Link/Target As...'), a 46K text file      *
- * containing over five-thousand first names, begin by sorting it into alphabetical *
- * order. Then working out the alphabetical value for each name, multiply this      *
- * value by its alphabetical position in the list to obtain a name score.           *
- * 																					*
- * For example, when the list is sorted into alphabetical order, COLIN, which is    *
- * worth 3 + 15 + 12 + 9 + 14 = 53, is the 938th name in the list. So, COLIN would  *
- * obtain a score of 938 × 53 = 49714.                                              *
- * 																					*
- * What is the total of all the name scores in the file?                            *
- ************************************************************************************/
+/************************************************************************
+ *			TOP LEVEL FUNCTIONS				*
+ ************************************************************************/
+/************************************************************************
+ *				- problem_22 -				*
+ *									*
+ * Using names.txt (right click and 'Save Link/Target As...'), a 46K	*
+ * text file containing over five-thousand first names, begin by	*
+ * sorting it into alphabetical order. Then working out the		*
+ * alphabetical value for each name, multiply this value by its		*
+ * alphabetical position in the list to obtain a name score.            *
+ *									*
+ * For example, when the list is sorted into alphabetical order, COLIN,	*
+ * which is worth 3 + 15 + 12 + 9 + 14 = 53, is the 938th name in the	*
+ * list. So, COLIN would obtain a score of 938 × 53 = 49714.            *
+ *									*
+ * What is the total of all the name scores in the file?                *
+ ************************************************************************/
 void problem_22(char *result_buffer)
 {
   struct SortParams params_arr[4] = {
@@ -34,20 +35,22 @@ void problem_22(char *result_buffer)
   };
   pthread_t sort_threads[4];
   int q_i;
-  int bucket_i;
+  int bkt_i;
   int name_i;
   int sum_name_scores;
   struct NameNode *head_ptr;
 
-  /* load names from txt file into an array of lists sorted by starting name char */
+  /* load names from txt file into an array of lists sorted by starting
+   * name char */
   struct NameNode **buckets;
 
   buckets = load_buckets();
 
-  /* split buckets into 4 intervals, sort buckets of intervals in parallel threads */
-  for (q_i = 0, bucket_i = 0; q_i < 4; bucket_i += params_arr[q_i].span, ++q_i) {
+  /* split buckets into 4 intervals, sort buckets of intervals in parallel
+   * threads */
+  for (q_i = 0, bkt_i = 0; q_i < 4; bkt_i += params_arr[q_i].span, ++q_i) {
     /* point params at start of sorting thread's interval */
-    params_arr[q_i].interval = &buckets[bucket_i];
+    params_arr[q_i].interval = &buckets[bkt_i];
 
     handle_pthread_create(&sort_threads[q_i],
                           NULL,
@@ -63,8 +66,8 @@ void problem_22(char *result_buffer)
   sum_name_scores = 0;
   name_i = 1;
   /* calculate sum of name scores from sorted names */
-  for (bucket_i = 0; bucket_i < 26; ++bucket_i) {
-    head_ptr = buckets[bucket_i];
+  for (bkt_i = 0; bkt_i < 26; ++bkt_i) {
+    head_ptr = buckets[bkt_i];
 
     while (head_ptr != NULL) {
       sum_name_scores += (head_ptr -> score * name_i);
@@ -77,33 +80,36 @@ void problem_22(char *result_buffer)
 }
 
 
-/************************************************************************************
- *                                  - problem_24 -                                  *
- * 																					*
- * A permutation is an ordered arrangement of objects. For example, 3124 is one     *
- * possible permutation of the digits 1, 2, 3 and 4. If all of the permutations are *
- * listed numerically or alphabetically, we call it lexicographic order. The		*
- * lexicographic permutations of 0, 1 and 2 are:									*
- * 																					*
- *                        012   021   102   120   201   210                         *
- * 																					*
- * What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5,  *
- * 6, 7, 8 and 9?																	*
- ************************************************************************************/
-static jmp_buf done_buff; // jump buffer to break from deep call stack in 'do_permute'
+/************************************************************************
+ *				- problem_24 -				*
+ *									*
+ * A permutation is an ordered arrangement of objects. For example,	*
+ * 3124 is one possible permutation of the digits 1, 2, 3 and 4. If all	*
+ * of the permutations are listed numerically or alphabetically, we	*
+ * call it lexicographic order. The lexicographic permutations of 0, 1	*
+ * and 2 are:								*
+ *									*
+ *            012   021   102   120   201   210                         *
+ *									*
+ *									*
+ * What is the millionth lexicographic permutation of the digits 0, 1,	*
+ * 2, 3, 4, 5, 6, 7, 8 and 9?						*
+ ************************************************************************/
+static jmp_buf done_buff; // jump buffer to break from deep call stack
+			  // in 'do_permute'
 void problem_24(char *result_buffer)
 {
   long perm_count;
   int jump_value;
   char first_perm[] = "0123456789";
   char dig_buff[11];
-   
-  perm_count = 0;                 // initialize count of generated permutations to 0
+
+  perm_count = 0;                 // init count of generated permutations
   jump_value = setjmp(done_buff); // set jump point to root of recursion
 
   // if just starting program...
   if (jump_value == 0) {
-    do_permute(11, first_perm, dig_buff, &perm_count); // begin generating perms
+    do_permute(11, first_perm, dig_buff, &perm_count); // generate perms
   }
 
   // otherwise permutation generation is complete
@@ -111,33 +117,39 @@ void problem_24(char *result_buffer)
 }
 
 
-/************************************************************************************
- *                                  - problem_29 -                                  *
- * 																					*
- *  Consider all integer combinations of aᵇ for 2 ≤ a ≤ 5 and 2 ≤ b ≤ 5:			*
- * 																					*
- *  2²=4,  2³=8,   2⁴=16,  2⁵=32													*
- *  3²=9,  3³=27,  3⁴=81,  3⁵=243													*
- *  4²=16, 4³=64,  4⁴=256, 4⁵=1024													*
- *  5²=25, 5³=125, 5⁴=625, 5⁵=3125													*
- *  If they are then placed in numerical order, with any repeats removed, we get	*
- *  the following sequence of 15 distinct terms:									*
- * 																					*
- *  4, 8, 9, 16, 25, 27, 32, 64, 81, 125, 243, 256, 625, 1024, 3125					*
- * 																					*
- *  How many distinct terms are in the sequence generated by aᵇ for 2 ≤ a ≤ 100 and *
- *  2 ≤ b ≤ 100?																	*
- ************************************************************************************/
+/************************************************************************
+ *				- problem_29 -				*
+ *									*
+ * Consider all integer combinations of aᵇ for 2 ≤ a ≤ 5 and		*
+ * 2 ≤ b ≤ 5:								*
+ *	   								*
+ * 2²=4,  2³=8,   2⁴=16,  2⁵=32						*
+ * 3²=9,  3³=27,  3⁴=81,  3⁵=243					*
+ * 4²=16, 4³=64,  4⁴=256, 4⁵=1024					*
+ * 5²=25, 5³=125, 5⁴=625, 5⁵=3125					*
+ *	   								*
+ * If they are then placed in numerical order, with any repeats		*
+ * removed, we get the following sequence of 15 distinct terms:		*
+ *	   								*
+ * 4, 8, 9, 16, 25, 27, 32, 64, 81, 125, 243, 256, 625, 1024, 3125	*
+ *	   								*
+ * How many distinct terms are in the sequence generated by aᵇ for	*
+ * 2 ≤ a ≤ 100 and 2 ≤ b ≤ 100?						*
+ ************************************************************************/
 void problem_29(char *result_buffer)
 {
 
 }
 
 
-/************************************************************************************
- *                                HELPER FUNCTIONS                                  *
- ************************************************************************************/
-void do_permute(int num_rem_digs, char *rem_digs, char *dig_buff, long *perm_count) {
+/************************************************************************
+ *			HELPER FUNCTIONS				*
+ ************************************************************************/
+void do_permute(int num_rem_digs,
+		char *rem_digs,
+		char *dig_buff,
+		long *perm_count)
+{
   // if single digit remains...
   if (num_rem_digs == 1) {
       *dig_buff = *rem_digs; // copy final digit to the buffer
@@ -164,7 +176,7 @@ void do_permute(int num_rem_digs, char *rem_digs, char *dig_buff, long *perm_cou
     next_digs = handle_malloc(num_rem_digs); // allocate memory for next 'rem_digs'
 
     // copy up to but not including head digit from current 'rem_digs' to 'next_digs'
-    memcpy(next_digs,          rem_digs,              head_i); 
+    memcpy(next_digs,          rem_digs,              head_i);
     // copy remaining digits after head digit to 'next_digs'
     memcpy(&next_digs[head_i], &rem_digs[head_i + 1], num_rem_digs - head_i);
     // continue permutation
@@ -204,7 +216,7 @@ struct NameNode **load_buckets(void)
     /* push new node into its bucket */
     node_ptr -> next_ptr = buckets[slot_char]; /* append bucket to NameNode */
     buckets[slot_char]   = node_ptr;           /* set NameNode as new bucket head */
-    
+
     /* assign temporary pointers to minimize refs/derefs */
     char_ptr  = node_ptr -> name;     /* point to start of 'name' buffer */
     score_ptr = &(node_ptr -> score); /* point to 'score' */
@@ -243,21 +255,21 @@ struct NameNode **load_buckets(void)
 void *sort_buckets(void *params_ptr)
 {
   struct SortParams *params;     /* pthread arg struct */
-  struct NameNode **bucket_ptr;  /* points to current head of unsorted bucket list */
+  struct NameNode **bkt_ptr;	 /* points to current head of unsorted bucket list */
   struct NameNode *old_head_ptr; /* head of unsorted bucket */
   struct NameNode *new_head_ptr; /* head of sorted list */
   struct NameNode *this_ptr;     /* bucket node to be inserted into sorted list */
   struct NameNode *that_ptr;     /* comparison node when traversing sorted list */
   struct NameNode *prev_ptr;     /* prev node in sorted list, points to 'that_ptr' */
-  int rem_buckets;               /* remaining unsorted buckets in interval */
+  int rem_bkts;		         /* remaining unsorted buckets in interval */
 
   /* retrieve params from pthread args */
-  params     = (struct SortParams *) params_ptr; 
-  bucket_ptr = params -> interval;
+  params     = (struct SortParams *) params_ptr;
+  bkt_ptr = params -> interval;
 
   /* for all consecutive NameNode buckets this thread is responsible for... */
-  for (rem_buckets = params -> span; rem_buckets > 0; ++bucket_ptr, --rem_buckets) {
-    new_head_ptr = *bucket_ptr; /* init sorted list as bucket head node */
+  for (rem_bkts = params -> span; rem_bkts > 0; ++bkt_ptr, --rem_bkts) {
+    new_head_ptr = *bkt_ptr; /* init sorted list as bucket head node */
 
     /* if there are no nodes in the bucket, continue to the next one */
     if (new_head_ptr == NULL) {
@@ -302,7 +314,7 @@ void *sort_buckets(void *params_ptr)
       this_ptr -> next_ptr = that_ptr;
     }
 
-    *bucket_ptr = new_head_ptr; /* point bucket at new sorted list */
+    *bkt_ptr = new_head_ptr; /* point bucket at new sorted list */
   }
 
   return NULL; /* must return something for pthread routine */

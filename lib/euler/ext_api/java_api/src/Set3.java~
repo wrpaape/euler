@@ -106,27 +106,27 @@ public abstract class Set3 {
    **********************************************************************************/
   public static Integer problem28() { 
 
-    final int STEPS_PER_LENGTH = 2;
+    // final int STEPS_PER_LENGTH = 2;
 
     int sumDiags;
     int diag;
     int lengthSide;
-    int step;
+    int side_i;
 
-    sumDiags = -1;
-    diag     = 3;
+    sumDiags = 0;
+    diag     = 1;
 
-    for (lengthSide = 2; lengthSide < 1_001; lengthSide++) {
-      for (step = 0; step < STEPS_PER_LENGTH; step++) {
+    for (lengthSide = 2; lengthSide < 1_001; lengthSide+= 2) {
+      for (side_i = 0; side_i < 4; side_i++) {
         sumDiags += diag;
         diag     += lengthSide;
       }
     }
 
-    // System.out.println(diag);
+    // System.out.println("diag:     " + diag);
     // System.out.println("sumDiags: " + sumDiags);
 
 
-    return Integer.valueOf(sumDiags);
+    return Integer.valueOf(sumDiags + diag);
   }
 }

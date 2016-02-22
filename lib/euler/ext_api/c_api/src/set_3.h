@@ -28,6 +28,7 @@ struct SortParams {
  ************************************************************************************/
 void problem_22(char *result_buffer);
 void problem_24(char *result_buffer);
+void problem_29(char *result_buffer);
 struct NameNode **load_buckets(void);
 void *sort_buckets(void *arg);
 void do_permute(int num_rem_digs, char *rem_digs, char *dig_buff, long *perm_count);

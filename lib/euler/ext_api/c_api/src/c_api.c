@@ -93,6 +93,10 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
           time_func(problem_24);
           break;
 
+        case 29:
+          time_func(problem_29);
+          break;
+
         default:
           missing_prob_error(prob_num, 3);
       }

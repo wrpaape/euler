@@ -140,26 +140,40 @@
 
                                    ; (format t "a:    ~D~%" a)
                                    ; (format t "b:    ~D~%" b)
+                                   ; (format t "n:    ~D~%" n)
                                    ; (format t "quad: ~D~%" quad)
-                                   ; (format t "n: ~D~%" n)
                                    ; (format t "max:  ~D~%" max-cons-primes)
                                    ; (finish-output nil)
                                    ; (sleep 1)
 
-                                   (unless (and (> quad 1)
+                                   ;; unless 'quad' is prime...
+                                   (unless (and (> quad 1) ;; negative numbers, 0, and 1 aren't prime
 
-                                                (or (and (<= quad max-prime-tested)
-                                                         (member quad primes))
+                                                         ;; if 'quad' is outside the range of known primes...
+                                                (or (and (> quad max-prime-tested)
 
-                                                    (update-primes-p primes
+
+                                                         ;; calculate primality and update 'primes'
+                                                         (update-primes-p primes
                                                                      max-prime-tested
-                                                                     quad)))
+                                                                     quad)
+
+                                                         ;; if 'quad' is prime, update 'max-prime-tested'
+                                                         (setf max-prime-tested quad))
+
+                                                    ;; otherwise check 'primes' for 'quad'
+                                                    (loop for prime in primes
+                                                          until (> prime quad)
+                                                          do (when (eql prime quad)
+                                                                   (return t)))))
 
 
+                                           ;; if 'n' exceeds previous 'max-cons-primes', update solution vars
                                            (when (> n max-cons-primes)
                                                  (setf max-cons-primes n)
                                                  (setf solution-product (* a b)))
 
+                                           ;; continue to next 'a'
                                            (return-from count-cons-primes))))))
     
       (format t "max:    ~D~%" max-cons-primes)
@@ -167,24 +181,54 @@
       solution-product)))
 
 
+;;; *********************************************************************************
+;;; *                              - update-primes-p -                              *
+;;; *                                                                               *
+;;; * Extends existing comprehensive list of prime numbers starting at 2, 'primes', *
+;;; * from its last checked maximum, input 'next', to 'next-max'. If 'next-max' is  *
+;;; * prime, the updated version of 'primes'.  Otherwise nil is returned, however   *
+;;; * 'primes' will still be modified if any primes exist between 'next' and        *
+;;; * 'next-max'.                                                                   *
+;;; *********************************************************************************
 
 (defun update-primes-p (primes next next-max)
   (loop named extend-primes
+           ;; set list-traversal vars 'prime-tail' and 'rem-tail'
         do (let ((prime-tail primes)
                  (rem-tail   (cdr primes)))
 
-             (incf next)
+             (incf next) ;; starting from one more than last max...
+
+             ;; check primality of 'next'
              (loop named test-next
+
+                      ;; 'next' is not prime if evenly divisible by a known prime
                    do (when (eql (rem next (car prime-tail)) 0)
+
+                            ;; if 'next-max' has been reached and isnt prime...
                             (when (eql next next-max)
+
+                                  ;; return nil to caller
                                   (return-from extend-primes nil))
+
+                            ;; else continue to the next 'next'
                             (return-from test-next))
                       
+                      ;; if last known prime has been reached, extend 'primes'
                       (unless rem-tail
+
+                              ;; set 'next' to last item of list
                               (rplacd prime-tail (cons next nil))
+
+                              ;; if 'next-max' has been reached and is prime...
                               (when (eq next next-max)
+                                    
+                                    ;; return modified 'primes' to caller
                                     (return-from extend-primes primes))
+
+                              ;; else continue to the next 'next'
                               (return-from test-next))
 
+                      ;; advance list-traversal vars
                       (setf prime-tail rem-tail)
-                      (setf rem-tail (cdr rem-tail)))))))
+                      (setf rem-tail (cdr rem-tail))))))

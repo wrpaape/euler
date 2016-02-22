@@ -122,6 +122,7 @@ defmodule Euler.Set3 do
   What is the index of the first term in the Fibonacci sequence to contain 1000 digits?
 
   02/16/16
+
   iex> Euler.Set3.problem_25
   4782
   """
@@ -133,19 +134,52 @@ defmodule Euler.Set3 do
 
   A unit fraction contains 1 in the numerator. The decimal representation of the unit fractions with denominators 2 to 10 are given:
 
-  1/2	= 	0.5
-  1/3	= 	0.(3)
-  1/4	= 	0.25
-  1/5	= 	0.2
-  1/6	= 	0.1(6)
-  1/7	= 	0.(142857)
-  1/8	= 	0.125
-  1/9	= 	0.(1)
-  1/10	= 	0.1
+  1/2  = 0.5
+  1/3  = 0.(3)
+  1/4  = 0.25
+  1/5  = 0.2
+  1/6  = 0.1(6)
+  1/7  = 0.(142857)
+  1/8  = 0.125
+  1/9  = 0.(1)
+  1/10 = 0.1
 
   Where 0.1(6) means 0.166666..., and has a 1-digit recurring cycle. It can be seen that 1/7 has a 6-digit recurring cycle.
 
   Find the value of d < 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part.
+
+  02/20/16
+
+  iex> Euler.Set3.problem_26
+  983
   """
   def problem_26, do: LispAPI.call(~w(3 26))
+
+
+  @doc """
+  27) Quadratic Primes
+
+  Euler discovered the remarkable quadratic formula:
+
+  n² + n + 41
+
+  It turns out that the formula will produce 40 primes for the consecutive values n = 0 to 39. However, when n = 40, 402 + 40 + 41 = 40(40 + 1) + 41 is divisible by 41, and certainly when n = 41, 41² + 41 + 41 is clearly divisible by 41.
+
+  The incredible formula  n² − 79n + 1601 was discovered, which produces 80 primes for the consecutive values n = 0 to 79. The product of the coefficients, −79 and 1601, is −126479.
+
+  Considering quadratics of the form:
+
+  n² + an + b, where |a| < 1000 and |b| < 1000
+
+  where |n| is the modulus/absolute value of n
+  e.g. |11| = 11 and |−4| = 4
+
+  Find the product of the coefficients, a and b, for the quadratic expression that produces the maximum number of primes for consecutive values of n, starting with n = 0.
+
+  02/22/16
+
+  iex> Euler.Set3.problem_27
+  -59231
+  """
+  def problem_27, do: LispAPI.call(~w(3 27))
 end

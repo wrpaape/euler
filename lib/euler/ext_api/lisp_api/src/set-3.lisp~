@@ -126,8 +126,6 @@
   (let* ((b-range (prime-sieve 999))    ;; generate valid range for b 
          (primes  (copy-list b-range))) ;; initialize set of prime numbers
 
-    ; (append-unique-p primes 1007 #'(lambda (x y) (eql (rem y x) 0)))))
-    
     (let ((max-cons-primes  0)
           (solution-product 0)
           (max-prime-tested 999))
@@ -137,14 +135,6 @@
                      do (loop named count-cons-primes
                               for n from 1
                               do (let ((quad (+ (* n (+ n a)) b)))
-
-                                   ; (format t "a:    ~D~%" a)
-                                   ; (format t "b:    ~D~%" b)
-                                   ; (format t "n:    ~D~%" n)
-                                   ; (format t "quad: ~D~%" quad)
-                                   ; (format t "max:  ~D~%" max-cons-primes)
-                                   ; (finish-output nil)
-                                   ; (sleep 1)
 
                                    ;; unless 'quad' is prime...
                                    (unless (and (> quad 1) ;; negative numbers, 0, and 1 aren't prime
@@ -176,8 +166,7 @@
                                            ;; continue to next 'a'
                                            (return-from count-cons-primes))))))
     
-      (format t "max:    ~D~%" max-cons-primes)
-      (format t "primes: ~S~%" primes)
+      ;; return the product 'a * b' corresponding to the quadratic producing the most consecutive primes
       solution-product)))
 
 

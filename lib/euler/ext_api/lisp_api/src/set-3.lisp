@@ -129,14 +129,14 @@
     ; (append-unique-p primes 1007 #'(lambda (x y) (eql (rem y x) 0)))))
     
     (let ((max-cons-primes  0)
-          (solution-product 0))
+          (solution-product 0)
+          (max-prime-tested 999))
 
       (loop for b in b-range
             do (loop for a from -999 to 999
                      do (loop named count-cons-primes
                               for n from 1
-                              do (let ((quad (+ (* n (+ n a))
-                                                b)))
+                              do (let ((quad (+ (* n (+ n a)) b)))
 
                                    ; (format t "a:    ~D~%" a)
                                    ; (format t "b:    ~D~%" b)
@@ -147,10 +147,14 @@
                                    ; (sleep 1)
 
                                    (unless (and (> quad 1)
-                                                (append-unique-p primes
-                                                                 quad
-                                                                 #'(lambda (prime quad)
-                                                                     (eql (rem quad prime) 0))))
+
+                                                (or (and (<= quad max-prime-tested)
+                                                         (member quad primes))
+
+                                                    (update-primes-p primes
+                                                                     max-prime-tested
+                                                                     quad)))
+
 
                                            (when (> n max-cons-primes)
                                                  (setf max-cons-primes n)
@@ -161,3 +165,26 @@
       (format t "max:    ~D~%" max-cons-primes)
       (format t "primes: ~S~%" primes)
       solution-product)))
+
+
+
+(defun update-primes-p (primes next next-max)
+  (loop named extend-primes
+        do (let ((prime-tail primes)
+                 (rem-tail   (cdr primes)))
+
+             (incf next)
+             (loop named test-next
+                   do (when (eql (rem next (car prime-tail)) 0)
+                            (when (eql next next-max)
+                                  (return-from extend-primes nil))
+                            (return-from test-next))
+                      
+                      (unless rem-tail
+                              (rplacd prime-tail (cons next nil))
+                              (when (eq next next-max)
+                                    (return-from extend-primes primes))
+                              (return-from test-next))
+
+                      (setf prime-tail rem-tail)
+                      (setf rem-tail (cdr rem-tail)))))))

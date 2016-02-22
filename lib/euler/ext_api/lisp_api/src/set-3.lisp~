@@ -123,7 +123,7 @@
 (defun problem-27 ()
   "Solves Project Euler problem 27: 'Quadratic Primes'"
 
-  (let* ((b-range (prime-sieve 999))    ;; generate valid range for b 
+  (let* ((b-range (prime-sieve 999))    ;; reduce scope of 'b' to primes < 1000
          (primes  (copy-list b-range))) ;; initialize set of prime numbers
 
     (let ((max-cons-primes  0)
@@ -133,7 +133,11 @@
       (loop for b in b-range
             do (loop for a from -999 to 999
                      do (loop named count-cons-primes
+
+                              ;; including prime case when 'n' is zero...
                               for n from 1
+
+                                 ;; evaluate the quadratic function 'n² + an + b', 'quad'
                               do (let ((quad (+ (* n (+ n a)) b)))
 
                                    ;; unless 'quad' is prime...
@@ -143,17 +147,15 @@
                                                 (or (and (> quad max-prime-tested)
 
                                                          ;; calculate primality, update 'primes'
-                                                         (let* ((old-max  max-prime-tested)
-                                                                (is-prime (update-primes-p primes
-                                                                                           old-max
-                                                                                           quad)))
+                                                         (let ((old-max  max-prime-tested))
 
                                                            ;; update 'max-prime-tested' to 'quad'
                                                            (setf max-prime-tested quad)
 
                                                            ;; return predicate result
-                                                           is-prime))
-
+                                                           (update-primes-p primes
+                                                                            old-max
+                                                                            quad)))
 
                                                     ;; otherwise check 'primes' for 'quad'
                                                     (loop for prime in primes

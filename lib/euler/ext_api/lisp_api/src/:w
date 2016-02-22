@@ -123,7 +123,7 @@
 (defun problem-27 ()
   "Solves Project Euler problem 27: 'Quadratic Primes'"
 
-  (let* ((b-range (prime-sieve 999))    ;; reduce scope of 'b' to primes < 1000
+  (let* ((b-range (prime-sieve 999))    ;; generate valid range for b (must be prime)
          (primes  (copy-list b-range))) ;; initialize set of prime numbers
 
     (let ((max-cons-primes  0)
@@ -147,15 +147,17 @@
                                                 (or (and (> quad max-prime-tested)
 
                                                          ;; calculate primality, update 'primes'
-                                                         (let ((old-max  max-prime-tested))
+                                                         (let* ((old-max  max-prime-tested)
+                                                                (is-prime (update-primes-p primes
+                                                                                           old-max
+                                                                                           quad)))
 
                                                            ;; update 'max-prime-tested' to 'quad'
                                                            (setf max-prime-tested quad)
 
                                                            ;; return predicate result
-                                                           (update-primes-p primes
-                                                                            old-max
-                                                                            quad)))
+                                                           is-prime))
+
 
                                                     ;; otherwise check 'primes' for 'quad'
                                                     (loop for prime in primes

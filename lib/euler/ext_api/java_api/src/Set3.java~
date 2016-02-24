@@ -74,7 +74,7 @@ public abstract class Set3 {
         // if 'nextNum' is a square root of 'num', add once, otherwise add both divs
         sumDivs += (minBigDiv == nextNum) ? nextNum : (nextNum + minBigDiv);
       }
-      nextNum++; // increment counter
+      nextNum++; // continue to next 'nextNum'
     }
 
     return Integer.valueOf(sumDivs); // return final sum as an instance of Integer
@@ -93,40 +93,32 @@ public abstract class Set3 {
    * 18  5  4  3 12                                                                 *
    * 17 16 15 14 13                                                                 *
    *                                                                                *
-   * 1 (2) 3 (4) 5 (6)
-   * 7 (8 9) 10 (11 12)
-   * 13 (14 15 16) 17 (18 19 20)
-   * 21 (22 23 24 25) 26 (27 28 29 30)
-   * 31 (32 33 34 35 36) 37 () 43 () 49
-   *
    * It can be verified that the sum of the numbers on the diagonals is 101.        *
    *                                                                                *
    * What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral       *
    * formed in the same way?                                                        *
    **********************************************************************************/
   public static Integer problem28() { 
+    int sumDiags;   // accumulating sum of all diagonals
+    int diag;       // current diagonal value on spiral
+    int lengthSide; // difference between current 'diag' and next 'diag' on spiral
+    int side_i;     // control counter for summing 4 'diag's on square of 'lengthSide'
 
-    // final int STEPS_PER_LENGTH = 2;
+    sumDiags = 0; // init sum to '0'
+    diag     = 1; // start spiral counter from '1'
 
-    int sumDiags;
-    int diag;
-    int lengthSide;
-    int side_i;
-
-    sumDiags = 0;
-    diag     = 1;
-
+    // for all squares with an even 'lengthSide' less than 1001...
     for (lengthSide = 2; lengthSide < 1_001; lengthSide+= 2) {
+
+      // for all sides of the square...
       for (side_i = 0; side_i < 4; side_i++) {
-        sumDiags += diag;
-        diag     += lengthSide;
+
+        sumDiags += diag;       // increment sum
+        diag     += lengthSide; // advance spiral counter to next diagonal
       }
     }
 
-    // System.out.println("diag:     " + diag);
-    // System.out.println("sumDiags: " + sumDiags);
-
-
+    // add final corner diagonal value to sum and return result
     return Integer.valueOf(sumDiags + diag);
   }
 }

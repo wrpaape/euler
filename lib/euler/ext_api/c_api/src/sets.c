@@ -19,7 +19,7 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *(*start_routine)(void *),
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
-inline int nth_pow(int base, int n);
+extern inline int nth_pow(int base, int n);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

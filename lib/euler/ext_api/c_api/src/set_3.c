@@ -151,19 +151,46 @@ void problem_29(char *result_buffer)
 	/* 	} */
 	/* } */
 
-	int count_distinct;
+	int count_distinct = 99 * 99;
+	int base_a;
 	int a;
 	int b;
+	int n;
 
-	int power_table [101][101] = {{0}};
+	for (base_a = 2; base_a < 11; ++base_a) {
 
-	count_distinct = 0;
+		printf("\n\nbase_a: %d\n", base_a);
 
-	for (a = 2; a < 101; ++a) {
-		for (b = 2; b < 101; ++b) {
+		for (a = base_a * base_a, n = 2; a < 101; a *= base_a, ++n) {
+
+			printf("  a: %d\n", a);
+			for (b = 100 / n; b > 1; --b) {
+				printf("    b: %d\n", b);
+				--count_distinct;
+			}
+
+
+/* 			if (repeat_pair[a][b]) { */
+/* 				--num_repeats; */
+/* 				puts("\nREPEAT!"); */
+/* 				printf("num_repeats: %d\n", num_repeats); */
+/* 				printf("base_a: %d\n", base_a); */
+/* 				printf("a: %d\n", a); */
+/* 				printf("b: %d\n", b); */
+/* 				printf("n: %d\n", n); */
+
+/* 			} else { */
+/* 				repeat_pair[a][b] = true; */
+
+/* 			} */
+
 		}
+
 	}
 
+
+	/* copy unique count of distinct terms to buffer */
+	sprintf(result_buffer, "%d", count_distinct);
 }
 
 

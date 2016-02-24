@@ -138,56 +138,25 @@ void problem_24(char *result_buffer)
  ************************************************************************/
 void problem_29(char *result_buffer)
 {
-	/* 2147483647 */
-	/* 4294967295 */
-	/* 18446744073709551557 */
-	/* 18446744073709551615 */
-	/* int a; */
-	/* int b; */
-
-	/* for (a = 2; a < 10; ++a) { */
-	/* 	for (b = 2; b < 10; ++b) { */
-	/* 		printf("a: %d, b: %d, a^b: %d\n", a, b, nth_pow(a, b)); */
-	/* 	} */
-	/* } */
-
 	int count_distinct = 99 * 99;
+	/* int count_distinct = 4 * 4; */
 	int base_a;
 	int a;
 	int b;
 	int n;
 
-	bool repeat_pair[101][101] = { { false } };
 
 	for (base_a = 2; base_a < 11; ++base_a) {
-
-		printf("\n\nbase_a: %d\n", base_a);
+	/* for (base_a = 2; base_a < 3; ++base_a) { */
 
 		for (a = base_a * base_a, n = 2; a < 101; a *= base_a, ++n) {
+		/* for (a = base_a * base_a, n = 2; a < 6; a *= base_a, ++n) { */
 
-			printf("  a: %d\n", a);
 			for (b = 100 / n; b > 1; --b) {
-				printf("    b: %d\n", b);
+			/* for (b = 5 / n; b > 1; --b) { */
 				--count_distinct;
 			}
-
-
-/* 			if (repeat_pair[a][b]) { */
-/* 				--num_repeats; */
-/* 				puts("\nREPEAT!"); */
-/* 				printf("num_repeats: %d\n", num_repeats); */
-/* 				printf("base_a: %d\n", base_a); */
-/* 				printf("a: %d\n", a); */
-/* 				printf("b: %d\n", b); */
-/* 				printf("n: %d\n", n); */
-
-/* 			} else { */
-/* 				repeat_pair[a][b] = true; */
-
-/* 			} */
-
 		}
-
 	}
 
 

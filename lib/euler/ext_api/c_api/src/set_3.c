@@ -138,25 +138,44 @@ void problem_24(char *result_buffer)
  ************************************************************************/
 void problem_29(char *result_buffer)
 {
-	int count_distinct = 99 * 99;
-	/* int count_distinct = 4 * 4; */
+	int count_distinct;
 	int base_a;
+	int dup_a;
 	int a;
-	int b;
 	int n;
+	int del_n;
+	int step_a;
 
+	int min_uniq_b[101] = { [2 ... 100] = 2 };
 
-	for (base_a = 2; base_a < 11; ++base_a) {
-	/* for (base_a = 2; base_a < 3; ++base_a) { */
+	for (base_a = 10; base_a > 1; --base_a) {
 
-		for (a = base_a * base_a, n = 2; a < 101; a *= base_a, ++n) {
-		/* for (a = base_a * base_a, n = 2; a < 6; a *= base_a, ++n) { */
+		dup_a = base_a * base_a;
 
-			for (b = 100 / n; b > 1; --b) {
-			/* for (b = 5 / n; b > 1; --b) { */
-				--count_distinct;
-			}
+		if (dup_a > 10) {
+			step_a = base_a;
+			n = 2;
+			del_n = 1;
+		} else {
+			min_uniq_b[dup_a] = 51;
+			step_a = dup_a;
+			dup_a *= base_a;
+			n = 3;
+			del_n = 2;
 		}
+
+		do {
+			min_uniq_b[dup_a] = 100 / n + 1;
+			n += del_n;
+			dup_a *= step_a;
+
+		} while (dup_a < 101);
+	}
+
+	for (count_distinct = 0, a = 2; a < 101; ++a) {
+
+		printf("a: %d   min_uniq_b[a]: %d\n", a, min_uniq_b[a]);
+		count_distinct += (101 - min_uniq_b[a]);
 	}
 
 

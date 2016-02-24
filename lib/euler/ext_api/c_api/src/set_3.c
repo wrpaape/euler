@@ -138,70 +138,54 @@ void problem_24(char *result_buffer)
  ************************************************************************/
 void problem_29(char *result_buffer)
 {
-	int count_distinct = 99 * 99 + 1;
+	/*
+	 * initially assume all values of aᵇ are unique so that
+	 * 'count_distinct' = (range of a) * (range of b)
+	 */
+	int count_distinct = 99 * 99 + 1; /* plus 1 makes it work (DOF? idk) */
 	int base_a;
 	int a;
 	int b;
 	int n;
 
+	/*
+	 * for 'base_a' in the range of 'a' that can be raised to an integer
+	 * power 'n' ≥ 2 to express a larger 'a' ≤ 100...
+	 */
 	for (base_a = 2; base_a < 11; ++base_a) {
 
 		for (a = base_a * base_a, n = 2; a < 101; a *= base_a, ++n) {
 
-			/* printf("%d^100 = %d^%d\n", base_a, a, 100 / n); */
+			/*
+			 * '100 / n' is upper bound of the common 'b' range:
+			 *
+			 *	2 ≤ 'b_common' ≤ '100 / n'
+			 *
+			 * where the range of integers produced by 'a^b_common':
+			 *
+			 *	'a^2', 'a^3', ... 'a^(100 / n)'
+			 *
+			 * can be expressed in terms of 'base_a':
+			 *
+			 *	'base_a^2n', 'base_a^3n', ...
+			 *	'base_a^((100 / n) * n)'
+			 *
+			 * subtract the number of 'b_common' shared between
+			 * 'base_a' and 'a', 'count_shared', from the total count
+			 * of distinct terms, 'count_distinct', where:
+			 *
+			 *	count_shared = b_common_max - b_common_min + 1
+			 *		     = 100 / n      - 2		   + 1
+			 *		     = 100 / n - 1
+			 *
+			 */
 			count_distinct -= ((100 / n) - 1);
 		}
 	}
 
-	/* copy unique count of distinct terms to buffer */
+	/* copy count of distinct terms to buffer */
 	sprintf(result_buffer, "%d", count_distinct);
 }
-/* void problem_29(char *result_buffer) */
-/* { */
-/* 	int count_distinct; */
-/* 	int base_a; */
-/* 	int dup_a; */
-/* 	int a; */
-/* 	int n; */
-/* 	int del_n; */
-/* 	int step_a; */
-
-/* 	int min_uniq_b[101] = { [2 ... 100] = 2 }; */
-
-/* 	for (base_a = 10; base_a > 1; --base_a) { */
-
-/* 		dup_a = base_a * base_a; */
-
-/* 		if (dup_a > 10) { */
-/* 			step_a = base_a; */
-/* 			n = 2; */
-/* 			del_n = 1; */
-/* 		} else { */
-/* 			min_uniq_b[dup_a] = 51; */
-/* 			step_a = dup_a; */
-/* 			dup_a *= base_a; */
-/* 			n = 3; */
-/* 			del_n = 2; */
-/* 		} */
-
-/* 		do { */
-/* 			min_uniq_b[dup_a] = 100 / n + 1; */
-/* 			n += del_n; */
-/* 			dup_a *= step_a; */
-
-/* 		} while (dup_a < 101); */
-/* 	} */
-
-/* 	for (count_distinct = 0, a = 2; a < 101; ++a) { */
-
-/* 		printf("a: %d   min_uniq_b[a]: %d\n", a, min_uniq_b[a]); */
-/* 		count_distinct += (101 - min_uniq_b[a]); */
-/* 	} */
-
-
-/* 	/1* copy unique count of distinct terms to buffer *1/ */
-/* 	sprintf(result_buffer, "%d", count_distinct); */
-/* } */
 
 
 /******************************************************************************

@@ -251,6 +251,7 @@ void do_next_digit(const long num,
 	long fnl_num;
 	long fnl_sum;
 	long fnl_dig;
+	long nxt_num;
 	long nxt_dig;
 
 	for (fnl_dig = 9L; fnl_dig > 1L; --fnl_dig) {
@@ -258,21 +259,23 @@ void do_next_digit(const long num,
 		fnl_num = num + (fnl_dig * fnl_pos);
 		fnl_sum = sum + POW_MAP[fnl_dig];
 
-		if (fnl_sum > fnl_num) {
+		printf("fnl_num: %ld\n", fnl_num);
+		printf("fnl_sum: %ld\n", fnl_sum);
 
-			for (nxt_dig = 9L; nxt_dig > 0L; --nxt_dig) {
+		if ((fnl_num - fnl_sum) > nxt_fnl_pos)
+			continue;
 
-				do_next_digit(fnl_num + (nxt_dig * nxt_pos),
-					      fnl_sum + POW_MAP[nxt_dig],
-					      nxt_fnl_pos,
-					      POW_MAP,
-					      sol_sum);
-			}
-
-		} else if (fnl_num == fnl_sum) {
-			printf("fnl_num: %ld\n", fnl_num);
-
+		if (fnl_num == fnl_sum)
 			(*sol_sum) += fnl_num;
+
+
+		for (nxt_dig = 9L; nxt_dig > 0L; --nxt_dig) {
+
+			do_next_digit(fnl_num + (nxt_dig * nxt_pos),
+				      fnl_sum + POW_MAP[nxt_dig],
+				      nxt_fnl_pos,
+				      POW_MAP,
+				      sol_sum);
 		}
 	}
 }

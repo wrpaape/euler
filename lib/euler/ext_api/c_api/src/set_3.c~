@@ -207,17 +207,26 @@ void problem_29(char *result_buffer)
  ***********************************************************************/
 void problem_30(char *result_buffer)
 {
-	int solution_sum;
-	int power_map[] = {0,
-			   1,
-			   2 * 2 * 2 * 2 * 2,
-			   3 * 3 * 3 * 3 * 3,
-			   4 * 4 * 4 * 4 * 4,
-			   5 * 5 * 5 * 5 * 5,
-			   6 * 6 * 6 * 6 * 6,
-			   7 * 7 * 7 * 7 * 7,
-			   8 * 8 * 8 * 8 * 8,
-			   9 * 9 * 9 * 9 * 9}
+	long solution_sum = 0L;
+	const long POWER_MAP[] = {0L,
+				  1L,
+				  2L * 2L * 2L * 2L * 2L,
+				  3L * 3L * 3L * 3L * 3L,
+				  4L * 4L * 4L * 4L * 4L,
+				  5L * 5L * 5L * 5L * 5L,
+				  6L * 6L * 6L * 6L * 6L,
+				  7L * 7L * 7L * 7L * 7L,
+				  8L * 8L * 8L * 8L * 8L,
+				  9L * 9L * 9L * 9L * 9L};
+
+	for (long ones_dig = 9L; ones_dig > 0L; --ones_dig) {
+
+		do_next_digit(ones_dig,
+			      POWER_MAP[ones_dig],
+			      10L,
+			      POWER_MAP,
+			      &solution_sum);
+	}
 
 	/* copy sum of all numbers that fit problem criteria to buffer */
 	sprintf(result_buffer, "%d", solution_sum);
@@ -227,6 +236,43 @@ void problem_30(char *result_buffer)
 /******************************************************************************
  *				HELPER FUNCTIONS			      *
  ******************************************************************************/
+void do_next_digit(const long digits,
+		   const long sum_powers,
+		   const long final_dig_pos,
+		   const long *POWER_MAP,
+		   long *solution_sum)
+{
+	long final_digs;
+	long final_sum;
+	long final_dig;
+	long next_dig;
+	long next_dig_pos;
+
+	for (final_dig = 9L, final_dig > 1L, --final_dig) {
+
+		final_digs = digits + (final_dig * final_dig_pos);
+		final_sum = sum_powers + POWER_MAP[final_dig];
+
+		if (final_sum > final_digs) {
+
+			for (next_dig = 9L; next_dig > 0L; --next_dig) {
+
+				do_next_digit(final_digs,
+					      final_sum,
+					      )
+			}
+
+		} else if (final_digs == final_sum) {
+
+			(*solution_sum) += final_sum;
+		}
+
+	}
+
+
+}
+
+
 void do_permute(int num_rem_digs,
 		char *rem_digs,
 		char *dig_buff,

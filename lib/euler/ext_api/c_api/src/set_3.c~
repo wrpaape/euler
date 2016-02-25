@@ -251,7 +251,7 @@ void do_next_digit(const long num,
 	 * digits
 	 *
 	 */
-	if (num - sum)
+	if ((sum > num) && (nxt_pos > ))
 		return;
 
 	const long nxt_nxt_pos = nxt_pos * 10L;

@@ -207,69 +207,74 @@ void problem_29(char *result_buffer)
  ***********************************************************************/
 void problem_30(char *result_buffer)
 {
-	long solution_sum = 0L;
-	const long POWER_MAP[] = {0L,
-				  1L,
-				  2L * 2L * 2L * 2L * 2L,
-				  3L * 3L * 3L * 3L * 3L,
-				  4L * 4L * 4L * 4L * 4L,
-				  5L * 5L * 5L * 5L * 5L,
-				  6L * 6L * 6L * 6L * 6L,
-				  7L * 7L * 7L * 7L * 7L,
-				  8L * 8L * 8L * 8L * 8L,
-				  9L * 9L * 9L * 9L * 9L};
+	const long POW_MAP[] = {0L,
+				1L,
+				2L * 2L * 2L * 2L * 2L,
+				3L * 3L * 3L * 3L * 3L,
+				4L * 4L * 4L * 4L * 4L,
+				5L * 5L * 5L * 5L * 5L,
+				6L * 6L * 6L * 6L * 6L,
+				7L * 7L * 7L * 7L * 7L,
+				8L * 8L * 8L * 8L * 8L,
+				9L * 9L * 9L * 9L * 9L};
+	long sol_sum;
+	long ones_dig;
 
-	for (long ones_dig = 9L; ones_dig > 0L; --ones_dig) {
+	sol_sum = 0L;
+
+	for (ones_dig = 9L; ones_dig > 0L; --ones_dig) {
 
 		do_next_digit(ones_dig,
-			      POWER_MAP[ones_dig],
+			      POW_MAP[ones_dig],
 			      10L,
-			      POWER_MAP,
-			      &solution_sum);
+			      POW_MAP,
+			      &sol_sum);
 	}
 
 	/* copy sum of all numbers that fit problem criteria to buffer */
-	sprintf(result_buffer, "%d", solution_sum);
+	sprintf(result_buffer, "%ld", sol_sum);
 }
 
 
 /******************************************************************************
  *				HELPER FUNCTIONS			      *
  ******************************************************************************/
-void do_next_digit(const long digits,
-		   const long sum_powers,
-		   const long final_dig_pos,
-		   const long *POWER_MAP,
-		   long *solution_sum)
+void do_next_digit(const long num,
+		   const long sum,
+		   const long fnl_pos,
+		   const long *POW_MAP,
+		   long *sol_sum)
 {
-	long final_digs;
-	long final_sum;
-	long final_dig;
-	long next_dig;
-	long next_dig_pos;
+	const long nxt_pos = fnl_pos * 10L;
+	const long nxt_fnl_pos = nxt_pos * 10L;
 
-	for (final_dig = 9L, final_dig > 1L, --final_dig) {
+	long fnl_num;
+	long fnl_sum;
+	long fnl_dig;
+	long nxt_dig;
 
-		final_digs = digits + (final_dig * final_dig_pos);
-		final_sum = sum_powers + POWER_MAP[final_dig];
+	for (fnl_dig = 9L; fnl_dig > 1L; --fnl_dig) {
 
-		if (final_sum > final_digs) {
+		fnl_num = num + (fnl_dig * fnl_pos);
+		fnl_sum = sum + POW_MAP[fnl_dig];
 
-			for (next_dig = 9L; next_dig > 0L; --next_dig) {
+		if (fnl_sum > fnl_num) {
 
-				do_next_digit(final_digs,
-					      final_sum,
-					      )
+			for (nxt_dig = 9L; nxt_dig > 0L; --nxt_dig) {
+
+				do_next_digit(fnl_num + (nxt_dig * nxt_pos),
+					      fnl_sum + POW_MAP[nxt_dig],
+					      nxt_fnl_pos,
+					      POW_MAP,
+					      sol_sum);
 			}
 
-		} else if (final_digs == final_sum) {
+		} else if (fnl_num == fnl_sum) {
+			printf("fnl_num: %ld\n", fnl_num);
 
-			(*solution_sum) += final_sum;
+			(*sol_sum) += fnl_num;
 		}
-
 	}
-
-
 }
 
 

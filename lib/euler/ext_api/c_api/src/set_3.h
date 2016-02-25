@@ -37,8 +37,8 @@ void do_permute(int num_rem_digs,
 		char *rem_digs,
 		char *dig_buff,
 		long *perm_count);
-void do_next_digit(const long digits,
-		   const long sum_powers,
-		   const long final_dig_pos,
-		   const long *POWER_MAP,
-		   long *solution_sum);
+void do_next_digit(const long num,
+		   const long sum,
+		   const long fnl_pos,
+		   const long *POW_MAP,
+		   long *sol_sum);

@@ -222,7 +222,7 @@ void problem_30(char *result_buffer)
 
 	sol_sum = 0L;
 
-	for (ones_dig = 9L; ones_dig > 0L; --ones_dig) {
+	for (ones_dig = 0L; ones_dig < 10L; ++ones_dig) {
 
 		do_next_digit(ones_dig,
 			      POW_MAP[ones_dig],
@@ -241,42 +241,52 @@ void problem_30(char *result_buffer)
  ******************************************************************************/
 void do_next_digit(const long num,
 		   const long sum,
-		   const long fnl_pos,
+		   const long nxt_pos,
 		   const long *POW_MAP,
 		   long *sol_sum)
 {
-	const long nxt_pos = fnl_pos * 10L;
-	const long nxt_fnl_pos = nxt_pos * 10L;
 
-	long fnl_num;
-	long fnl_sum;
-	long fnl_dig;
-	long nxt_num;
+	if (num > sum)
+		return;
+
+	const long nxt_nxt_pos = nxt_pos * 10L;
+	const long nxt_nxt_nxt_pos = nxt_nxt_pos * 10L;
+
+
 	long nxt_dig;
+	long nxt_num;
+	long nxt_sum;
 
-	for (fnl_dig = 9L; fnl_dig > 1L; --fnl_dig) {
+	for (nxt_dig = 1L; nxt_dig < 10L; ++nxt_dig) {
 
-		fnl_num = num + (fnl_dig * fnl_pos);
-		fnl_sum = sum + POW_MAP[fnl_dig];
+		nxt_num = num + (nxt_dig * nxt_pos);
+		nxt_sum = sum + POW_MAP[nxt_dig];
 
-		printf("fnl_num: %ld\n", fnl_num);
-		printf("fnl_sum: %ld\n", fnl_sum);
-
-		if ((fnl_num - fnl_sum) > nxt_fnl_pos)
-			continue;
-
-		if (fnl_num == fnl_sum)
-			(*sol_sum) += fnl_num;
-
-
-		for (nxt_dig = 9L; nxt_dig > 0L; --nxt_dig) {
-
-			do_next_digit(fnl_num + (nxt_dig * nxt_pos),
-				      fnl_sum + POW_MAP[nxt_dig],
-				      nxt_fnl_pos,
-				      POW_MAP,
-				      sol_sum);
+		if (nxt_num == nxt_sum) {
+			printf("nxt_num: %ld\n", nxt_num);
+			printf("nxt_sum: %ld\n", nxt_sum);
+			(*sol_sum) += nxt_num;
 		}
+
+		do_next_digit(nxt_num,
+			      nxt_sum,
+			      nxt_nxt_pos,
+			      POW_MAP,
+			      sol_sum);
+
+		nxt_num = num + (nxt_dig * nxt_nxt_pos);
+
+		if (nxt_num == nxt_sum) {
+			printf("nxt_num: %ld\n", nxt_num);
+			printf("nxt_sum: %ld\n", nxt_sum);
+			(*sol_sum) += nxt_num;
+		}
+
+		do_next_digit(nxt_num,
+			      nxt_sum,
+			      nxt_nxt_nxt_pos,
+			      POW_MAP,
+			      sol_sum);
 	}
 }
 

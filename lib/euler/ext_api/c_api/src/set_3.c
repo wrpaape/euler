@@ -217,12 +217,9 @@ void problem_30(char *result_buffer)
 				7L * 7L * 7L * 7L * 7L,
 				8L * 8L * 8L * 8L * 8L,
 				9L * 9L * 9L * 9L * 9L};
-	long sol_sum;
-	long ones_dig;
+	long sol_sum = 0L;
 
-	sol_sum = 0L;
-
-	for (ones_dig = 0L; ones_dig < 10L; ++ones_dig) {
+	for (long ones_dig = 0L; ones_dig < 10L; ++ones_dig) {
 
 		do_next_digit(ones_dig,
 			      POW_MAP[ones_dig],
@@ -251,21 +248,38 @@ void do_next_digit(const long num,
 	 * digits
 	 *
 	 */
-	if ((num > sum) && (nxt_pos > ))
+
+	long nxt_num = num + nxt_pos;
+	long nxt_sum = sum + 1L;
+
+	if ((nxt_pos > 10000) && (nxt_num > nxt_sum))
 		return;
 
+
+	if (nxt_num == nxt_sum) {
+		printf("%ld\n", nxt_num);
+		(*sol_sum) += nxt_num;
+	}
+
 	const long nxt_nxt_pos = nxt_pos * 10L;
-	const long nxt_nxt_nxt_pos = nxt_nxt_pos * 10L;
+
+	do_next_digit(nxt_num,
+		      nxt_sum,
+		      nxt_nxt_pos,
+		      POW_MAP,
+		      sol_sum);
 
 
-	long nxt_dig;
-	long nxt_sum;
-	long nxt_num;
+	do_next_digit(num,
+		      sum,
+		      nxt_nxt_pos,
+		      POW_MAP,
+		      sol_sum);
 
-	for (nxt_dig = 1L; nxt_dig < 10L; ++nxt_dig) {
 
+	for (long nxt_dig = 2L; nxt_dig < 10L; ++nxt_dig) {
+		nxt_num += nxt_pos;
 		nxt_sum = sum + POW_MAP[nxt_dig];
-		nxt_num = num + (nxt_dig * nxt_pos);
 
 		if (nxt_num == nxt_sum) {
 			printf("%ld\n", nxt_num);
@@ -275,19 +289,6 @@ void do_next_digit(const long num,
 		do_next_digit(nxt_num,
 			      nxt_sum,
 			      nxt_nxt_pos,
-			      POW_MAP,
-			      sol_sum);
-
-		nxt_num = num + (nxt_dig * nxt_nxt_pos);
-
-		if (nxt_num == nxt_sum) {
-			printf("%ld\n", nxt_num);
-			(*sol_sum) += nxt_num;
-		}
-
-		do_next_digit(nxt_num,
-			      nxt_sum,
-			      nxt_nxt_nxt_pos,
 			      POW_MAP,
 			      sol_sum);
 	}

@@ -39,6 +39,6 @@ void do_permute(int num_rem_digs,
 		long *perm_count);
 void do_next_digit(const long num,
 		   const long sum,
-		   const long fnl_pos,
+		   const long nxt_pos,
 		   const long *POW_MAP,
 		   long *sol_sum);

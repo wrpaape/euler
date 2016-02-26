@@ -30,40 +30,36 @@
                 0))
 
 
-(defun add-change (rem-total change num-perms)
-  (format t "~%rem-total:  ~D~%" rem-total)
-  (format t "num-perms:  ~D~%" num-perms)
-  (format t "change:     ~S~%" change)
-  (force-output nil)
-  ; (sleep 0.01)
+(defun add-change (rem-total change num-combs)
+  ;; when no 'change' remains, the remaining total can only be balanced in one
+  ;; way: with pennies
+  ;; when 'rem-total' reaches zero, 200p has been counted evenly
+  ;;
+  ;; In either of these cases, a new unique combination of coins totaling 200p
+  ;; has been discovered, increment the solution accumulator, 'num-combs' and
+  ;; return immediately
+  (when (or (null change)
+            (zerop rem-total))
+        (return-from add-change (1+ num-combs)))
 
-  (when (or (zerop rem-total)
-            (null change))
-        (return-from add-change (1+ num-perms)))
 
-
+  ;; otherwise child nodes exist for the current 'change' branch
+  ;; pop the next largest coin from 'change' stack
   (let ((next-coin (pop change)))
     
-    (loop do (setf num-perms (add-change rem-total
+    ;; starting with the case where 'next-coin' is skipped,
+    ;; update 'num-combs' for each child node
+    (loop do (setf num-combs (add-change rem-total
                                          change
-                                         num-perms))
+                                         num-combs))
+
+             ;; decrement 'rem-total' for next iteration's case
+             ;; when 'next-coin' is counted an additional time
              (decf rem-total next-coin)
 
+          ;; if 'rem-total' is negative all children nodes of 'next-coin'
+          ;; have been accounted for, return from 'add-change'
           until (minusp rem-total)))
 
-    num-perms)
-
-  
-  ; (format t "rem-total:  ~D~%" rem-total)
-  ; (format t "numb-combs: ~D~%" num-perms)
-  ; (format t "change:     ~S~%" change)
-  ; (format t "RETURNED!~%")
-  ; (format t "next: ~D~%" next)
-  ; (force-output nil)
-  
-  ; (reduce #'(lambda (num-perms coin)
-  ;             (add-change (- rem-total coin)
-  ;                         change
-  ;                         num-perms))
-  ;         change
-  ;         :initial-value num-perms))
+    ;; pass accumulator one level up call stack
+    num-combs)

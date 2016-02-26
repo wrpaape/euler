@@ -25,6 +25,10 @@
 (defun problem-31 ()
   "Solves Project Euler problem 31: 'Coin Sums'"
 
+    ;; starting with 200p remaining and 0 known change-making combinations,
+    ;; for coins larger than 1p, explore branches where a coin is counted
+    ;; zero times through the maximum times it can be divided evenly into
+    ;; the remaining total
     (add-change 200
                 '(200 100 50 20 10 5 2)
                 0))

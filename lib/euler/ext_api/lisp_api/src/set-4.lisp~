@@ -25,6 +25,10 @@
 (defun problem-31 ()
   "Solves Project Euler problem 31: 'Coin Sums'"
 
+    ;; starting with 200p remaining and 0 known change-making combinations,
+    ;; for coins larger than 1p, explore branches where a coin is counted
+    ;; zero times through the maximum times it can be divided evenly into
+    ;; the remaining total
     (add-change 200
                 '(200 100 50 20 10 5 2)
                 0))
@@ -58,8 +62,8 @@
              (decf rem-total next-coin)
 
           ;; if 'rem-total' is negative all children nodes of 'next-coin'
-          ;; have been accounted for, return from add-change
+          ;; have been accounted for, return from 'add-change'
           until (minusp rem-total)))
 
-    ;; return accumulator one level up call stack
+    ;; pass accumulator one level up call stack
     num-combs)

@@ -18,9 +18,10 @@ defmodule Euler.Set4 do
 
 	How many different ways can £2 be made using any number of coins?
 
-  # 02/25/16
+  02/26/16
 
-  # iex> Euler.Set4.problem_31
+  iex> Euler.Set4.problem_31 |> elem(1)
+  73682
   """
   def problem_31, do: LispAPI.call(~w(4 31))
 end

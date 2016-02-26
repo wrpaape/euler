@@ -243,26 +243,38 @@ void do_next_digit(const long num,
 		   long *sol_sum)
 {
 
-	/*
-	 * once the number has surpassed the sum of the fifth power of its
-	 * digits
-	 *
-	 */
-
+	/* close the input number, 'num', with a leading '1' */
 	long nxt_num = num + nxt_pos;
 	long nxt_sum = sum + 1L;
 
-	if ((nxt_pos > 10000) && (nxt_num > nxt_sum))
-		return;
+	/*
+	 * 1000 is the largest decimal position, 'nxt_pos', where the
+	 * addition of another digit raised to the fifth power may have a larger
+	 * influence on the running sum of 'num''s digits, 'sum', than the
+	 * updating 'num' with the new digit:
+	 *
+	 * 9⁵ = 59049 > 9 * 1000
+	 *
+	 * If this threshold for 'nxt_pos' has been crossed and 'sum' has been
+	 * surpassed with the addition of the smallest digit,
+	 * '1 * 1000', then there is no possibility of 'sum' ever converging to
+	 * 'num'.
+	 */
+	if ((nxt_pos > 1000L) && (nxt_num > nxt_sum))
+		return; /* return one level up the call stack */
 
-
-	if (nxt_num == nxt_sum) {
-		printf("%ld\n", nxt_num);
-		(*sol_sum) += nxt_num;
-	}
-
+	/*
+	 * otherwise, this node of digits can continue propogating,
+	 * bump 'nxt_pos' up one order of magnitude in preparation for
+	 * the next level of digits:
+	 */
 	const long nxt_nxt_pos = nxt_pos * 10L;
 
+	/* check if closing 'num' with a '1' aligned it with 'sum' */
+	if (nxt_num == nxt_sum)
+		(*sol_sum) += nxt_num;
+
+	/* continue recursion with leading '1' */
 	do_next_digit(nxt_num,
 		      nxt_sum,
 		      nxt_nxt_pos,
@@ -270,6 +282,10 @@ void do_next_digit(const long num,
 		      sol_sum);
 
 
+	/*
+	 * continue recursion with leading '0'
+	 * because this number is unclosed, do not check for equality with 'num'
+	 */
 	do_next_digit(num,
 		      sum,
 		      nxt_nxt_pos,
@@ -277,15 +293,16 @@ void do_next_digit(const long num,
 		      sol_sum);
 
 
+	/* continue recursion for leading digits 'nxt_dig' = 2 - 9 */
 	for (long nxt_dig = 2L; nxt_dig < 10L; ++nxt_dig) {
 		nxt_num += nxt_pos;
 		nxt_sum = sum + POW_MAP[nxt_dig];
 
-		if (nxt_num == nxt_sum) {
-			printf("%ld\n", nxt_num);
+		/* check equality for closed number */
+		if (nxt_num == nxt_sum)
 			(*sol_sum) += nxt_num;
-		}
 
+		/* continue recursion */
 		do_next_digit(nxt_num,
 			      nxt_sum,
 			      nxt_nxt_pos,

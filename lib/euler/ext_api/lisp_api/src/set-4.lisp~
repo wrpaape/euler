@@ -26,28 +26,44 @@
   "Solves Project Euler problem 31: 'Coin Sums'"
 
     (add-change 200
-                '(200 100 50 20 10 5 2 1)
+                '(200 100 50 20 10 5 2)
                 0))
 
 
-(defun add-change (rem-total change num-combs)
-  (when (zerop rem-total)
-        (return-from add-change (1+ num-combs)))
+(defun add-change (rem-total change num-perms)
+  (format t "~%rem-total:  ~D~%" rem-total)
+  (format t "num-perms:  ~D~%" num-perms)
+  (format t "change:     ~S~%" change)
+  (force-output nil)
+  ; (sleep 0.01)
+
+  (when (or (zerop rem-total)
+            (null change))
+        (return-from add-change (1+ num-perms)))
 
 
-  (loop while (> (car change) rem-total)
-        do (setf change (cdr change)))
+  (let ((next-coin (pop change)))
+    
+    (loop do (setf num-perms (add-change rem-total
+                                         change
+                                         num-perms))
+             (decf rem-total next-coin)
+
+          until (minusp rem-total)))
+
+    num-perms)
+
   
   ; (format t "rem-total:  ~D~%" rem-total)
-  ; (format t "numb-combs: ~D~%" num-combs)
+  ; (format t "numb-combs: ~D~%" num-perms)
   ; (format t "change:     ~S~%" change)
   ; (format t "RETURNED!~%")
   ; (format t "next: ~D~%" next)
   ; (force-output nil)
   
-  (reduce #'(lambda (num-combs coin)
-              (add-change (- rem-total coin)
-                          change
-                          num-combs))
-          change
-          :initial-value num-combs))
+  ; (reduce #'(lambda (num-perms coin)
+  ;             (add-change (- rem-total coin)
+  ;                         change
+  ;                         num-perms))
+  ;         change
+  ;         :initial-value num-perms))

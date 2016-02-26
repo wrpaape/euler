@@ -32,4 +32,5 @@
   :components   ((:file "packages")
                  (:file "sets")
                  (:file "set-3")
+                 (:file "set-4")
                  (:file "lisp-api")))

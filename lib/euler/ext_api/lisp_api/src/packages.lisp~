@@ -10,6 +10,11 @@
     (:export #:problem-26
              #:problem-27))
 
+(defpackage #:set-4
+    (:use #:common-lisp
+          #:sets)
+    (:export #:problem-31))
+
 
 (defpackage #:lisp-api
     (:use #:common-lisp

@@ -3,6 +3,8 @@ defmodule EulerTest do
   doctest Euler
   doctest Euler.Set1
   doctest Euler.Set2
+  doctest Euler.Set3
+  doctest Euler.Set4
   doctest Euler.Set7
 
   test "the truth" do

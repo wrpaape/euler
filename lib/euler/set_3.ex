@@ -7,7 +7,7 @@ defmodule Euler.Set3 do
                       LispAPI}
 
   @moduledoc """
-  Set3 houses solutions to problems 21 - 31.
+  Set3 houses solutions to problems 21 - 30.
   """
 
   @doc """
@@ -22,7 +22,7 @@ defmodule Euler.Set3 do
 
   02/11/16
 
-  iex> Euler.Set3.problem_21
+  iex> Euler.Set3.problem_21 |> elem(1)
   31626
   """
   def problem_21, do: JavaAPI.call(~w(3 21))
@@ -39,7 +39,7 @@ defmodule Euler.Set3 do
 
   02/14/16
 
-  iex> Euler.Set3.problem_22
+  iex> Euler.Set3.problem_22 |> elem(1)
   871198282
   """
   def problem_22, do: CAPI.call(~w(3 22))
@@ -75,7 +75,7 @@ defmodule Euler.Set3 do
 
   02/14/16
 
-  iex> Euler.Set3.problem_23
+  iex> Euler.Set3.problem_23 |> elem(1)
   4179871
   """
   def problem_23, do: JavaScriptAPI.call(~w(3 23))
@@ -92,7 +92,7 @@ defmodule Euler.Set3 do
 
   02/15/16
 
-  iex> Euler.Set3.problem_24
+  iex> Euler.Set3.problem_24 |> elem(1)
   2783915460
   """
   def problem_24, do: CAPI.call(~w(3 24))
@@ -124,7 +124,7 @@ defmodule Euler.Set3 do
 
   02/16/16
 
-  iex> Euler.Set3.problem_25
+  iex> Euler.Set3.problem_25 |> elem(1)
   4782
   """
   def problem_25, do: RubyAPI.call(~w(3 25))
@@ -151,7 +151,7 @@ defmodule Euler.Set3 do
 
   02/20/16
 
-  iex> Euler.Set3.problem_26
+  iex> Euler.Set3.problem_26 |> elem(1)
   983
   """
   def problem_26, do: LispAPI.call(~w(3 26))
@@ -179,7 +179,7 @@ defmodule Euler.Set3 do
 
   02/22/16
 
-  iex> Euler.Set3.problem_27
+  iex> Euler.Set3.problem_27 |> elem(1)
   -59231
   """
   def problem_27, do: LispAPI.call(~w(3 27))
@@ -202,7 +202,7 @@ defmodule Euler.Set3 do
 
   02/22/16
 
-  iex> Euler.Set3.problem_28
+  iex> Euler.Set3.problem_28 |> elem(1)
   669171001
   """
   def problem_28, do: JavaAPI.call(~w(3 28))
@@ -225,7 +225,7 @@ defmodule Euler.Set3 do
 
   02/24/16
 
-  iex> Euler.Set3.problem_29
+  iex> Euler.Set3.problem_29 |> elem(1)
   9183
   """
   def problem_29, do: CAPI.call(~w(3 29))
@@ -248,7 +248,7 @@ defmodule Euler.Set3 do
 
   02/25/16
 
-  iex> Euler.Set3.problem_30
+  iex> Euler.Set3.problem_30 |> elem(1)
   443839
   """
   def problem_30, do: CAPI.call(~w(3 30))

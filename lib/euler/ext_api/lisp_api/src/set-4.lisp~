@@ -34,13 +34,18 @@
   (when (zerop rem-total)
         (return-from add-change (1+ num-combs)))
 
+
   (loop while (> (car change) rem-total)
         do (setf change (cdr change)))
   
+  ; (format t "rem-total:  ~D~%" rem-total)
+  ; (format t "numb-combs: ~D~%" num-combs)
+  ; (format t "change:     ~S~%" change)
+  ; (force-output nil)
   
   (reduce #'(lambda (num-combs coin)
               (add-change (- rem-total coin)
-                          change,
+                          change
                           num-combs))
            change
-           :inital-value num-combs))
+           :initial-value num-combs))

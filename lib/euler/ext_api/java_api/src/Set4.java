@@ -3,6 +3,9 @@
  *                                                                            *
  * Abstract class 'Set4' houses solutions for problems 31-40.                 *
  ******************************************************************************/
+import java.util.Set;
+import java.util.HashSet;
+import java.util.stream.IntStream;
 
 public abstract class Set4 {
   /****************************************************************************
@@ -23,7 +26,16 @@ public abstract class Set4 {
    * only include it once in your sum.                                        *
    ****************************************************************************/
   public static Integer problem32() { 
+    // Set<Integer> products = new HashSet<>();
 
-    return Integer.valueOf(42);
+    return IntStream.range(2, 10)
+                    .map(Set4::doSplit)
+                    .distinct()
+                    .sum();
+  }
+
+  private static Integer doSplit(int splitNum) {
+
+    return Integer.valueOf(splitNum);
   }
 }

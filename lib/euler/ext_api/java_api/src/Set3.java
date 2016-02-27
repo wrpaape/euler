@@ -58,7 +58,7 @@ public abstract class Set3 {
     return Integer.valueOf(sumAmicableNumbers);
   }
 
-  static private Integer sumOfProperDivs(int num) {
+   private static Integer sumOfProperDivs(int num) {
     int sumDivs;
     int nextNum;
     int minBigDiv; // current smallest divisor 'b' where a * b = 'nextNum' and b > a

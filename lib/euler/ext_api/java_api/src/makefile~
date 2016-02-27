@@ -1,4 +1,4 @@
-JFLAGS = -g -Xlint
+JFLAGS = -g -Xlint -Xdiags:verbose
 
 JC = javac
 
@@ -7,7 +7,7 @@ JC = javac
 .java.class:
 				$(JC) $(JFLAGS) $*.java -d ../
 
-CLASSES = JavaAPI.java Set2.java Set3.java
+CLASSES = JavaAPI.java Set2.java Set3.java Set4.java
 
 default: classes
 

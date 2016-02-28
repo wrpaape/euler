@@ -70,26 +70,21 @@ public abstract class Set4 {
 
 		ListIterator<T> listIter = remList.listIterator();
 
-		if (!listIter.hasNext()) {
+		while (listIter.hasNext()) {
 
-			accCombs.push(currComb);
-			return;
-		}
-
-		do {
+			LinkedList<T> nextComb = new LinkedList<T>(currComb);
 
 			T nextEl = listIter.next();
 
 			listIter.remove();
 
-			currComb.push(nextEl);
+			nextComb.push(nextEl);
 
-			doCombine(remList, currComb, accCombs);
+			accCombs.push(nextComb);
 
-			currComb.pop();
+			doCombine(remList, nextComb, accCombs);
 
 			listIter.add(nextEl);
-
-		} while (listIter.hasNext());
+		}
 	}
 }

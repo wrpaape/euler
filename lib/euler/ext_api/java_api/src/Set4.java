@@ -3,9 +3,10 @@
  *                                                                            *
  * Abstract class 'Set4' houses solutions for problems 31-40.                 *
  ******************************************************************************/
-import java.util.Set;
-import java.util.HashSet;
 import java.util.stream.IntStream;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Iterator;
 
 public abstract class Set4 {
   /****************************************************************************
@@ -26,16 +27,32 @@ public abstract class Set4 {
    * only include it once in your sum.                                        *
    ****************************************************************************/
   public static Integer problem32() { 
-    // Set<Integer> products = new HashSet<>();
 
     return IntStream.range(2, 10)
-                    .map(Set4::doSplit)
+                    .flatMap(Set4::doProducts)
                     .distinct()
                     .sum();
   }
 
-  private static Integer doSplit(int splitNum) {
+  private static LinkedList<Integer> doProducts(int splitNum) {
 
-    return Integer.valueOf(splitNum);
+    LinkedList<Integer>
+
+    int[] leftDigits = IntStream.range(1, splitNum)
+                                .toArray();
+
+    int[] rightDigits = IntStream.range(splitNum, 10)
+                                 .toArray();
+
+    return products;
+  }
+
+  private static LinkedList<Integer> combinations(List<Integer> list) {
+    Iterator<Integer> listIter = list.iterator();
+
+  }
+
+  private static LinkedList<Integer> doComb(List<Integer> remEls, List<Integer> accCombs) {
+
   }
 }

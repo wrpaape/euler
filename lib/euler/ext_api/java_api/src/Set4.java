@@ -27,69 +27,69 @@ public abstract class Set4 {
 	 * HINT: Some products can be obtained in more than one way so be sure to   *
    * only include it once in your sum.                                        *
    ****************************************************************************/
-  public static Integer problem32() { 
+	public static Integer problem32() { 
+		// return IntStream.range(2, 10)
+		// 				.flatMap(Set4::doProducts)
+		// 				.distinct()
+		// 				.sum();
+		doProducts(5);
 
-    // return IntStream.range(2, 10)
-    //                 .flatMap(Set4::doProducts)
-    //                 .distinct()
-    //                 .sum();
-	  doProducts(5);
-
-    return 42;
-  }
-
-
-  private static LinkedList<Integer> doProducts(int splitNum) {
-
-    LinkedList<LinkedList<Integer>> leftCombs = combininations(
-        IntStream.range(1, splitNum)
-                 .boxed()
-                 .collect(Collectors.toCollection(LinkedList::new)));
-
-	leftCombs.forEach(System.out::println);
-
-    // int[] rightDigits = IntStream.range(splitNum, 10)
-    //                              .boxed()
-    //                              .collect(Collections.toCollection(LinkedList::new));
-
-    return leftCombs.getFirst();
-  }
-
-  // private static LinkedList<int[]> combinations(int[] digits) {
-  private static LinkedList<LinkedList <Integer>> combininations(LinkedList<Integer> digits) {
-    LinkedList<Integer> currComb             = new LinkedList<>();
-    LinkedList<LinkedList<Integer>> accCombs = new LinkedList<>();
-
-    doCombine(digits, currComb, accCombs);
-	
-    
-
-    return accCombs;
-  }
-
-
-  private static void doCombine(List<Integer> remDigits, LinkedList<Integer> currComb, LinkedList<LinkedList<Integer>> accCombs) {
-
-    ListIterator<Integer> digitsIter = remDigits.listIterator();
-
-	if (!digitsIter.hasNext()) {
-
-		accCombs.add(currComb);
-		return;
+		return 42;
 	}
 
-    do {
 
-      Integer nextDigit = digitsIter.next();
+	private static LinkedList<Integer> doProducts(int splitNum) {
 
-      currComb.add(nextDigit);
+		LinkedList<LinkedList<Integer>> leftCombs = combininations(
+			IntStream.range(1, splitNum)
+					 .boxed()
+					 .collect(Collectors.toCollection(LinkedList::new)));
 
-      digitsIter.remove();
+		leftCombs.forEach(System.out::println);
 
-      doCombine(remDigits, currComb, accCombs);
+		// int[] rightDigits = IntStream.range(splitNum, 10)
+		//                              .boxed()
+		//                              .collect(Collections.toCollection(LinkedList::new));
 
-      digitsIter.add(nextDigit);
+		return leftCombs.getFirst();
+	}
 
-    } while (digitsIter.hasNext());
-  }
+  // private static LinkedList<int[]> combinations(int[] digits) {
+	private static <T> LinkedList<LinkedList<T>> combininations(LinkedList<T> list) {
+		LinkedList<T> currComb             = new LinkedList<>();
+		LinkedList<LinkedList<T>> accCombs = new LinkedList<>();
+
+		doCombine(list, currComb, accCombs);
+
+
+		return accCombs;
+	}
+
+
+	private static <T> void doCombine(LinkedList<T> remList, LinkedList<T> currComb, LinkedList<LinkedList<T>> accCombs) {
+
+		ListIterator<T> listIter = remList.listIterator();
+
+		if (!listIter.hasNext()) {
+
+			accCombs.push(currComb);
+			return;
+		}
+
+		do {
+
+			T nextEl = listIter.next();
+
+			listIter.remove();
+
+			currComb.push(nextEl);
+
+			doCombine(remList, currComb, accCombs);
+
+			currComb.pop();
+
+			listIter.add(nextEl);
+
+		} while (listIter.hasNext());
+	}
 }

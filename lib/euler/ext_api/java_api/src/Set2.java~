@@ -22,7 +22,7 @@ public abstract class Set2 {
     int digAcc;                           // used to 'carry' overflow to next 'place'
 
 		digitsList = new LinkedList<Integer>();     // initialize 'digitsList'
-		digitsList.add(2);                          // set head digit (ones) to '2'
+		digitsList.push(2);                          // set head digit (ones) to '2'
 
 		digitsIterator = digitsList.listIterator(); // initialize iterator
     remNumMults = 999;                          // 999 mults to go
@@ -49,7 +49,7 @@ public abstract class Set2 {
     }
 
     sumDigits = 0;
-    // sum resultant digitsList
+    // sum resultant 'digitsList'
     while (digitsIterator.hasNext()) {
       sumDigits += digitsIterator.next();
     }

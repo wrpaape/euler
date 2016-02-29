@@ -30,29 +30,17 @@ public abstract class Set4 {
    * only include it once in your sum.                                        *
    ****************************************************************************/
 	public static Integer problem32() { 
-		return IntStream.range(2, 10)
+		IntStream.range(2, 10)
 						.flatMap(Set4::doProducts)
 						.distinct()
-						.sum();
-		// doProducts(5);
+						.forEach(System.out::println);
+						// .sum();
 
-		// return 42;
+		return 42;
 	}
 
 
-	private static LinkedList<Integer> doProducts(int splitNum) {
-
-		// LinkedList<LinkedList<Integer>> leftDigitsCombs =
-		// 	combininations(
-		// 			IntStream.range(1, splitNum)
-		// 					 .boxed()
-		// 					 .collect(Collectors.toCollection(LinkedList::new)));
-
-		// LinkedList<LinkedList<Integer>> rightDigitsCombs =
-		// 	combininations(
-		// 			IntStream.range(splitNum, 10)
-		// 					 .boxed()
-		// 					 .collect(Collectors.toCollection(LinkedList::new)));
+	private static IntStream doProducts(int splitNum) {
 
 		LinkedList<Integer> leftNums  = integerCombinations(1, splitNum);
 		LinkedList<Integer> rightNums = integerCombinations(splitNum, 10);
@@ -61,20 +49,25 @@ public abstract class Set4 {
 		int leftInt;
 		int rightInt;
 
-		for (LinkedList<Integer> leftDigits : leftDigitsCombs) {
 
-			leftInt = intFromDigits(leftDigits);
+		for (Integer leftNum : leftNums) {
 
-			for (LinkedList<Integer> rightDigits : rightDigitsCombs) {
-				
+			leftInt = Integer.valueOf(leftNum);
+
+			for (Integer rightNum : rightNums) {
+
+				rightInt = Integer.valueOf(rightNum);
+
+				products.push(Integer.valueOf(leftInt * rightInt));
 			}
 		}
 
 
-		return products;
+		return products.stream()
+					   .mapToInt(Integer::intValue);
 	}
 
-	private static <T> LinkedList<LinkedList<T>> combininations(LinkedList<T> list) {
+	private static <T> LinkedList<LinkedList<T>> combinations(LinkedList<T> list) {
 		LinkedList<T> currComb             = new LinkedList<>();
 		LinkedList<LinkedList<T>> accCombs = new LinkedList<>();
 
@@ -125,6 +118,7 @@ public abstract class Set4 {
 
 		return Integer.valueOf(number);
 	}
+
 
 	private static LinkedList<Integer> integerCombinations(int from, int until) {
 

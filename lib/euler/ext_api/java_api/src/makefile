@@ -1,4 +1,5 @@
-JFLAGS = -g -Xlint -Xdiags:verbose
+JFLAGS = -g -Xlint
+# JFLAGS = -g -Xlint -Xdiags:verbose
 
 JC = javac
 

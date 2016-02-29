@@ -39,18 +39,15 @@ public abstract class Set4 {
 		tree144.evaluate();
 		tree234.evaluate();
 
+		return tree144.mergeProducts(tree234)
+					  .sumProducts();
 
-		return Integer.valueOf(tree144.products
-								   	  .addAll(tree234.products)
-								   	  .stream()
-								   	  .mapToInt(Integer::intValue)
-								   	  .sum());
 	}
 
 
 	private static class DigitsTree {
-		private final int lengthLeft;
-		private final int lenghtRight;
+		private final int lengthFirst;
+		private final int lengthSecond;
 		private HashSet<Integer> products;
 
 		private DigitsTree(int lengthMultiplicand, int lengthMultiplier) {
@@ -59,8 +56,22 @@ public abstract class Set4 {
 			products	 = new HashSet<Integer>();
 		}
 
-		private void evalutate() {
-			root = new DigitsNode(this);
+		private void evaluate() {
+			DigitsNode root = new DigitsNode(this);
+		}
+
+		private DigitsTree mergeProducts(DigitsTree other) {
+			this.products
+				.addAll(other.products);
+
+			return this;
+		}
+
+		private Integer sumProducts() {
+			return Integer.valueof(this.products
+									   .stream()
+									   .mapToInt(Integer::intValue)
+									   .sum());
 		}
 
 

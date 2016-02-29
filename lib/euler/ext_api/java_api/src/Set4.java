@@ -33,45 +33,65 @@ public abstract class Set4 {
 	 ****************************************************************************/
 	public static Integer problem32() { 
 
-		DigitsBranch branch144 = new DigitsBranch(1, 4);
-		DigitsBranch branch234 = new DigitsBranch(2, 3);
+		DigitsTree tree144 = new DigitsTree(1, 4);
+		DigitsTree tree234 = new DigitsTree(2, 3);
+
+		tree144.evaluate();
+		tree234.evaluate();
 
 
-		return Integer.valueOf(branch144.mergeProductsAndSum(branch234));
+		return Integer.valueOf(tree144.products
+								   	  .addAll(tree234.products)
+								   	  .stream()
+								   	  .mapToInt(Integer::intValue)
+								   	  .sum());
 	}
 
 
-	private static class DigitsBranch {
-
-		private static final LinkedList<Integer> INITIAL_DIGITS_POOL =
-			new LinkedList<>(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1));
-
-		private int remLeft;
-		private int remRight;
-		private int leftNum;
-		private int rightNum;
-		private int offset;
-		private LinkedList<Integer> pool;
+	private static class DigitsTree {
+		private final int lengthLeft;
+		private final int lenghtRight;
 		private HashSet<Integer> products;
 
-		private DigitsBranch(int lengthMultiplicand, int lengthMultiplier) {
-			remLeft  = lengthMultiplicand;
-			remRight = lengthMultiplier;
-			leftNum  = 0;
-			rightNum = 0;
-			offset	 = 1;
-			pool 	 = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
-			products = new HashSet<Integer>();
+		private DigitsTree(int lengthMultiplicand, int lengthMultiplier) {
+			lengthFirst  = lengthMultiplicand;
+			lengthSecond = lengthMultiplier;
+			products	 = new HashSet<Integer>();
 		}
 
-		private static Integer mergeProducts(DigitsBranch other) {
-			int sumProducts = 0;
+		private void evalutate() {
+			root = new DigitsNode(this);
+		}
 
-			return this.products
-					   .addAll(other.products)
-					   .stream()
-					   .mapToInt(Integer::intValue)
-					   .sum();
+
+		private static class DigitsNode {
+			private static final LinkedList<Integer> INITIAL_DIGITS_POOL =
+				new LinkedList<>(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1));
+
+			private int remDigs;
+			private int accNum;
+			private int offset;
+			private int pivot;
+			private DigitsTree tree;
+			private LinkedList<Integer> pool;
+
+			private DigitsNode(DigitsNode parent) {
+				remDigs = parent.remDigs;
+				accNum  = parent.accNum;
+				offset  = parent.offset;
+				pivot 	= parent.pivot;
+				tree	= parent.tree;
+				pool 	= new LinkedList<Integer>(parent.pool);
+			}
+
+			private DigitsNode(DigitsTree tree) {
+				remDigs = tree.lengthFirst;
+				accNum  = 0;
+				offset  = 1;
+				pivot 	= 0;
+				tree	= tree;
+				pool 	= new LinkedList<Integer>(INITIAL_DIGITS_POOL);
+			}
 		}
 	}
 }

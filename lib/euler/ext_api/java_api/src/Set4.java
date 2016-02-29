@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -30,104 +32,148 @@ public abstract class Set4 {
 	 * only include it once in your sum.                                        *
 	 ****************************************************************************/
 	public static Integer problem32() { 
-		IntStream.range(2, 10)
-						.flatMap(Set4::doProducts)
-						.distinct()
-						.forEach(System.out::println);
-						// .sum();
 
-		return 42;
+		DigitsBranch branch144 = new DigitsBranch(1, 4);
+		DigitsBranch branch234 = new DigitsBranch(2, 3);
+
+
+		return Integer.valueOf(branch144.mergeProductsAndSum(branch234));
 	}
 
 
-	private static IntStream doProducts(int splitNum) {
+	private static class DigitsBranch {
 
-		LinkedList<Integer> leftNums  = integerCombinations(1, splitNum);
-		LinkedList<Integer> rightNums = integerCombinations(splitNum, 10);
-		LinkedList<Integer> products  = new LinkedList<>();
+		private static final LinkedList<Integer> INITIAL_DIGITS_POOL =
+			new LinkedList<>(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1));
 
-		int leftInt;
-		int rightInt;
+		private int remLeft;
+		private int remRight;
+		private int leftNum;
+		private int rightNum;
+		private int offset;
+		private LinkedList<Integer> pool;
+		private HashSet<Integer> products;
 
-
-		for (Integer leftNum : leftNums) {
-
-			leftInt = Integer.valueOf(leftNum);
-
-			for (Integer rightNum : rightNums) {
-
-				rightInt = Integer.valueOf(rightNum);
-
-				products.push(Integer.valueOf(leftInt * rightInt));
-			}
+		private DigitsBranch(int lengthMultiplicand, int lengthMultiplier) {
+			remLeft  = lengthMultiplicand;
+			remRight = lengthMultiplier;
+			leftNum  = 0;
+			rightNum = 0;
+			offset	 = 1;
+			pool 	 = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
+			products = new HashSet<Integer>();
 		}
 
+		private static Integer mergeProducts(DigitsBranch other) {
+			int sumProducts = 0;
 
-		return products.stream()
-					   .mapToInt(Integer::intValue);
-	}
-
-	private static <T> LinkedList<LinkedList<T>> combinations(LinkedList<T> list) {
-		LinkedList<T> currComb             = new LinkedList<>();
-		LinkedList<LinkedList<T>> accCombs = new LinkedList<>();
-
-		doCombine(list, currComb, accCombs);
-
-		return accCombs;
-	}
-
-
-	private static <T> void doCombine(LinkedList<T> remList,
-									  LinkedList<T> currComb,
-									  LinkedList<LinkedList<T>> accCombs) {
-		if (remList.isEmpty()) {
-			accCombs.push(currComb);
-			return;
+			return this.products
+					   .addAll(other.products)
+					   .stream()
+					   .mapToInt(Integer::intValue)
+					   .sum();
 		}
-
-		ListIterator<T> listIter = remList.listIterator();
-
-		 do {
-
-			T nextEl = listIter.next();
-
-			listIter.remove();
-
-			LinkedList<T> nextRem  = new LinkedList<T>(remList);
-			LinkedList<T> nextComb = new LinkedList<T>(currComb);
-
-			nextComb.push(nextEl);
-
-			doCombine(nextRem, nextComb, accCombs);
-
-			listIter.add(nextEl);
-
-		} while (listIter.hasNext());
-	}
-
-
-	private static Integer integerFromDigits(LinkedList<Integer> digits) {
-
-		int number = 0;
-		int digOffset = 1;
-
-		for (Integer digit : digits) {
-			number 	  += (digit.intValue() * digOffset);
-			digOffset *= 10;
-		}
-
-		return Integer.valueOf(number);
-	}
-
-
-	private static LinkedList<Integer> integerCombinations(int from, int until) {
-
-		LinkedList<Integer> digits = IntStream.range(from, until)
-											  .boxed()
-											  .collect(Collectors.toCollection(LinkedList::new));
-
-		return combinations(digits).stream()
-								   .map(Set4::integerFromDigits)
-								   .collect(Collectors.toCollection(LinkedList::new));
 	}
 }
+
+	// public static Integer problem32() { 
+	// 	IntStream.range(2, 10)
+	// 					.flatMap(Set4::doProducts)
+	// 					.distinct()
+	// 					.forEach(System.out::println);
+	// 					// .sum();
+
+	// 	return 42;
+	// }
+
+	// private static IntStream doProducts(int splitNum) {
+
+	// 	LinkedList<Integer> leftNums  = integerCombinations(1, splitNum);
+	// 	LinkedList<Integer> rightNums = integerCombinations(splitNum, 10);
+	// 	LinkedList<Integer> products  = new LinkedList<>();
+
+	// 	int leftInt;
+	// 	int rightInt;
+
+
+	// 	for (Integer leftNum : leftNums) {
+
+	// 		leftInt = Integer.valueOf(leftNum);
+
+	// 		for (Integer rightNum : rightNums) {
+
+	// 			rightInt = Integer.valueOf(rightNum);
+
+	// 			products.push(Integer.valueOf(leftInt * rightInt));
+	// 		}
+	// 	}
+
+
+	// 	return products.stream()
+	// 				   .mapToInt(Integer::intValue);
+	// }
+
+	// private static <T> LinkedList<LinkedList<T>> combinations(LinkedList<T> list) {
+	// 	LinkedList<T> currComb             = new LinkedList<>();
+	// 	LinkedList<LinkedList<T>> accCombs = new LinkedList<>();
+
+	// 	doCombine(list, currComb, accCombs);
+
+	// 	return accCombs;
+	// }
+
+
+	// private static <T> void doCombine(LinkedList<T> remList,
+	// 								  LinkedList<T> currComb,
+	// 								  LinkedList<LinkedList<T>> accCombs) {
+	// 	if (remList.isEmpty()) {
+	// 		accCombs.push(currComb);
+	// 		return;
+	// 	}
+
+	// 	ListIterator<T> listIter = remList.listIterator();
+
+	// 	 do {
+
+	// 		T nextEl = listIter.next();
+
+	// 		listIter.remove();
+
+	// 		LinkedList<T> nextRem  = new LinkedList<T>(remList);
+	// 		LinkedList<T> nextComb = new LinkedList<T>(currComb);
+
+	// 		nextComb.push(nextEl);
+
+	// 		doCombine(nextRem, nextComb, accCombs);
+
+	// 		listIter.add(nextEl);
+
+	// 	} while (listIter.hasNext());
+	// }
+
+
+	// private static Integer integerFromDigits(LinkedList<Integer> digits) {
+
+	// 	int number = 0;
+	// 	int digOffset = 1;
+
+	// 	for (Integer digit : digits) {
+	// 		number 	  += (digit.intValue() * digOffset);
+	// 		digOffset *= 10;
+	// 	}
+
+	// 	return Integer.valueOf(number);
+	// }
+
+
+	// private static LinkedList<Integer> integerCombinations(int from, int until) {
+
+	// 	LinkedList<Integer> digits = IntStream.range(from, until)
+	// 										  .boxed()
+	// 										  .collect(Collectors.toCollection(LinkedList::new));
+
+	// 	return combinations(digits).stream()
+	// 							   .map(Set4::integerFromDigits)
+	// 							   .collect(Collectors.toCollection(LinkedList::new));
+	// }
+// }

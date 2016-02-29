@@ -45,7 +45,7 @@ public abstract class Set4 {
 		LinkedList<LinkedList<Integer>> leftCombs = combininations(
 			IntStream.range(1, splitNum)
 					 .boxed()
-					 .collect(Collectors.toCollection(ConcurrentLinkedQueue::new)));
+					 .collect(Collectors.toCollection(LinkedList::new)));
 
 		leftCombs.forEach(System.out::println);
 
@@ -57,13 +57,13 @@ public abstract class Set4 {
 	}
 
   // private static LinkedList<int[]> combinations(int[] digits) {
-	private static <T> LinkedList<LinkedList<T>> combininations(ConcurrentLinkedQueue<T> queue) {
-		// List<T> syncList   				   = Collections.synchronizedList(queue);
+	private static <T> LinkedList<LinkedList<T>> combininations(LinkedList<T> list) {
+		// List<T> syncList   				   = Collections.synchronizedList(list);
 		LinkedList<T> currComb             = new LinkedList<>();
 		LinkedList<LinkedList<T>> accCombs = new LinkedList<>();
 
 
-		doCombine(queue, currComb, accCombs);
+		doCombine(list, currComb, accCombs);
 
 
 
@@ -71,30 +71,35 @@ public abstract class Set4 {
 	}
 
 
-	private static <T> void doCombine(ConcurrentLinkedQueue<T> remQ,
+	private static <T> void doCombine(LinkedList<T> remList,
 									  LinkedList<T> currComb,
 									  LinkedList<LinkedList<T>> accCombs) {
 
-		// List remQueue = Collections.synchronizedList(remQueue);
+		if (remList.isEmpty()) {
+			accCombs.push(currComb);
+			return;
+		}
 
-		Iterator<T> qIter = remQueue.Iterator();
+		ListIterator<T> listIter = remList.ListIterator();
 
-		while (qIter.hasNext()) {
+		 do {
 
+			T nextEl = listIter.next();
+
+			listIter.remove();
+
+			// LinkedList<T> nextRem  = (LinkedList<T>) remList.clone();
+			// LinkedList<T> nextComb = (LinkedList<T>) nextComb.clone();
+
+			LinkedList<T> nextRem  = new LinkedList<T>(remList);
 			LinkedList<T> nextComb = new LinkedList<T>(currComb);
-			List list2 = ((List) ((ArrayList) list).clone());
-
-			T nextEl = qIter.next();
-
-			qIter.remove();
 
 			nextComb.push(nextEl);
 
-			accCombs.push(nextComb);
+			doCombine(nextRem, nextComb, accCombs);
 
-			doCombine(remQ, nextComb, accCombs);
+			listIter.add(nextEl);
 
-			qIter.add(nextEl);
-		}
+		} while (listIter.hasNext());
 	}
 }

@@ -27,19 +27,53 @@ public abstract class Set4 {
 	 * only include it once in your sum.                                        *
 	 ****************************************************************************/
 	public static Integer problem32() { 
+		/*
+		 * Let 'a', 'b', and 'c' represent the multipicand, multiplier, and
+		 * product, respectively, of the multiplication statement:
+		 *
+		 * 	   'a × b = c'.
+		 *
+		 * One condition for a 1 through 9 pandigital identity is that 9
+		 * digits must compose the entire statement, i.e.
+		 *
+		 *     [number of digits of 'a']
+		 *   + [number of digits of 'b']
+		 *   + [number of digits of 'c'] = 9
+		 *
+		 * Ignoring the commutative interchangability of 'a' and 'b', it can be
+		 * shown that two unique cases where this condition is satisfied exist:
+		 *
+		 *   number of digits of 'a' = 1
+		 *   number of digits of 'b' = 4
+		 *   number of digits of 'c' = 4
+		 *
+		 * or
+		 *
+		 *   number of digits of 'a' = 2
+		 *   number of digits of 'b' = 3
+		 *   number of digits of 'c' = 4
+		 *
+		 * Accordingly, our search pool of potential 1 through 9 pandigital
+		 * identities can be reduced significantly by ignoring all other cases.
+		 */
 
+		// initialize search conditions for mulitplication identity generators
 		DigitsTree tree144 = new DigitsTree(1, 4);
 		DigitsTree tree234 = new DigitsTree(2, 3);
 
+		// begin generating 1 through 9 pandigital identities
 		tree144.start();
 		tree234.start();
 
+		// merge and sum the unique products from the valid identities
 		return Integer.valueOf(tree144.mergeProducts(tree234)
 					  				  .sumProducts());
 	}
 
 
 	private static class DigitsTree {
+		private static final int MAX_PRODUCT = 9876;
+
 		private final int lengthFirst;
 		private final int lengthSecond;
 		private HashSet<Integer> products;
@@ -57,7 +91,7 @@ public abstract class Set4 {
 		private void processLeaf(DigitsNode leaf) {
 			int product = leaf.accNumber * leaf.pivNumber;
 
-			if (product > 9876) {
+			if (product > MAX_PRODUCT) {
 				return;
 			}
 
@@ -125,7 +159,11 @@ public abstract class Set4 {
 			private void spawnChildren() {
 				if (this.remDigits == 0) {
 					if (this.pivNumber == 0) {
-						pivot();
+						this.pivNumber = this.accNumber;
+						this.remDigits = this.tree.lengthSecond;
+						this.accNumber = 0;
+						this.offset	   = 1;
+
 					} else {
 						this.tree.processLeaf(this);
 						return;
@@ -146,115 +184,6 @@ public abstract class Set4 {
 
 				} while (poolIter.hasNext());
 			}
-
-			private void pivot() {
-				this.remDigits = this.tree.lengthSecond;
-				this.pivNumber = this.accNumber;
-				this.accNumber = 0;
-				this.offset	   = 1;
-			}
 		}
 	}
 }
-
-	// public static Integer problem32() { 
-	// 	IntStream.range(2, 10)
-	// 					.flatMap(Set4::doProducts)
-	// 					.distinct()
-	// 					.forEach(System.out::println);
-	// 					// .sum();
-
-	// 	return 42;
-	// }
-
-	// private static IntStream doProducts(int splitNum) {
-
-	// 	LinkedList<Integer> leftNums  = integerCombinations(1, splitNum);
-	// 	LinkedList<Integer> rightNums = integerCombinations(splitNum, 10);
-	// 	LinkedList<Integer> products  = new LinkedList<>();
-
-	// 	int leftInt;
-	// 	int rightInt;
-
-
-	// 	for (Integer leftNum : leftNums) {
-
-	// 		leftInt = Integer.valueOf(leftNum);
-
-	// 		for (Integer rightNum : rightNums) {
-
-	// 			rightInt = Integer.valueOf(rightNum);
-
-	// 			products.push(Integer.valueOf(leftInt * rightInt));
-	// 		}
-	// 	}
-
-
-	// 	return products.stream()
-	// 				   .mapToInt(Integer::intValue);
-	// }
-
-	// private static <T> LinkedList<LinkedList<T>> combinations(LinkedList<T> list) {
-	// 	LinkedList<T> currComb             = new LinkedList<>();
-	// 	LinkedList<LinkedList<T>> accCombs = new LinkedList<>();
-
-	// 	doCombine(list, currComb, accCombs);
-
-	// 	return accCombs;
-	// }
-
-
-	// private static <T> void doCombine(LinkedList<T> remList,
-	// 								  LinkedList<T> currComb,
-	// 								  LinkedList<LinkedList<T>> accCombs) {
-	// 	if (remList.isEmpty()) {
-	// 		accCombs.push(currComb);
-	// 		return;
-	// 	}
-
-	// 	ListIterator<T> listIter = remList.listIterator();
-
-	// 	 do {
-
-	// 		T nextEl = listIter.next();
-
-	// 		listIter.remove();
-
-	// 		LinkedList<T> nextRem  = new LinkedList<T>(remList);
-	// 		LinkedList<T> nextComb = new LinkedList<T>(currComb);
-
-	// 		nextComb.push(nextEl);
-
-	// 		doCombine(nextRem, nextComb, accCombs);
-
-	// 		listIter.add(nextEl);
-
-	// 	} while (listIter.hasNext());
-	// }
-
-
-	// private static Integer integerFromDigits(LinkedList<Integer> digits) {
-
-	// 	int number = 0;
-	// 	int digOffset = 1;
-
-	// 	for (Integer digit : digits) {
-	// 		number 	  += (digit.intValue() * digOffset);
-	// 		digOffset *= 10;
-	// 	}
-
-	// 	return Integer.valueOf(number);
-	// }
-
-
-	// private static LinkedList<Integer> integerCombinations(int from, int until) {
-
-	// 	LinkedList<Integer> digits = IntStream.range(from, until)
-	// 										  .boxed()
-	// 										  .collect(Collectors.toCollection(LinkedList::new));
-
-	// 	return combinations(digits).stream()
-	// 							   .map(Set4::integerFromDigits)
-	// 							   .collect(Collectors.toCollection(LinkedList::new));
-	// }
-// }

@@ -71,11 +71,19 @@ public abstract class Set4 {
 	}
 
 
+	/*
+	 * Stores conditions for generating 1 through 9 pandigital product
+	 * identities and an accumulator for collecting and summing
+	 * valid products.
+	 */
 	private static class DigitsTree {
+		// theoretical max value of product in 1-9 pandigital identity
 		private static final int MAX_PRODUCT = 9876;
 
-		private final int lengthFirst;
-		private final int lengthSecond;
+		private final int lengthFirst;	   // number of digits of 1st number
+		private final int lengthSecond;	   // number of digits of 2nd number
+
+		// unique generated products with a valid 1-9 pandigital identity
 		private HashSet<Integer> products;
 
 		private DigitsTree(int lengthMultiplicand, int lengthMultiplier) {
@@ -84,33 +92,54 @@ public abstract class Set4 {
 			products	 = new HashSet<Integer>();
 		}
 
+		/*
+		 * Spawns the first node with the branch root conditions
+		 * then begins generation of the first and second
+		 * numbers.
+		 */
 		private void start() {
 			new DigitsNode(this).spawnChildren();
 		}
 
+		/*
+		 * The final nodes of all completed branches call
+		 * this method to check if a 1-9 pandigital identity
+		 * was generated.  If so, its product is stored in
+		 * the 'products' set.
+		 */
 		private void processLeaf(DigitsNode leaf) {
 			int product = leaf.accNumber * leaf.pivNumber;
 
+			// if 'product' > 9876...
 			if (product > MAX_PRODUCT) {
-				return;
+				return; // pandigital condition impossible, return
 			}
+
+			// otherwise 'product' must be 4 digits (can't be <= 3)
 
 			HashSet<Integer> prodDigs = new HashSet<>();
 			prodDigs.add(product % 10);
 
+			// extract digits from product, return if a duplicate is found
 			for (int remProd = product / 10; remProd > 0; remProd /= 10) {
 				if (!prodDigs.add(remProd % 10)) {
 					return;
 				}
 			} 
 
+			// if digits coincides with those remaining in 'pool'...
 			if (prodDigs.containsAll(leaf.pool)) {
+				// a valid identity was found, add product to set
 				this.products
 					.add(Integer.valueOf(product));
 			}
 		}
 
 
+		/*
+		 * Adds entire set of 'products' from 'other' to 'this' tree's
+		 * 'products', returning 'this'.
+		 */
 		private DigitsTree mergeProducts(DigitsTree other) {
 			this.products
 				.addAll(other.products);
@@ -119,6 +148,9 @@ public abstract class Set4 {
 		}
 
 
+		/*
+		 * Sums set of 1 through 9 pandigital 'products' of 'this'.
+		 */
 		private int sumProducts() {
 			return this.products
 					   .stream()
@@ -127,33 +159,56 @@ public abstract class Set4 {
 		}
 
 
+		/*
+		 * Houses state of nodes belonging to DigitsTree to allow
+		 * deterministic generation of unique pandigital pairs of numbers.
+		 */
 		private static class DigitsNode {
+			// list of digits available for root node of tree
 			private static final LinkedList<Integer> INITIAL_DIGITS_POOL =
-				new LinkedList<>(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1));
+				new LinkedList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
 
-			private final DigitsTree tree;
-			private LinkedList<Integer> pool;
-			private int remDigits;
-			private int offset;
-			private int accNumber;
-			private int pivNumber;
+			private final DigitsTree tree;    // tree supervisor
+			private LinkedList<Integer> pool; // list of remaining digits
+			private int remDigits; // number of digits remaining for current number
+			private int offset;	   // place value for next digit in current number
+			private int accNumber; // accumulator for current number
+			private int pivNumber; // storage for completed number
 
+			// child node constructor
 			private DigitsNode(DigitsNode parent, Integer digit) {
-				tree	  = parent.tree;
-				pool	  = new LinkedList<Integer>(parent.pool);
-				remDigits = parent.remDigits - 1;
-				offset	  = parent.offset * 10;
+
+				remDigits = parent.remDigits - 1; // dec number of remaining digits
+				offset	  = parent.offset * 10;	  // update place value for next digit
+
+				// add digit times 'parent''s place value to number accumulator
 				accNumber = parent.accNumber + (parent.offset * digit.intValue());
+
+				// store pivot number and direct reference to tree
 				pivNumber = parent.pivNumber;
+				tree	  = parent.tree;
+
+				// store mutated copy of 'parent''s 'pool' ('digit' missing)
+				pool	  = new LinkedList<Integer>(parent.pool);
 			}
 
+			// root node constructor
 			private DigitsNode(DigitsTree digitsTree) {
+				// set reference to digitsTree for descendant pivot and leaf nodes
 				tree	  = digitsTree;
-				pool	  = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
+
+				// child nodes will select digits to build the first number
 				remDigits = digitsTree.lengthFirst;
+
+				// 1st digit will occupy one's place of 'accNumber'
 				offset	  = 1;
+
+				// number accumulators initialized to zero
 				accNumber = 0;
 				pivNumber = 0;
+
+				// copy "constant" list of initial digits to allow mutation
+				pool	  = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
 			}
 
 			private void spawnChildren() {
@@ -188,7 +243,7 @@ public abstract class Set4 {
 					Integer digit = poolIter.next();
 					poolIter.remove();
 
-					// spawn a child node and continue reduction of branch
+					// spawn a child node and continue branching
 					new DigitsNode(this, digit).spawnChildren();
 
 					// add 'digit' back to its initial position in 'pool'

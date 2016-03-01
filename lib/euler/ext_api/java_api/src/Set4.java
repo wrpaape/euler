@@ -134,16 +134,16 @@ public abstract class Set4 {
 			private final DigitsTree tree;
 			private LinkedList<Integer> pool;
 			private int remDigits;
-			private int accNumber;
 			private int offset;
+			private int accNumber;
 			private int pivNumber;
 
 			private DigitsNode(DigitsNode parent, Integer digit) {
 				tree	  = parent.tree;
 				pool	  = new LinkedList<Integer>(parent.pool);
 				remDigits = parent.remDigits - 1;
-				accNumber = parent.accNumber + (parent.offset * digit.intValue());
 				offset	  = parent.offset * 10;
+				accNumber = parent.accNumber + (parent.offset * digit.intValue());
 				pivNumber = parent.pivNumber;
 			}
 
@@ -151,35 +151,47 @@ public abstract class Set4 {
 				tree	  = digitsTree;
 				pool	  = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
 				remDigits = digitsTree.lengthFirst;
-				accNumber = 0;
 				offset	  = 1;
+				accNumber = 0;
 				pivNumber = 0;
 			}
 
 			private void spawnChildren() {
+				// if enough digits have been picked to generate a number...
 				if (this.remDigits == 0) {
+					// if the pivot number hasn't been generated...
 					if (this.pivNumber == 0) {
+						// store the generated number 'accNumber' to 'pivNumber'
 						this.pivNumber = this.accNumber;
+						// re-init generator fields to prep for second number
 						this.remDigits = this.tree.lengthSecond;
-						this.accNumber = 0;
 						this.offset	   = 1;
+						this.accNumber = 0;
 
 					} else {
-						this.tree.processLeaf(this);
-						return;
+						/*
+						 * Branch is done, i.e. 'accNumber' and 'pivNumber'
+						 * are completed numbers s.t. their digits are composed
+						 * of unique digits from [1, 2, ..., 9] that are not
+						 * included in the remaining digit pool.
+						 */
+						this.tree.processLeaf(this); // process leaf node
+						return;						 // return to caller
 					}
 				}
 
+				// spawn children for each remaining digit in 'pool'
 				ListIterator<Integer> poolIter = this.pool.listIterator();
 
 				 do {
-
+					// select next 'digit' from 'pool' and remove it
 					Integer digit = poolIter.next();
-
 					poolIter.remove();
 
+					// spawn a child node and continue reduction of branch
 					new DigitsNode(this, digit).spawnChildren();
 
+					// add 'digit' back to its initial position in 'pool'
 					poolIter.add(digit);
 
 				} while (poolIter.hasNext());

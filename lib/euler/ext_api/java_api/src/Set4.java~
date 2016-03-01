@@ -107,15 +107,15 @@ public abstract class Set4 {
 
 			private int remDigits;
 			private int accNumber;
-			private int digOffset;
+			private int offset;
 			private int pivNumber;
 			private DigitsTree tree;
 			private LinkedList<Integer> pool;
 
-			private DigitsNode(DigitsNode parent) {
-				remDigits = parent.remDigits;
-				accNumber = parent.accNumber;
-				digOffset = parent.digOffset;
+			private DigitsNode(DigitsNode parent, Integer digit) {
+				remDigits = parent.remDigits - 1;
+				accNumber = parent.accNumber + (parent.offset * digit.intValue());
+				offset	  = parent.offset * 10;
 				pivNumber = parent.pivNumber;
 				tree	  = parent.tree;
 				pool	  = new LinkedList<Integer>(parent.pool);
@@ -124,13 +124,14 @@ public abstract class Set4 {
 			private DigitsNode(DigitsTree tree) {
 				remDigits = tree.lengthFirst;
 				accNumber = 0;
-				digOffset = 1;
+				offset	  = 1;
 				pivNumber = 0;
 				tree	  = tree;
 				pool	  = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
 			}
 
 			private void spawnChildren() {
+				System.out.println(this.pool.toString());
 				if (this.remDigits == 0) {
 					if (this.pivNumber == 0) {
 						pivot();
@@ -140,15 +141,24 @@ public abstract class Set4 {
 					}
 				}
 
-				ListIterator<Integer> poolIter = this.pool.listIiterator();
+				ListIterator<Integer> poolIter = this.pool.listIterator();
 
 				 do {
 					Integer digit = poolIter.next();
 
+					System.out.println(digit);
+
 					poolIter.remove();
 
-					new DigitsNode(this).pickDigit(digit)
-										.spawnChildren();
+					System.out.println(digit);
+
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e){
+						e.printStackTrace();
+					}
+
+					new DigitsNode(this, digit).spawnChildren();
 
 					poolIter.add(digit);
 
@@ -157,19 +167,19 @@ public abstract class Set4 {
 			}
 
 
-			private DigitsNode pickDigit(Integer digit) {
-				this.accNumber += (this.digOffset * digit.intValue());
-				this.digOffset *= 10;
-				this.remDigits--;
+			// private DigitsNode pickDigit(Integer digit) {
+			// 	this.accNumber += (this.offset * digit.intValue());
+			// 	this.offset *= 10;
+			// 	this.remDigits--;
 
-				return this;
-			}
+			// 	return this;
+			// }
 
 			private void pivot() {
 				this.remDigits = this.tree.lengthSecond;
 				this.pivNumber = this.accNumber;
 				this.accNumber = 0;
-				this.digOffset = 1;
+				this.offset	   = 1;
 			}
 		}
 	}

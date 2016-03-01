@@ -16,7 +16,7 @@ public class JavaAPI {
   private JavaAPI(String setNum, String probNum) {
     try {
       Class<?> problemSet = Class.forName("Set" + setNum);
-      problemMethod    = problemSet.getDeclaredMethod("problem" + probNum);
+      problemMethod		  = problemSet.getDeclaredMethod("problem" + probNum);
 
     } catch(ClassNotFoundException e) {
       exitOnError("Problem set class 'Set"

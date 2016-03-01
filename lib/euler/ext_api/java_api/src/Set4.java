@@ -36,12 +36,11 @@ public abstract class Set4 {
 		DigitsTree tree144 = new DigitsTree(1, 4);
 		DigitsTree tree234 = new DigitsTree(2, 3);
 
-		tree144.evaluate();
-		tree234.evaluate();
+		tree144.start();
+		tree234.start();
 
-		return tree144.mergeProducts(tree234)
-					  .sumProducts();
-
+		return Integer.valueOf(tree144.mergeProducts(tree234)
+					  				  .sumProducts());
 	}
 
 
@@ -56,9 +55,35 @@ public abstract class Set4 {
 			products	 = new HashSet<Integer>();
 		}
 
-		private void evaluate() {
-			DigitsNode root = new DigitsNode(this);
+		private void start() {
+			new DigitsNode(this).spawnChildren();
 		}
+
+		private void processLeaf(DigitsNode leaf) {
+			int product = leaf.accNumber * leaf.pivNumber;
+
+			if (product > 9876) {
+				return;
+			}
+
+			HashSet<Integer> prodDigs = new HashSet<>();
+			prodDigs.add(product % 10);
+
+			
+
+			for (int remProd = product / 10; remProd > 0; remProd /= 10) {
+				if (!prodDigs.add(remProd % 10)) {
+					return;
+				}
+			} 
+
+
+			if (prodDigs.containsAll(leaf.pool)) {
+				this.products
+					.add(Integer.valueOf(product));
+			}
+		}
+
 
 		private DigitsTree mergeProducts(DigitsTree other) {
 			this.products
@@ -67,11 +92,12 @@ public abstract class Set4 {
 			return this;
 		}
 
-		private Integer sumProducts() {
-			return Integer.valueOf(this.products
-									   .stream()
-									   .mapToInt(Integer::intValue)
-									   .sum());
+
+		private int sumProducts() {
+			return this.products
+					   .stream()
+					   .mapToInt(Integer::intValue)
+					   .sum();
 		}
 
 
@@ -79,29 +105,71 @@ public abstract class Set4 {
 			private static final LinkedList<Integer> INITIAL_DIGITS_POOL =
 				new LinkedList<>(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1));
 
-			private int remDigs;
-			private int accNum;
-			private int offset;
-			private int pivot;
+			private int remDigits;
+			private int accNumber;
+			private int digOffset;
+			private int pivNumber;
 			private DigitsTree tree;
 			private LinkedList<Integer> pool;
 
 			private DigitsNode(DigitsNode parent) {
-				remDigs = parent.remDigs;
-				accNum  = parent.accNum;
-				offset  = parent.offset;
-				pivot 	= parent.pivot;
-				tree	= parent.tree;
-				pool 	= new LinkedList<Integer>(parent.pool);
+				remDigits = parent.remDigits;
+				accNumber = parent.accNumber;
+				digOffset = parent.digOffset;
+				pivNumber = parent.pivNumber;
+				tree	  = parent.tree;
+				pool	  = new LinkedList<Integer>(parent.pool);
 			}
 
 			private DigitsNode(DigitsTree tree) {
-				remDigs = tree.lengthFirst;
-				accNum  = 0;
-				offset  = 1;
-				pivot 	= 0;
-				tree	= tree;
-				pool 	= new LinkedList<Integer>(INITIAL_DIGITS_POOL);
+				remDigits = tree.lengthFirst;
+				accNumber = 0;
+				digOffset = 1;
+				pivNumber = 0;
+				tree	  = tree;
+				pool	  = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
+			}
+
+			private void spawnChildren() {
+				if (this.remDigits == 0) {
+					if (this.pivNumber == 0) {
+						pivot();
+					} else {
+						this.tree.processLeaf(this);
+						return;
+					}
+				}
+
+				ListIterator<Integer> poolIter = this.pool.listIiterator();
+
+				 do {
+					Integer digit = poolIter.next();
+
+					poolIter.remove();
+
+					new DigitsNode(this).pickDigit(digit)
+										.spawnChildren();
+
+					poolIter.add(digit);
+
+				} while (poolIter.hasNext());
+
+			}
+
+
+			private DigitsNode pickDigit(Integer digit) {
+				this.accNumber += (this.digOffset * digit.intValue());
+				this.digOffset *= 10;
+				this.remDigits--;
+
+				return this;
+			}
+
+			private void pivot() {
+				this.remDigits = this.tree.lengthSecond;
+				this.pivNumber = this.accNumber;
+				this.accNumber = 0;
+				this.digOffset = 1;
 			}
 		}
 	}

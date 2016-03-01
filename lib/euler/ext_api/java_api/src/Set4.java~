@@ -121,17 +121,16 @@ public abstract class Set4 {
 				pool	  = new LinkedList<Integer>(parent.pool);
 			}
 
-			private DigitsNode(DigitsTree tree) {
-				remDigits = tree.lengthFirst;
+			private DigitsNode(DigitsTree digitsTree) {
+				remDigits = digitsTree.lengthFirst;
 				accNumber = 0;
 				offset	  = 1;
 				pivNumber = 0;
-				tree	  = tree;
+				tree	  = digitsTree;
 				pool	  = new LinkedList<Integer>(INITIAL_DIGITS_POOL);
 			}
 
 			private void spawnChildren() {
-				System.out.println(this.pool.toString());
 				if (this.remDigits == 0) {
 					if (this.pivNumber == 0) {
 						pivot();
@@ -141,39 +140,22 @@ public abstract class Set4 {
 					}
 				}
 
+
 				ListIterator<Integer> poolIter = this.pool.listIterator();
 
+
 				 do {
+
 					Integer digit = poolIter.next();
 
-					System.out.println(digit);
-
 					poolIter.remove();
-
-					System.out.println(digit);
-
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e){
-						e.printStackTrace();
-					}
 
 					new DigitsNode(this, digit).spawnChildren();
 
 					poolIter.add(digit);
 
 				} while (poolIter.hasNext());
-
 			}
-
-
-			// private DigitsNode pickDigit(Integer digit) {
-			// 	this.accNumber += (this.offset * digit.intValue());
-			// 	this.offset *= 10;
-			// 	this.remDigits--;
-
-			// 	return this;
-			// }
 
 			private void pivot() {
 				this.remDigits = this.tree.lengthSecond;

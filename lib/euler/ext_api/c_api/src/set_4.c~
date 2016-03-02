@@ -46,8 +46,8 @@ void problem_33(char *result_buffer)
 	mult_map = init_mult_map();
 
 	fracs_found = 0;
-	non_triv_acc.num = 1;
-	non_triv_acc.den = 1;
+	num_acc = 1;
+	den_acc = 1;
 
 	for (den = 11; den < 100; ++den) {
 		frac.den = den;
@@ -57,8 +57,8 @@ void problem_33(char *result_buffer)
 			if(attempt_reduce(&frac, mult_map) &&
 			   is_non_trivial(num, den, &frac, digs_map)) {
 
-				non_triv_acc.num *= num;
-				non_triv_acc.den *= den;
+				num_acc *= num;
+				den_acc *= den;
 				++fracs_found;
 
 				if (fracs_found == 4)
@@ -69,24 +69,65 @@ void problem_33(char *result_buffer)
 
 	FOUND_ALL:
 
-	/* struct MultNode *mult; */
-	/* for (int n = 10; n < 100; ++n) { */
-	/* 	printf("n: %d\n", n); */
-	/* 	for (mult = mult_map[n]; mult != NULL; mult = mult -> next) { */
-	/* 		printf("  mult: %d\n", mult -> mult); */
-	/* 	} */
+	gcd = 2;
+	sml_div_den = 2;
+	sml_div_num = 2;
+	big_div_num = num;
 
-	/* 	printf("  0: %d\n", digs_map[n][0]); */
-	/* 	printf("  1: %d\n", digs_map[n][1]); */
-	/* } */
+	while(1) {
+		while (den % sml_div_den != 0) {
+			++sml_div_den;
+		}
 
-	sprintf(result_buffer, "%d", 42); /* copy score total to buffer */
+		big_div_den = den / sml_div_den;
+
+		if (big_div_den == big_div_num) {
+			den /= big_div_den;
+			break;
+
+		} else if (big_div_den > big_div_num) {
+			if (big_div_den > sml_div_den) {
+				++sml_div_den;
+				continue;
+			} else {
+				break;
+			}
+		}
+
+		while (num % sml_div_num != 0) {
+			++sml_div_num;
+		}
+
+		big_div_num = num / sml_div_num;
+
+		if (big_div_den == big_div_num) {
+			den /= big_div_den;
+			break;
+
+		} else if (big_div_den > big_div_num) {
+			if (big_div_den > sml_div_den) {
+				++sml_div_den;
+				continue;
+			} else {
+				break;
+			}
+		}
+	}
+	/* } while (big_div_num != big_div_den); */
+
+	 /* divide denominator by greatest common divisor and copy result to buffer */
+	sprintf(result_buffer, "%d", den);
 }
 
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-int attempt_reduce(struct Fraction *frac, struct MultNode **mult_map)
+bool is_non_trivial(int num, int den, struct Fraction *frac, int **digs_map)
+{
+	return true;
+}
+
+bool attempt_reduce(struct Fraction *frac, struct MultNode **mult_map)
 {
 	struct MultNode *mult_num;
 	struct MultNode *mult_den;
@@ -103,12 +144,12 @@ int attempt_reduce(struct Fraction *frac, struct MultNode **mult_map)
 		} else {
 			frac->den /= mult_num->mult;
 			frac->num /= mult_num->mult;
-			return 1;
+			return true;
 		}
 
 	} while((mult_den != NULL) && (mult_num != NULL));
 
-	return 0;
+	return false;
 }
 
 
@@ -134,7 +175,7 @@ struct MultNode **init_mult_map(void)
 {
 	int n;
 	int big_divs[10];
-	int small_div;
+	int sml_div;
 	int big_div_i;
 	struct MultNode *next_mult;
 	struct MultNode **mult_map;
@@ -146,24 +187,24 @@ struct MultNode **init_mult_map(void)
 	for (n = 10; n < 100; ++n) {
 		big_divs[0] = n;
 		big_div_i = 0;
-		small_div = 2;
+		sml_div = 2;
 
 		do {
-			if (n % small_div == 0) {
+			if (n % sml_div == 0) {
 				next_mult = handle_malloc(sizeof(struct MultNode));
 
-				next_mult -> mult = small_div;
+				next_mult -> mult = sml_div;
 				next_mult -> next = mult_map[n];
 
 				mult_map[n] = next_mult;
 
 				++big_div_i;
-				big_divs[big_div_i] = n / small_div;
+				big_divs[big_div_i] = n / sml_div;
 			}
 
-			++small_div;
+			++sml_div;
 
-		} while (small_div < big_divs[big_div_i]);
+		} while (sml_div < big_divs[big_div_i]);
 
 		do {
 			next_mult = handle_malloc(sizeof(struct MultNode));

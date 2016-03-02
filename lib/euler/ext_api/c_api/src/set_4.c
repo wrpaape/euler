@@ -39,7 +39,7 @@ void problem_33(char *result_buffer)
 	int com_digs[2];
 	int **digs_map;
 	struct MultNode **mult_map;
-	struct Fraction *frac;
+	struct Fraction frac;
 
 	digs_map = init_digs_map();
 	mult_map = init_mult_map();
@@ -84,25 +84,22 @@ void reduce_fraction(struct Fraction *frac, struct MultNode **mult_map)
 	struct MultNode *mult_num;
 	struct MultNode *mult_dem;
 
+	mult_num = mult_map[frac->num];
 	mult_dem = mult_map[frac->dem];
 
-	if (mult_dem == NULL)
-		return;
+	do {
+		if (mult_dem->mult > mult_num->mult) {
+			mult_dem = mult_dem->next;
 
-	if (mult_dem->mult)
+		} else if (mult_num->mult > mult_dem->mult) {
+			mult_num = mult_num->next;
+		} else {
+			frac->dem /= mult_num->mult;
+			frac->num /= mult_num->mult;
+			return;
+		}
 
-	while ((mult_dem != NULL) && (mult_dem > 1))
-		return;
-
-	if (frac->num == mult_dem->mult) {
-		frac->dem /= frac->num;
-		frac->num  = 1;
-		return;
-	}
-
-	mult_num = mult_map[frac->num];
-
-
+	} while((mult_dem != NULL) && (mult_num != NULL));
 }
 
 
@@ -138,6 +135,8 @@ struct MultNode **init_mult_map(void)
 	big_div_i = -1;
 
 	for (n = 10; n < 100; ++n) {
+		big_divs[0] = n;
+		big_div_i = 0;
 		small_div = 2;
 
 		do {
@@ -157,7 +156,7 @@ struct MultNode **init_mult_map(void)
 
 		} while (small_div < big_divs[big_div_i]);
 
-		while (big_div_i > -1) {
+		do {
 			next_mult = handle_malloc(sizeof(struct MultNode));
 
 			next_mult -> mult = big_divs[big_div_i];
@@ -166,7 +165,8 @@ struct MultNode **init_mult_map(void)
 			mult_map[n] = next_mult;
 
 			--big_div_i;
-		}
+
+		} while(big_div_i > -1);
 	}
 
 	return mult_map;

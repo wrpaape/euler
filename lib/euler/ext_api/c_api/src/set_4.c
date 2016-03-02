@@ -38,7 +38,6 @@ void problem_33(char *result_buffer)
 	int red_den;
 	int num_acc;
 	int dem_acc;
-	int com_digs[2];
 	int **digs_map;
 	struct MultNode **mult_map;
 
@@ -66,7 +65,7 @@ void problem_33(char *result_buffer)
 				++fracs_found;
 
 				if (fracs_found == 4)
-					goto FOUND_ALL;
+					goto FOUND_ALL_FRACTIONS;
 				else
 					red_den = ini_den;
 			}
@@ -78,50 +77,50 @@ FOUND_ALL_FRACTIONS:
 	sml_div_num = 2;
 	big_div_num = num;
 
-	while(1) {
-		while (den % sml_div_den != 0) {
-			++sml_div_den;
-		}
+REDUCE_DENOMINATOR:
+	while (den % sml_div_den != 0)
+		++sml_div_den;
 
-		big_div_den = den / sml_div_den;
+	big_div_den = den / sml_div_den;
 
-		if (big_div_den == big_div_num) {
-			den /= big_div_den;
-			goto REDUCED_DENOMINATOR;
+	if (big_div_den == big_div_num)
+		goto REDUCTION_COMPLETE;
 
-		} else if (big_div_den > big_div_num) {
-			if (big_div_den > sml_div_den) {
-				++sml_div_den;
-				continue;
-			} else {
-				break;
-			}
-		}
+	if (big_div_den < big_div_num)
+		goto REDUCE_NUMERATOR;
 
-		while (num % sml_div_num != 0) {
-			++sml_div_num;
-		}
-
-		big_div_num = num / sml_div_num;
-
-		if (big_div_den == big_div_num) {
-			den /= big_div_den;
-			break;
-
-		} else if (big_div_den > big_div_num) {
-			if (big_div_den > sml_div_den) {
-				++sml_div_den;
-				continue;
-			} else {
-				break;
-			}
-		}
+	if (big_div_den > sml_div_den) {
+		++sml_div_den;
+		goto REDUCE_DENOMINATOR;
+	} else {
+		big_div_den = 1;
+		goto REDUCTION_COMPLETE;
 	}
-	/* } while (big_div_num != big_div_den); */
 
+
+REDUCE_NUMERATOR:
+	while (num % sml_div_num != 0)
+		++sml_div_num;
+
+	big_div_num = num / sml_div_num;
+
+	if (big_div_num == big_div_den)
+		goto REDUCTION_COMPLETE;
+
+	if (big_div_den > big_div_num)
+		goto REDUCE_DENOMINATOR;
+
+	if (big_div_num > sml_div_num) {
+		++sml_div_num;
+		goto REDUCE_NUMERATOR;
+	} else {
+		big_div_den = 1;
+		goto REDUCTION_COMPLETE;
+	}
+
+REDUCTION_COMPLETE:
 	 /* divide denominator by greatest common divisor and copy result to buffer */
-REDUCED_DENOMINATOR:
-	sprintf(result_buffer, "%d", den);
+	sprintf(result_buffer, "%d", den / big_div_den);
 }
 
 /************************************************************************

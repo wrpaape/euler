@@ -89,8 +89,6 @@ void reduce_fraction(struct Fraction *frac, struct MultNode **mult_map)
 	if (mult_dem == NULL)
 		return;
 
-	if (mult_dem->mult)
-
 	while ((mult_dem != NULL) && (mult_dem > 1))
 		return;
 

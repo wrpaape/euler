@@ -31,13 +31,15 @@
  ************************************************************************/
 void problem_33(char *result_buffer)
 {
-	int fracs_found;
 	int ini_num;
 	int ini_den;
 	int red_num;
 	int red_den;
 	int num_acc;
-	int dem_acc;
+	int den_acc;
+	int sml_div;
+	int big_div;
+	int fracs_found;
 	int **digs_map;
 	struct MultNode **mult_map;
 
@@ -50,18 +52,23 @@ void problem_33(char *result_buffer)
 
 	for (ini_den = 11; ini_den < 100; ++ini_den) {
 
-		red_num = ini_den;
+
+		red_den = ini_den;
 
 		for (ini_num = 10; ini_num < ini_den; ++ini_num) {
 
 			red_num = ini_num;
 
-			if(attempt_reduce(&red_num, &red_den, mult_map) &&
-			   is_non_trivial(ini_num, ini_den,
-					  red_num, red_den, digs_map)) {
+			if (attempt_reduce(&red_num, &red_den, mult_map) &&
+			    is_non_trivial(ini_num, ini_den,
+					   red_num, red_den, digs_map)) {
 
-				num_acc *= num;
-				den_acc *= den;
+				printf("ini_num: %d\n", ini_num);
+				printf("ini_den: %d\n", ini_den);
+				fflush(stdout);
+
+				num_acc *= ini_num;
+				den_acc *= ini_den;
 				++fracs_found;
 
 				if (fracs_found == 4)
@@ -73,83 +80,33 @@ void problem_33(char *result_buffer)
 	}
 
 FOUND_ALL_FRACTIONS:
-	sml_div_den = 2;
-	sml_div_num = 2;
-	big_div_num = num;
+	sml_div = 2;
 
-REDUCE_DENOMINATOR:
-	while (den % sml_div_den != 0)
-		++sml_div_den;
+	while (1) {
+		while (num_acc % sml_div != 0)
+			++sml_div;
 
-	big_div_den = den / sml_div_den;
+		big_div = num_acc / sml_div;
 
-	if (big_div_den == big_div_num)
-		goto REDUCTION_COMPLETE;
+		if (den_acc % big_div == 0)
+			break;
 
-	if (big_div_den < big_div_num)
-		goto REDUCE_NUMERATOR;
+		if (sml_div < big_div) {
+			++sml_div;
+			continue;
+		}
 
-	if (big_div_den > sml_div_den) {
-		++sml_div_den;
-		goto REDUCE_DENOMINATOR;
-	} else {
-		big_div_den = 1;
-		goto REDUCTION_COMPLETE;
+		big_div = 1;
+		break;
 	}
 
-
-REDUCE_NUMERATOR:
-	while (num % sml_div_num != 0)
-		++sml_div_num;
-
-	big_div_num = num / sml_div_num;
-
-	if (big_div_num == big_div_den)
-		goto REDUCTION_COMPLETE;
-
-	if (big_div_den > big_div_num)
-		goto REDUCE_DENOMINATOR;
-
-	if (big_div_num > sml_div_num) {
-		++sml_div_num;
-		goto REDUCE_NUMERATOR;
-	} else {
-		big_div_den = 1;
-		goto REDUCTION_COMPLETE;
-	}
-
-REDUCTION_COMPLETE:
 	 /* divide denominator by greatest common divisor and copy result to buffer */
-	sprintf(result_buffer, "%d", den / big_div_den);
+	sprintf(result_buffer, "%d", den_acc / big_div);
 }
 
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-int greatest_common_divisor(int num, int den)
-{
-	int sml_div;
-	int big_div;
-
-	sml_div = 2;
-	while (1) {
-		while (num % sml_div != 0)
-			++sml_div;
-
-		big_div = num / sml_div;
-
-		if (den % big_div == 0)
-			return big_div;
-
-		if (sml_div < big_div)
-	}
-
-
-
-
-	return gcd;
-}
-
 bool is_non_trivial(int ini_num, int ini_den,
 		    int red_num, int red_den, int **digs_map)
 {
@@ -172,7 +129,7 @@ bool attempt_reduce(int *ini_num, int *ini_den, struct MultNode **mult_map)
 			mult_num = mult_num->next;
 		} else {
 			(*ini_num) /= mult_num->mult;
-			(*ini_dem) /= mult_num->mult;
+			(*ini_den) /= mult_num->mult;
 			return true;
 		}
 

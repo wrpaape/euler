@@ -126,6 +126,30 @@ REDUCTION_COMPLETE:
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
+int greatest_common_divisor(int num, int den)
+{
+	int sml_div;
+	int big_div;
+
+	sml_div = 2;
+	while (1) {
+		while (num % sml_div != 0)
+			++sml_div;
+
+		big_div = num / sml_div;
+
+		if (den % big_div == 0)
+			return big_div;
+
+		if (sml_div < big_div)
+	}
+
+
+
+
+	return gcd;
+}
+
 bool is_non_trivial(int ini_num, int ini_den,
 		    int red_num, int red_den, int **digs_map)
 {

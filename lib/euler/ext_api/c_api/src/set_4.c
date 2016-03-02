@@ -32,15 +32,15 @@
 void problem_33(char *result_buffer)
 {
 	int fracs_found;
-	int num;
-	int den;
+	int ini_num;
+	int ini_den;
+	int red_num;
+	int red_den;
 	int num_acc;
 	int dem_acc;
 	int com_digs[2];
 	int **digs_map;
 	struct MultNode **mult_map;
-	struct Fraction frac;
-	struct Fraction non_triv_acc;
 
 	digs_map = init_digs_map();
 	mult_map = init_mult_map();
@@ -49,13 +49,17 @@ void problem_33(char *result_buffer)
 	num_acc = 1;
 	den_acc = 1;
 
-	for (den = 11; den < 100; ++den) {
-		frac.den = den;
-		for (num = 10; num < den; ++num) {
-			frac.num = num;
+	for (ini_den = 11; ini_den < 100; ++ini_den) {
 
-			if(attempt_reduce(&frac, mult_map) &&
-			   is_non_trivial(num, den, &frac, digs_map)) {
+		red_num = ini_den;
+
+		for (ini_num = 10; ini_num < ini_den; ++ini_num) {
+
+			red_num = ini_num;
+
+			if(attempt_reduce(&red_num, &red_den, mult_map) &&
+			   is_non_trivial(ini_num, ini_den,
+					  red_num, red_den, digs_map)) {
 
 				num_acc *= num;
 				den_acc *= den;
@@ -63,13 +67,13 @@ void problem_33(char *result_buffer)
 
 				if (fracs_found == 4)
 					goto FOUND_ALL;
+				else
+					red_den = ini_den;
 			}
 		}
 	}
 
-	FOUND_ALL:
-
-	gcd = 2;
+FOUND_ALL_FRACTIONS:
 	sml_div_den = 2;
 	sml_div_num = 2;
 	big_div_num = num;
@@ -83,7 +87,7 @@ void problem_33(char *result_buffer)
 
 		if (big_div_den == big_div_num) {
 			den /= big_div_den;
-			break;
+			goto REDUCED_DENOMINATOR;
 
 		} else if (big_div_den > big_div_num) {
 			if (big_div_den > sml_div_den) {
@@ -116,24 +120,26 @@ void problem_33(char *result_buffer)
 	/* } while (big_div_num != big_div_den); */
 
 	 /* divide denominator by greatest common divisor and copy result to buffer */
+REDUCED_DENOMINATOR:
 	sprintf(result_buffer, "%d", den);
 }
 
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-bool is_non_trivial(int num, int den, struct Fraction *frac, int **digs_map)
+bool is_non_trivial(int ini_num, int ini_den,
+		    int red_num, int red_den, int **digs_map)
 {
 	return true;
 }
 
-bool attempt_reduce(struct Fraction *frac, struct MultNode **mult_map)
+bool attempt_reduce(int *ini_num, int *ini_den, struct MultNode **mult_map)
 {
 	struct MultNode *mult_num;
 	struct MultNode *mult_den;
 
-	mult_num = mult_map[frac->num];
-	mult_den = mult_map[frac->den];
+	mult_num = mult_map[*ini_num];
+	mult_den = mult_map[*ini_den];
 
 	do {
 		if (mult_den->mult > mult_num->mult) {
@@ -142,8 +148,8 @@ bool attempt_reduce(struct Fraction *frac, struct MultNode **mult_map)
 		} else if (mult_num->mult > mult_den->mult) {
 			mult_num = mult_num->next;
 		} else {
-			frac->den /= mult_num->mult;
-			frac->num /= mult_num->mult;
+			(*ini_num) /= mult_num->mult;
+			(*ini_dem) /= mult_num->mult;
 			return true;
 		}
 

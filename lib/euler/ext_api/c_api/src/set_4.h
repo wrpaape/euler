@@ -10,11 +10,6 @@
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
-/* struct Fraction { */
-/* 	int num; */
-/* 	int den; */
-/* }; */
-
 struct MultNode {
 	int mult;
 	struct MultNode *next;
@@ -25,5 +20,6 @@ struct MultNode {
 void problem_33(char *result_buffer);
 struct MultNode **init_mult_map(void);
 int **init_digs_map(void);
-bool attempt_reduce(struct Fraction *frac, struct MultNode **mult_map);
-bool is_non_trivial(int num, int den, struct Fraction *frac, int **digs_map);
+bool attempt_reduce(int *ini_num, int *ini_den, struct MultNode **mult_map);
+bool is_non_trivial(int ini_num, int ini_den,
+		    int red_num, int red_den, int **digs_map);

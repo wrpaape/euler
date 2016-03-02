@@ -107,6 +107,20 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
       break;
     /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
+        problem set 4: "set_4.c"
+       ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+    case 4:
+      switch (prob_num) {
+        case 33:
+          time_func(problem_33);
+          break;
+
+        default:
+          missing_prob_error(prob_num, 4);
+      }
+      break;
+    /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
         problem set 7: "set_7.c"
        ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
     case 7:

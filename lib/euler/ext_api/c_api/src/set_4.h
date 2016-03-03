@@ -10,15 +10,17 @@
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
-struct MultNode {
-	int mult;
-	struct MultNode *next;
+struct DivNode {
+	int div;
+	struct DivNode *next;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
 void problem_33(char *result_buffer);
-struct MultNode **init_mult_map(void);
-int **init_digs_map(void);
-int greatest_common_divisor(int num, int den, struct MultNode **mult_map);
-bool is_curious(int num, int den, int red_num, int red_den, int **digs_map);
+struct DivNode **init_mult_map(void);
+int **init_digits_map(void);
+struct DivNode **init_divisors_map(void);
+int greatest_common_divisor(int num, int den, struct DivNode **mult_map);
+bool is_curious(int num, int den, int base_num, int base_den, int **digs_map);
+bool mults_match(int base_num, int match_num, int base_den, int match_den);

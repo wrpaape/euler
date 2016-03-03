@@ -34,17 +34,19 @@ void problem_33(char *result_buffer)
 	int den;
 	int num;
 	int gcd;
-	int red_den;
+	int div;
+	int base_den;
+	int base_num;
 	int num_acc;
 	int den_acc;
 	int sml_div;
 	int big_div;
 	int fracs_found;
-	int **digs_map;
-	struct MultNode **mult_map;
+	int **digits_map;
+	struct DivNode **divisors_map;
 
-	digs_map = init_digs_map();
-	mult_map = init_mult_map();
+	digits_map = init_digits_map();
+	divisors_map = init_divisors_map();
 
 	fracs_found = 0;
 	num_acc = 1;
@@ -54,23 +56,24 @@ void problem_33(char *result_buffer)
 
 		for (num = 10; num < den; ++num) {
 
-			gcd = greatest_common_divisor(num, den, mult_map);
+			gcd = greatest_common_divisor(num, den, divisors_map);
 
 			if (gcd % 10 == 0)
 				continue;
 
-			red_den = den / gcd;
+			base_den = den / gcd;
 
-			if (red_den > 9)
+			if (base_den > 9)
 				continue;
 
-			if (is_curious(num,	  den,
-				       num / gcd, red_den, digs_map)) {
+			base_num = num / gcd;
 
-				printf("num: %d\n", num);
-				printf("den: %d\n", den);
-				printf("fracs_found: %d\n", fracs_found);
-				fflush(stdout);
+			div = 2;
+
+
+
+			if (is_curious(num,	 den,
+				       base_num, base_den, digits_map)) {
 
 				num_acc *= num;
 				den_acc *= den;
@@ -83,10 +86,7 @@ void problem_33(char *result_buffer)
 	}
 
 FOUND_ALL_FRACTIONS:
-			puts("DONE");
-			printf("num: %d\n", num);
-			printf("den: %d\n", den);
-	sml_div = 2;
+	sml_div = 1;
 
 	while (1) {
 		while (num_acc % sml_div != 0)
@@ -99,6 +99,7 @@ FOUND_ALL_FRACTIONS:
 			  * divide denominator by greatest common divisor
 			  * and copy result to buffer
 			  */
+
 			sprintf(result_buffer, "%d", den_acc / big_div);
 			return;
 
@@ -121,79 +122,97 @@ FOUND_ALL_FRACTIONS:
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-bool is_curious(int num, int den, int red_num, int red_den, int **digs_map)
+bool is_curious(int num, int den, int base_num, int base_den, int **digits_map)
 {
-	if (digs_map[num][0] == digs_map[den][1]) {
-		return ((red_num == digs_map[num][1]) &&
-			(red_den == digs_map[den][0]));
+	if (digits_map[num][0] == digits_map[den][1]) {
+		return mults_match(base_num, digits_map[num][1],
+				   base_den, digits_map[den][0]);
 	}
 
-	if (digs_map[num][1] == digs_map[den][0]) {
-		return ((red_num == digs_map[num][0]) &&
-			(red_den == digs_map[den][1]));
+	if (digits_map[num][1] == digits_map[den][0]) {
+		return mults_match(base_num, digits_map[num][0],
+				   base_den, digits_map[den][1]);
 	}
 
 	return false;
 }
 
-int greatest_common_divisor(int num, int den, struct MultNode **mult_map)
+
+bool mults_match(int base_num, int match_num, int base_den, int match_den)
 {
-	struct MultNode *mult_den = mult_map[den]->next;
+	if ((base_num == match_num) && (base_den == match_den))
+		return true;
+
+	for (int mult = 2, den = base_den * mult;
+	     den < 10;
+	     ++mult, den = base_den * mult) {
+
+		if ((den == match_den) && ((base_num * mult) == match_num))
+			return true;
+	}
+
+	return false;
+}
+
+
+int greatest_common_divisor(int num, int den, struct DivNode **divisors_map)
+{
+	struct DivNode *div_den = divisors_map[den]->next;
 
 	/* if denominator is a prime number, return 1 */
-	if (mult_den == NULL)
+	if (div_den == NULL)
 		return 1;
 
-	struct MultNode *mult_num = mult_map[num];
+	struct DivNode *div_num = divisors_map[num];
 
 	while(1) {
-		if (mult_num->mult > mult_den->mult) {
-			mult_num = mult_num->next;
+		if (div_num->div > div_den->div) {
+			div_num = div_num->next;
 
-			if (mult_num == NULL)
+			if (div_num == NULL)
 				return 1;
 
-		} else if (mult_den->mult > mult_num->mult) {
-			mult_den = mult_den->next;
+		} else if (div_den->div > div_num->div) {
+			div_den = div_den->next;
 
-			if (mult_den == NULL)
+			if (div_den == NULL)
 				return 1;
 
 		} else {
-			return mult_den->mult;
+			return div_den->div;
 		}
 	}
 }
 
 
-int **init_digs_map(void)
+int **init_digits_map(void)
 {
 	int n;
-	int **digs_map;
+	int **digits_map;
 
-	digs_map = handle_malloc(sizeof(int *) * 100);
+	digits_map = handle_malloc(sizeof(int *) * 100);
 
 	for (n = 10; n < 100; ++n) {
-		digs_map[n] = handle_malloc(sizeof(int) * 2);
+		digits_map[n] = handle_malloc(sizeof(int) * 2);
 
-		digs_map[n][0] = n / 10;
-		digs_map[n][1] = n % 10;
+		digits_map[n][0] = n / 10;
+		digits_map[n][1] = n % 10;
 	}
 
-	return digs_map;
+	return digits_map;
 }
 
 
-struct MultNode **init_mult_map(void)
+struct DivNode **init_divisors_map(void)
 {
 	int n;
 	int big_divs[10];
 	int sml_div;
 	int big_div_i;
-	struct MultNode *next_mult;
-	struct MultNode **mult_map;
+	struct DivNode *node;
+	struct DivNode **divisors_map;
 
-	mult_map = handle_calloc(100, sizeof(struct MultNode *));
+	divisors_map = handle_calloc(100, sizeof(struct DivNode *));
 
 	big_div_i = -1;
 
@@ -204,12 +223,12 @@ struct MultNode **init_mult_map(void)
 
 		do {
 			if (n % sml_div == 0) {
-				next_mult = handle_malloc(sizeof(struct MultNode));
+				node = handle_malloc(sizeof(struct DivNode));
 
-				next_mult -> mult = sml_div;
-				next_mult -> next = mult_map[n];
+				node -> div = sml_div;
+				node -> next = divisors_map[n];
 
-				mult_map[n] = next_mult;
+				divisors_map[n] = node;
 
 				++big_div_i;
 				big_divs[big_div_i] = n / sml_div;
@@ -220,17 +239,17 @@ struct MultNode **init_mult_map(void)
 		} while (sml_div < big_divs[big_div_i]);
 
 		do {
-			next_mult = handle_malloc(sizeof(struct MultNode));
+			node = handle_malloc(sizeof(struct DivNode));
 
-			next_mult -> mult = big_divs[big_div_i];
-			next_mult -> next = mult_map[n];
+			node -> div = big_divs[big_div_i];
+			node -> next = divisors_map[n];
 
-			mult_map[n] = next_mult;
+			divisors_map[n] = node;
 
 			--big_div_i;
 
 		} while(big_div_i > -1);
 	}
 
-	return mult_map;
+	return divisors_map;
 }

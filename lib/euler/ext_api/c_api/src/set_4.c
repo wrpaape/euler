@@ -31,9 +31,9 @@
  ************************************************************************/
 void problem_33(char *result_buffer)
 {
-	int ini_num;
-	int ini_den;
-	int red_num;
+	int den;
+	int num;
+	int gcd;
 	int red_den;
 	int num_acc;
 	int den_acc;
@@ -50,36 +50,42 @@ void problem_33(char *result_buffer)
 	num_acc = 1;
 	den_acc = 1;
 
-	for (ini_den = 11; ini_den < 100; ++ini_den) {
+	for (den = 11; den < 100; ++den) {
 
-		red_den = ini_den;
+		for (num = 10; num < den; ++num) {
 
-		for (ini_num = 10; ini_num < ini_den; ++ini_num) {
+			gcd = greatest_common_divisor(num, den, mult_map);
 
-			red_num = ini_num;
+			if (gcd % 10 == 0)
+				continue;
 
-			if (attempt_reduce(&red_num, &red_den, mult_map) &&
-			    is_non_trivial(ini_num, ini_den,
-					   red_num, red_den, digs_map)) {
+			red_den = den / gcd;
 
-				printf("ini_num: %d\n", ini_num);
-				printf("ini_den: %d\n", ini_den);
+			if (red_den > 9)
+				continue;
+
+			if (is_curious(num,	  den,
+				       num / gcd, red_den, digs_map)) {
+
+				printf("num: %d\n", num);
+				printf("den: %d\n", den);
+				printf("fracs_found: %d\n", fracs_found);
 				fflush(stdout);
 
-				num_acc *= ini_num;
-				den_acc *= ini_den;
+				num_acc *= num;
+				den_acc *= den;
 				++fracs_found;
 
 				if (fracs_found == 4)
 					goto FOUND_ALL_FRACTIONS;
-
-				/* reset reduced denominator to init value */
-				red_den = ini_den;
 			}
 		}
 	}
 
 FOUND_ALL_FRACTIONS:
+			puts("DONE");
+			printf("num: %d\n", num);
+			printf("den: %d\n", den);
 	sml_div = 2;
 
 	while (1) {
@@ -115,47 +121,48 @@ FOUND_ALL_FRACTIONS:
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-bool is_non_trivial(int ini_num, int ini_den,
-		    int red_num, int red_den, int **digs_map)
+bool is_curious(int num, int den, int red_num, int red_den, int **digs_map)
 {
-	int *ini_num_digs;
-	int *ini_den_digs;
-	int dig_i;
-
-	int common_digs[2] = {0, 0};
-
-	for (dig_i = 0; dig_i < 2; ++dig_i) {
+	if (digs_map[num][0] == digs_map[den][1]) {
+		return ((red_num == digs_map[num][1]) &&
+			(red_den == digs_map[den][0]));
 	}
 
-	ini_num_digs = digs_map[ini_num];
-	ini_den_digs = digs_map[ini_den];
-
-	return true;
-}
-
-bool attempt_reduce(int *ini_num, int *ini_den, struct MultNode **mult_map)
-{
-	struct MultNode *mult_num;
-	struct MultNode *mult_den;
-
-	mult_num = mult_map[*ini_num];
-	mult_den = mult_map[*ini_den];
-
-	do {
-		if (mult_den->mult > mult_num->mult) {
-			mult_den = mult_den->next;
-
-		} else if (mult_num->mult > mult_den->mult) {
-			mult_num = mult_num->next;
-		} else {
-			(*ini_num) /= mult_num->mult;
-			(*ini_den) /= mult_num->mult;
-			return true;
-		}
-
-	} while ((mult_den != NULL) && (mult_num != NULL));
+	if (digs_map[num][1] == digs_map[den][0]) {
+		return ((red_num == digs_map[num][0]) &&
+			(red_den == digs_map[den][1]));
+	}
 
 	return false;
+}
+
+int greatest_common_divisor(int num, int den, struct MultNode **mult_map)
+{
+	struct MultNode *mult_den = mult_map[den]->next;
+
+	/* if denominator is a prime number, return 1 */
+	if (mult_den == NULL)
+		return 1;
+
+	struct MultNode *mult_num = mult_map[num];
+
+	while(1) {
+		if (mult_num->mult > mult_den->mult) {
+			mult_num = mult_num->next;
+
+			if (mult_num == NULL)
+				return 1;
+
+		} else if (mult_den->mult > mult_num->mult) {
+			mult_den = mult_den->next;
+
+			if (mult_den == NULL)
+				return 1;
+
+		} else {
+			return mult_den->mult;
+		}
+	}
 }
 
 
@@ -166,7 +173,7 @@ int **init_digs_map(void)
 
 	digs_map = handle_malloc(sizeof(int *) * 100);
 
-	for (n = 1; n < 100; ++n) {
+	for (n = 10; n < 100; ++n) {
 		digs_map[n] = handle_malloc(sizeof(int) * 2);
 
 		digs_map[n][0] = n / 10;

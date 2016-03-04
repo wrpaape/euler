@@ -162,15 +162,16 @@ void problem_34(char *result_buffer)
 	fact_deltas[9] = 1 - fact;
 
 	for (digit_i = 0; digit_i < 7; ++digit_i)
-		digits[digit_i] = &fact_deltas[1];
+		digits[digit_i] = fact_deltas;
 
-	n = 11;
+	++digits[1];
+
+	n = 10;
+	num_digits = 2;
 	sum_dig_facts = 2;
 	sum_curious_n = 0;
-	num_digits = 2;
 
 	while (1) {
-		/* printf("MAX_INT: %d\n", INT_MAX); */
 		/* printf("n: %d\n", n); */
 		/* printf("sum_dig_facts: %d\n", sum_dig_facts); */
 		/* usleep(50000); */
@@ -189,6 +190,7 @@ void problem_34(char *result_buffer)
 
 				if (digit_i == num_digits) {
 					++num_digits;
+					++sum_dig_facts;
 
 					if (num_digits > 6)
 						goto DONE;

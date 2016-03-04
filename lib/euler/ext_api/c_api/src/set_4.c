@@ -154,16 +154,15 @@ void problem_34(char *result_buffer)
 	int fact_deltas[10];
 	int *digits[7];
 
-	for (n = 2, prev_fact = 1; n < 10; ++n, prev_fact = fact) {
+	for (n = 1, prev_fact = 1; n < 10; ++n, prev_fact = fact) {
 		fact = prev_fact * n;
-		fact_deltas[n - 2] = fact - prev_fact;
+		fact_deltas[n - 1] = fact - prev_fact;
 	}
 
-	fact_deltas[8] = 1 - fact;
-	fact_deltas[9] = 0;
+	fact_deltas[9] = 1 - fact;
 
 	for (digit_i = 0; digit_i < 7; ++digit_i)
-		digits[digit_i] = fact_deltas;
+		digits[digit_i] = &fact_deltas[1];
 
 	n = 11;
 	sum_dig_facts = 2;
@@ -171,10 +170,10 @@ void problem_34(char *result_buffer)
 	num_digits = 2;
 
 	while (1) {
-		printf("MAX_INT: %d\n", INT_MAX);
-		printf("n: %d\n", n);
-		printf("sum_dig_facts: %d\n", sum_dig_facts);
-		sleep(1);
+		/* printf("MAX_INT: %d\n", INT_MAX); */
+		/* printf("n: %d\n", n); */
+		/* printf("sum_dig_facts: %d\n", sum_dig_facts); */
+		/* usleep(50000); */
 
 		++n;
 		digit_i = 0;

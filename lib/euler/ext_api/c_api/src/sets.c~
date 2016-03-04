@@ -52,7 +52,6 @@ struct IntNode *prime_sieve(int upto)
 		prime_val = prime->val;
 
 
-
 		prime = prime->nxt;
 	}
 

@@ -218,17 +218,40 @@ DONE:
  ************************************************************************/
 void problem_35(char *result_buffer)
 {
-	printf("UINT_MAX: %u", UINT_MAX_PRIME);
-	printf("sizeof(uint): %lu", sizeof(unsigned int));
+	/* int *count_map[7]; */
+	/* int num_digits; */
+	/* int max_hash; */
+
+	/* for (num_digits = 3, max_hash = 81 * 3; */
+	/*      num_digits < 7; */
+	/*      ++num_digits, max_hash += 81) { */
+
+	/* 	count_map[num_digits] = handle_calloc(max_hash + 1, */
+	/* 					      sizeof(int)); */
+	/* } */
+
+
+	struct IntNode *primes = prime_sieve(100);
+
+	printf("hash_digits(123): %u\n", hash_digits(123));
+	printf("hash_digits(321): %u\n", hash_digits(321));
+	printf("hash_digits(231): %u\n", hash_digits(231));
+	printf("hash_digits(114): %u\n", hash_digits(114));
+	printf("hash_digits(402): %u\n", hash_digits(402));
+	printf("hash_digits(6007234): %u\n", hash_digits(6007234));
+	printf("hash_digits(999999): %u\n", hash_digits(999999));
 }
 
-uint32_t hash_digits(uint32_t n)
+int hash_digits(int n)
 {
-	uint32_t hash = 0u;
+	int digit;
+	int hash = 0;
 
 	while (n > 0) {
+		digit = n % 10;
+		hash += (digit * digit);
+		n    /= 10;
 	}
-
 
 	return hash;
 }

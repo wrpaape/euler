@@ -14,6 +14,7 @@ struct DivNode {
 	int div;
 	struct DivNode *next;
 };
+
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
@@ -27,4 +28,4 @@ int greatest_common_divisor(int num, int den, struct DivNode **mult_map);
 bool is_curious(int num, int den, int base_num, int base_den, int **digs_map);
 static inline bool mult_match(int base_num, int match_num,
 			      int base_den, int match_den);
-uint32_t hash_digits(uint32_t n);
+int hash_digits(int n);

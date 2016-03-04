@@ -26,10 +26,12 @@ extern inline int nth_pow(int base, int n);
 struct IntNode *prime_sieve(int upto)
 {
 	struct IntNode *primes = handle_malloc(sizeof(struct IntNode));
-	struct IntNode *num = primes;
+	struct IntNode *num;
+	struct IntNode *prv;
 	struct IntNode *prime;
 	int prime_val;
 
+	num = primes;
 	num->val = 2;
 
 	for (int n = 3; n < upto; n+=2) {
@@ -51,17 +53,24 @@ struct IntNode *prime_sieve(int upto)
 	while (prime != NULL) {
 		prime_val = prime->val;
 
+		prv = prime;
+		num = prv->nxt;
 
+		while (num != NULL) {
+
+			if (num->val % prime_val == 0) {
+				prv->nxt = num->nxt;
+				free(num);
+
+				num = prv->nxt;
+			} else {
+				prv = num;
+				num = num->nxt;
+			}
+		}
 
 		prime = prime->nxt;
 	}
-
-	for (prime = primes->nxt; prime != NULL; num = num->nxt) {
-	}
-
-	/* for (num = primes; num != NULL; num = num->nxt) { */
-	/* 	printf("num->val%d\n", num->val); */
-	/* } */
 
 	return primes;
 }

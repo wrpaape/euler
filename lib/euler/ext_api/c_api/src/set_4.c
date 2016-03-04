@@ -231,15 +231,15 @@ void problem_35(char *result_buffer)
 	/* } */
 
 
-	struct IntNode *primes = prime_sieve(100);
+	struct IntNode *prime;
 
-	printf("hash_digits(123): %u\n", hash_digits(123));
-	printf("hash_digits(321): %u\n", hash_digits(321));
-	printf("hash_digits(231): %u\n", hash_digits(231));
-	printf("hash_digits(114): %u\n", hash_digits(114));
-	printf("hash_digits(402): %u\n", hash_digits(402));
-	printf("hash_digits(6007234): %u\n", hash_digits(6007234));
-	printf("hash_digits(999999): %u\n", hash_digits(999999));
+	struct IntNode *primes = prime_sieve(999999);
+
+	for (prime = primes; prime != NULL; prime = prime->nxt) {
+		printf("prime->val%d\n", prime->val);
+		fflush(stdout);
+	}
+
 }
 
 int hash_digits(int n)

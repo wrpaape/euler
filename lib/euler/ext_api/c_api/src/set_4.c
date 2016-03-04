@@ -143,77 +143,75 @@ FOUND_ALL_FRACTIONS:
  ************************************************************************/
 void problem_34(char *result_buffer)
 {
-	int fact_deltas[10];
 	int n;
-	int prev_fact;
+	int digit_i;
+	int num_digits;
 	int fact;
+	int prev_fact;
 	int sum_dig_facts;
 	int sum_curious_n;
 
-	struct DigitNode *digits;
-	struct DigitNode *digit;
+	int fact_deltas[10];
+	int *digits[7];
 
-	for (n = 1, prev_fact = 1,    fact  = 1;
-	     n < 9;
-	     ++n,   prev_fact = fact, fact *= n) {
-
-		fact_deltas[n - 1] = fact - prev_fact;
+	for (n = 2, prev_fact = 1; n < 10; ++n, prev_fact = fact) {
+		fact = prev_fact * n;
+		fact_deltas[n - 2] = fact - prev_fact;
 	}
 
-	fact_deltas[9] = 1 - fact;
+	fact_deltas[8] = 1 - fact;
+	fact_deltas[9] = 0;
 
-	for (n = 0; n < 10; ++n) {
-		printf("fact_deltas[%d]: %d\n", n, fact_deltas[n]);
+	for (digit_i = 0; digit_i < 7; ++digit_i)
+		digits[digit_i] = fact_deltas;
+
+	n = 11;
+	sum_dig_facts = 2;
+	sum_curious_n = 0;
+	num_digits = 2;
+
+	while (1) {
+		printf("MAX_INT: %d\n", INT_MAX);
+		printf("n: %d\n", n);
+		printf("sum_dig_facts: %d\n", sum_dig_facts);
+		sleep(1);
+
+		++n;
+		digit_i = 0;
+
+
+		while (1) {
+
+			sum_dig_facts += *digits[digit_i];
+
+			if (*digits[digit_i] < 0) {
+				digits[digit_i] = fact_deltas;
+				++digit_i;
+
+				if (digit_i == num_digits) {
+					++num_digits;
+
+					if (num_digits > 6)
+						goto DONE;
+				}
+
+			} else {
+				++digits[digit_i];
+
+				if (sum_dig_facts == n) {
+					sum_curious_n += n;
+					printf("n: %d\n", n);
+				}
+
+				break;
+			}
+		}
 	}
 
-
-
-/* 	digits = handle_malloc(sizeof(struct DigitNode) * 2); */
-/* 	digit  = digits; */
-
-/* 	digit->delta = fact_deltas; */
-/* 	digit->magup->delta = fact_deltas; */
-/* 	digit->magup->magup = NULL; */
-
-/* 	n = 11; */
-/* 	sum_dig_facts = 2; */
-/* 	sum_curious_n = 0; */
-
-/* 	while (sum_dig_facts < n) { */
-/* 		++n; */
-
-/* 		digit = digits; */
-
-/* 		while (1) { */
-/* 			sum_dig_facts += digit->delta->value; */
-
-/* 			digit->delta = digit->delta->next; */
-
-/* 			if (digit->delta != NULL) */
-/* 				break; */
-
-/* 			digit->delta = fact_deltas; */
-
-/* 			if (digit->magup != NULL) { */
-/* 				digit = digit->magup; */
-/* 				continue; */
-/* 			} */
-
-/* 			digit->magup = handle_malloc(sizeof(struct DigitNode)); */
-
-/* 			digit->magup->delta = fact_deltas; */
-/* 			digit->magup->magup = NULL; */
-/* 			break; */
-/* 		} */
-
-
-/* 		if (sum_dig_facts == n) */
-/* 			sum_curious_n += n; */
-/* 	} */
-
-
-/* 	sprintf(result_buffer, "%d", sum_curious_n); */
+DONE:
+	sprintf(result_buffer, "%d", sum_curious_n);
 }
+
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/

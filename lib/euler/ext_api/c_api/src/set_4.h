@@ -14,16 +14,6 @@ struct DivNode {
 	int div;
 	struct DivNode *next;
 };
-
-struct IntNode {
-	int value;
-	struct IntNode *next;
-};
-
-struct DigitNode {
-	struct IntNode *delta;
-	struct DigitNode *magup;
-};
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/

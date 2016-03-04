@@ -143,6 +143,40 @@ FOUND_ALL_FRACTIONS:
  ************************************************************************/
 void problem_34(char *result_buffer)
 {
+	int fact_map[10];
+	int n;
+	int fact_n;
+	int sum_dig_facts;
+	int base_sum;
+	int sum_curious;
+
+	struct IntNode *digits;
+	struct IntNode *step_cycle;
+	struct IntNode *step;
+
+	step_cycle = handle_malloc(sizeof(struct IntNode) * 10);
+	step = step_cycle;
+
+	fact_n[0] = 1;
+	for (n = 1, fact_n = 1; n < 10; ++n, fact_n *= n) {
+		fact_map[n] = fact_n;
+		step->value = fact_n - fact_map[n - 1];
+		step = step->next;
+	}
+	step->value = 1 - fact_map[9];
+	step->next  = step_cycle;
+
+
+	n = 10;
+	sum_dig_facts = 1;
+
+	while (sum_n) {
+
+
+
+	}
+
+
 
 }
 /************************************************************************

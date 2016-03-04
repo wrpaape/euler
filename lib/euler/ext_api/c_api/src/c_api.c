@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   parse_num(argv[2], &prob_num);
 
   dispatch(set_num, prob_num);
-  
+
   return 0;
 }
 /************************************************************************************
@@ -113,6 +113,10 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num)
       switch (prob_num) {
         case 33:
           time_func(problem_33);
+          break;
+
+        case 34:
+          time_func(problem_34);
           break;
 
         default:

@@ -146,73 +146,79 @@ void problem_34(char *result_buffer)
 	int n;
 	int digit_i;
 	int num_digits;
-	int fact;
-	int prev_fact;
 	int sum_dig_facts;
 	int sum_curious_n;
-
+	int fact;
+	int next_fact;
 	int fact_deltas[10];
-	int *digits[7];
+	int *digit_deltas[7];
 
-	for (n = 1, prev_fact = 1; n < 10; ++n, prev_fact = fact) {
-		fact = prev_fact * n;
-		fact_deltas[n - 1] = fact - prev_fact;
+	for (n = 0, fact = 1; n < 9; ++n, fact = next_fact) {
+		next_fact = fact * (n + 1);
+		fact_deltas[n] = next_fact - fact;
 	}
 
 	fact_deltas[9] = 1 - fact;
 
 	for (digit_i = 0; digit_i < 7; ++digit_i)
-		digits[digit_i] = fact_deltas;
+		digit_deltas[digit_i] = fact_deltas;
 
-	++digits[1];
 
+	sum_curious_n = 0;
 	n = 10;
 	num_digits = 2;
 	sum_dig_facts = 2;
-	sum_curious_n = 0;
+	++digit_deltas[1];
 
 	while (1) {
-		/* printf("n: %d\n", n); */
-		/* printf("sum_dig_facts: %d\n", sum_dig_facts); */
-		/* usleep(50000); */
-
 		++n;
 		digit_i = 0;
 
-
 		while (1) {
+			sum_dig_facts += *digit_deltas[digit_i];
 
-			sum_dig_facts += *digits[digit_i];
-
-			if (*digits[digit_i] < 0) {
-				digits[digit_i] = fact_deltas;
+			if (*digit_deltas[digit_i] < 0) {
+				digit_deltas[digit_i] = fact_deltas;
 				++digit_i;
 
 				if (digit_i == num_digits) {
 					++num_digits;
-					++sum_dig_facts;
 
-					if (num_digits > 6)
+					if (num_digits > 7)
 						goto DONE;
+
+					++sum_dig_facts;
 				}
 
 			} else {
-				++digits[digit_i];
-
-				if (sum_dig_facts == n) {
-					sum_curious_n += n;
-					printf("n: %d\n", n);
-				}
-
+				++digit_deltas[digit_i];
 				break;
 			}
 		}
+
+		if (sum_dig_facts == n)
+			sum_curious_n += n;
 	}
 
 DONE:
 	sprintf(result_buffer, "%d", sum_curious_n);
 }
 
+
+/************************************************************************
+ *				- problem_35 -				*
+ *									*
+ * The number, 197, is called a circular prime because all rotations of	*
+ * the digits: 197, 971, and 719, are themselves prime.			*
+ *									*
+ * There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17,	*
+ * 31, 37, 71, 73, 79, and 97.						*
+ *									*
+ * How many circular primes are there below one million?		*
+ ************************************************************************/
+void problem_35(char *result_buffer)
+{
+}
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/

@@ -226,9 +226,7 @@ uint32_t hash_digits(uint32_t n)
 {
 	uint32_t hash = 0u;
 
-	while (n > 0) {
-	}
-
+	while (n > 0)
 
 	return hash;
 }

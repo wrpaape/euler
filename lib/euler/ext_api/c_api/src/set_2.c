@@ -46,7 +46,7 @@ void problem_12(char *result_buffer)
 
   n        = 0; /* zeroth counter */
   tri_num  = 0; /* zeroth triangle number */
-  num_divs = 1; /* corresponds to 'tri_num' of 0 */ 
+  num_divs = 1; /* corresponds to 'tri_num' of 0 */
 
   while (num_divs < 500) {
     ++n;                   /* increment counter */
@@ -72,7 +72,7 @@ void problem_12(char *result_buffer)
 
 /************************************************************************************
  *                                  - problem_13 -                                  *
- * 																																									*
+ * 										    *
  * Work out the first ten digits of the sum of the following one-hundred 50-digit   *
  * numbers. (DIG_MAT)                                                               *
  ************************************************************************************/
@@ -118,7 +118,7 @@ void problem_13(char *result_buffer)
 
 /************************************************************************************
  *                                  - problem_14 -                                  *
- * 																																									*
+ * 										    *
  * The following iterative sequence is defined for the set of positive integers:    *
  *                                                                                  *
  * n → n/2 (n is even)                                                              *

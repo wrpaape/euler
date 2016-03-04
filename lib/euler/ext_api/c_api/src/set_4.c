@@ -147,37 +147,79 @@ void problem_34(char *result_buffer)
 	int n;
 	int fact_n;
 	int sum_dig_facts;
-	int base_sum;
-	int sum_curious;
+	int sum_curious_n;
 
-	struct IntNode *digits;
-	struct IntNode *step_cycle;
-	struct IntNode *step;
+	struct DigitNode *digits;
+	struct DigitNode *digit;
+	struct IntNode *fact_deltas;
+	struct IntNode *delta;
 
-	step_cycle = handle_malloc(sizeof(struct IntNode) * 10);
-	step = step_cycle;
+	fact_deltas = handle_malloc(sizeof(struct IntNode) * 10);
+	delta = fact_deltas;
 
-	fact_n[0] = 1;
+	fact_map[0] = 1;
 	for (n = 1, fact_n = 1; n < 10; ++n, fact_n *= n) {
-		fact_map[n] = fact_n;
-		step->value = fact_n - fact_map[n - 1];
-		step = step->next;
+		fact_map[n]  = fact_n;
+		delta->value = fact_n - fact_map[n - 1];
+		delta->next = delta + 1;
+		++delta;
 	}
-	step->value = 1 - fact_map[9];
-	step->next  = step_cycle;
 
+	delta->value = 1 - fact_map[9];
+	delta->next  = NULL;
 
-	n = 10;
-	sum_dig_facts = 1;
-
-	while (sum_n) {
-
-
-
+	for (delta = fact_deltas; delta != NULL; delta = delta->next) {
+		printf("delta->value: %d\n", delta->value);
+		fflush(stdout);
+		sleep(1);
 	}
 
 
+	digits = handle_malloc(sizeof(struct DigitNode) * 2);
+	digit  = digits;
 
+	digit->delta = fact_deltas;
+	digit->magup->delta = fact_deltas;
+	digit->magup->magup = NULL;
+
+	n = 11;
+	sum_dig_facts = 2;
+	sum_curious_n = 0;
+
+	while (sum_dig_facts < n) {
+		++n;
+
+		digit = digits;
+
+		while (1) {
+			sum_dig_facts += digit->delta->value;
+
+			digit->delta = digit->delta->next;
+
+			if (digit->delta != NULL)
+				break;
+
+			digit->delta = fact_deltas;
+
+			if (digit->magup != NULL) {
+				digit = digit->magup;
+				continue;
+			}
+
+			digit->magup = handle_malloc(sizeof(struct DigitNode));
+
+			digit->magup->delta = fact_deltas;
+			digit->magup->magup = NULL;
+			break;
+		}
+
+
+		if (sum_dig_facts == n)
+			sum_curious_n += n;
+	}
+
+
+	sprintf(result_buffer, "%d", sum_curious_n);
 }
 /************************************************************************
  *				HELPERS					*

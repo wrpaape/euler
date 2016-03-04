@@ -9,6 +9,7 @@
  ************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <memory.h>
 #include <stdbool.h>
@@ -55,7 +56,7 @@ inline FILE *handle_fopen(const char *filename, const char *mode)
   FILE *ptr = fopen(filename, "r");
 
   if (ptr == NULL) {
-    fprintf(stderr, FORMAT_ERROR(failed to open "%s in mode %s\n\n  reason: %s"),
+    fprintf(stderr, FORMAT_ERROR(failed to open %s in mode "%s"\n\n  reason: %s),
         filename, mode, strerror(errno));
     exit(1);
   }

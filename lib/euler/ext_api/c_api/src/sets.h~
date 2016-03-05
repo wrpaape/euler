@@ -33,7 +33,7 @@ struct SieveArg {
 	int from;
 	int upto;
 	struct IntNode *head;
-	struct IntNode *last;
+	struct IntNode *tail;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *

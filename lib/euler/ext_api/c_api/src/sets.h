@@ -30,18 +30,20 @@ struct IntNode {
 };
 
 struct SieveArg {
-	int from;
-	int upto;
-	int init;
+	int start;
+	int until;
 	struct IntNode *head;
 	struct IntNode *last;
 };
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-struct IntNode *prime_sieve(int upto);
-struct IntNode *atkin_sieve(int upto);
+struct IntNode *prime_sieve(const int upto);
+struct IntNode *atkin_sieve(const int upto);
 void *sieve_range(void *arg);
+static inline bool flp1(const int n);
+static inline bool flp2(const int n);
+static inline bool flp3(const int n);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/

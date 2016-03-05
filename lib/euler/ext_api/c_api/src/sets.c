@@ -25,16 +25,41 @@ extern inline int nth_pow(int base, int n);
  ************************************************************************************/
 struct IntNode *atkin_sieve(int upto)
 {
+	void *sieve_range(void *arg);
+
 	int n;
+	int range[2];
 	struct IntNode *primes;
 	struct IntNode *prime;
 	struct IntNode *candidates;
 	struct IntNode *cand;
 
-		/* [1, 13, 17, 29, 37, 41, 49, 53] = ONE, */
-		/* [7, 19, 31, 43]			= TWO, */
-		/* [11, 23, 47, 59]		= THR, */
+	pthread_t sieve_threads[4];
+	/* split range into 4 interval and sieve in parallel */
+	for (q_i = 0, bkt_i = 0; q_i < 4; bkt_i += params_arr[q_i].span, ++q_i) {
+		/* point params at start of sorting thread's interval */
 
+		params_arr[q_i].interval = &buckets[bkt_i];
+		handle_pthread_create(&sieve_threads[q_i],
+				      NULL,
+				      sieve_range,
+				      (void *) &params_arr[q_i]);
+
+	}
+	/* await threads */
+	for (q_i = 0; q_i < 4; ++q_i) {
+		handle_pthread_join(sieve_threads[q_i], NULL);
+	}
+
+
+
+
+
+
+}
+
+void *sieve_range(void *arg)
+{
 	enum RemainderCase {
 		IGN, ONE, TWO, THR
 	};
@@ -90,16 +115,9 @@ struct IntNode *atkin_sieve(int upto)
 				/* do nothing */
 				break;
 		}
-
-
-
 	}
 
 	prime->nxt = NULL;
-
-
-
-
 
 	for (prime = primes; prime != NULL; prime = prime->nxt) {
 		printf("prime->val%d\n", prime->val);
@@ -109,7 +127,10 @@ struct IntNode *atkin_sieve(int upto)
 	free(candidates);
 
 	return primes;
+
+	return NULL; /* must return something for pthread routine */
 }
+
 
 struct IntNode *prime_sieve(int upto)
 {

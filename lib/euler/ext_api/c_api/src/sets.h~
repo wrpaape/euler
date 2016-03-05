@@ -132,7 +132,6 @@ for (int i = 0, mask = 0; i < (sizeof(int) * CHAR_BIT); ++i) {
 	mask |= (INT_MIN >> (i * i));
 }
 static const int SQ_MASK = mask;
-
 inline bool is_perfect_square(int n)
 {
 	if ((SQ_MASK << n) >= 0)

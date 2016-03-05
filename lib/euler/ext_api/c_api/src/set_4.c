@@ -233,6 +233,7 @@ void problem_35(char *result_buffer)
 
 	struct IntNode *prime;
 
+	/* struct IntNode *primes = atkin_sieve(999999); */
 	struct IntNode *primes = atkin_sieve(999);
 
 	/* for (prime = primes; prime != NULL; prime = prime->nxt) { */

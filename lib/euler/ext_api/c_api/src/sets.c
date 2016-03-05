@@ -31,6 +31,7 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
+extern inline bool is_perfect_square(long n);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
@@ -99,6 +100,8 @@ struct IntNode *atkin_sieve(const int upto)
 	int start;
 	const int delta = (upto - 7) / 4;
 
+	bool sq_map =
+
 	/* split range into 4 intervals and sieve in parallel */
 	for (q_i = 0, start = 7; q_i < 3; ++q_i) {
 		args[q_i].start = start;
@@ -132,8 +135,8 @@ struct IntNode *atkin_sieve(const int upto)
 
 	cand->nxt = NULL;
 
-	for (cand = candidates; cand != NULL; cand = cand->nxt)
-		printf("cand->val%d\n", cand->val);
+	/* for (cand = candidates; cand != NULL; cand = cand->nxt) */
+	/* 	printf("cand->val%d\n", cand->val); */
 
 
 	primes = handle_malloc(sizeof(struct IntNode) * 3);
@@ -152,51 +155,56 @@ struct IntNode *atkin_sieve(const int upto)
  ************************************************************************/
 void *sieve_range(void *arg)
 {
-	int n;
 	bool (*flip_fun)(const int);
-	struct IntNode **next;
 	struct IntNode *cand;
-	/* struct IntNode *candidates; */
 
 	struct SieveArg *params = (struct SieveArg *) arg;
-	const int until = params->until;
+	struct IntNode **prv    = &params->head;
+	const int until		= params->until;
 
-	next = &params->head;
-	/* cand = handle_malloc(sizeof(IntNode)); */
-
-	for (n = params->start; n < until; n+=2) {
+	for (int n = params->start; n < until; n+=2) {
 
 		flip_fun = FLIP_MAP[n % 60];
 
 		if (flip_fun && flip_fun(n)) {
 			cand = handle_malloc(sizeof(struct IntNode));
 			cand->val = n;
-			*next = cand;
-			next  = &cand->nxt;
-			/* printf("n: %d\n", n); */
-
-			/* prime->nxt = handle_malloc(sizeof(struct IntNode)); */
-			/* prime = prime->nxt; */
-			/* prime->val = n; */
+			*prv = cand;
+			prv  = &cand->nxt;
 		}
 	}
 
 	params->last = cand;
 
-	pthread_exit(NULL); /* must return something for pthread routine */
+	pthread_exit(NULL);
 }
 
 inline bool flp1(const int n)
 {
-	return true;
+	int x, y, x_cmp, y_sq;
+	bool is_prime = false;
+
+	y = 0;
+
+	while (1) {
+		x_cmp =  n - (y * y);
+
+
+
+	}
+
+
+	return is_prime;
 }
 
 inline bool flp2(const int n)
 {
-	return true;
+	bool is_prime = false;
+	return is_prime;
 }
 
 inline bool flp3(const int n)
 {
-	return true;
+	bool is_prime = false;
+	return is_prime;
 }

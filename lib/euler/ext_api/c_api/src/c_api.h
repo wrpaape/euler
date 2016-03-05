@@ -26,5 +26,7 @@ void dispatch(const unsigned int set_num, const unsigned int prob_num);
 void time_func(void (*func_ptr)(char *));
 void arg_error(void);
 void parse_error(const char *arg);
-void missing_set_error(const unsigned int set_num, const unsigned int prob_num);
-void missing_prob_error(const unsigned int prob_num, const unsigned int set_num);
+void missing_set_error(const unsigned int set_num,
+		       const unsigned int prob_num);
+void missing_prob_error(const unsigned int prob_num,
+			const unsigned int set_num);

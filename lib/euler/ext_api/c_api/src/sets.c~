@@ -32,18 +32,20 @@ struct IntNode *atkin_sieve(int upto)
 	struct IntNode *prime;
 	struct IntNode *candidates;
 	struct IntNode *cand;
-	struct SieveArg *args[4];
+	struct SieveArg args[4];
 	pthread_t sieve_threads[4];
 	int q_i;
 	int from;
-	const int delta = (upto - 15) / 4;
+	const int delta = (upto - 13) / 4;
+	const int count = delta / 2 + 1;
 
 
 	/* split range into 4 intervals and sieve in parallel */
-	for (q_i = 0, from = 7; q_i < 4; ++q_i, from += (delta + 2)) {
+	for (q_i = 0, from = 7; q_i < 3; ++q_i, from += (delta + 2)) {
 
 		args[q_i].from = from;
 		args[q_i].upto = from + delta;
+		args[q_i].init = count;
 
 		handle_pthread_create(&sieve_threads[q_i],
 				      NULL,
@@ -51,8 +53,18 @@ struct IntNode *atkin_sieve(int upto)
 				      (void *) &args[q_i]);
 
 	}
+		args[3].from = from;
+		args[3].upto = upto;
+		args[3].init = (upto - from) / 2 + 1;
+
+		handle_pthread_create(&sieve_threads[3],
+				      NULL,
+				      sieve_range,
+				      (void *) &args[3]);
+
+
 	/* await threads, join prime 'candidates' */
-	handle_pthread_join(sieve_threads[q_i], NULL);
+	handle_pthread_join(sieve_threads[0], NULL);
 	candidates = args[0].head;
 	cand	   = args[0].last;
 
@@ -86,7 +98,6 @@ void *sieve_range(void *arg)
 	struct IntNode *candidates;
 	struct IntNode *cand;
 
-	struct SieveArg *
 
 	enum RemainderCase {
 		IGN, ONE, TWO, THR
@@ -101,41 +112,47 @@ void *sieve_range(void *arg)
 		IGN, IGN, IGN, ONE, IGN, IGN, IGN, IGN, IGN, THR
 	};
 
+	struct SieveArg *params = (struct SieveArg *) arg;
+
+	const int from = params->from;
+	const int upto = params->upto;
+	const int init = params->init;
+
+	printf("from: %d\n", from);
+	printf("upto: %d\n", upto);
+	printf("init: %d\n", init);
+
+/* 	candidates = handle_malloc(sizeof(struct IntNode) * init); */
+
+/* 	for (n = from, cand = candidates; n < upto; n+=2, ++cand) { */
+/* 		cand->val = n; */
+/* 		cand->nxt = cand + 1; */
+/* 	} */
+/* 	cand->val = upto; */
+/* 	cand->nxt = NULL; */
 
 
+/* 	for (cand = candidates; cand != NULL; cand = cand->nxt) { */
+/* 		n = cand->val; */
 
-	candidates = handle_malloc(sizeof(struct IntNode) *
-				   ((upto - 5) / 2));
+/* 		prime->nxt = handle_malloc(sizeof(struct IntNode)); */
+/* 		prime = prime->nxt; */
+/* 		prime->val = n; */
 
-	for (n = 7, cand = candidates; n < upto; n+=2, ++cand) {
-		cand->val = n;
-		cand->nxt = cand + 1;
-	}
-	cand->val = upto;
-	cand->nxt = NULL;
+/* 		switch (rem_map[n % 60]) { */
+/* 			case ONE: */
+/* 				break; */
+/* 			case TWO: */
+/* 				break; */
+/* 			case THR: */
+/* 				break; */
+/* 			default: */
+/* 				/1* do nothing *1/ */
+/* 				break; */
+/* 		} */
+/* 	} */
 
-
-	for (cand = candidates; cand != NULL; cand = cand->nxt) {
-		n = cand->val;
-
-		prime->nxt = handle_malloc(sizeof(struct IntNode));
-		prime = prime->nxt;
-		prime->val = n;
-
-		switch (rem_map[n % 60]) {
-			case ONE:
-				break;
-			case TWO:
-				break;
-			case THR:
-				break;
-			default:
-				/* do nothing */
-				break;
-		}
-	}
-
-	free(candidates);
+/* 	free(candidates); */
 
 
 	pthread_exit(NULL); /* must return something for pthread routine */

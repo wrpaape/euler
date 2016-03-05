@@ -32,6 +32,7 @@ struct IntNode {
 struct SieveArg {
 	int from;
 	int upto;
+	int init;
 	struct IntNode *head;
 	struct IntNode *last;
 };

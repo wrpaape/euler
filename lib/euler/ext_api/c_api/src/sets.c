@@ -11,10 +11,6 @@
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
-const int SQUARE_MASK	   = SQ_MASK;
-const uint32_t START[1024] = STRT;
-const bool BAD255[512]     = BD255;
-
 static bool (*FLIP_MAP[60])(const int) = {
 	NULL, flp1, NULL, NULL, NULL, NULL, NULL, flp2, NULL, NULL,
 	NULL, flp3, NULL, flp1, NULL, NULL, NULL, flp1, NULL, flp2,

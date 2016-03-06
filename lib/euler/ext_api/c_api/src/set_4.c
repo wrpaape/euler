@@ -238,11 +238,13 @@ void problem_35(char *result_buffer)
 
 	int x;
 	bool y;
-	for (int i = 0; i < 1e8; ++i) {
-		y = is_perfect_square(i);
+	for (int i = 0; i < 1e4; ++i) {
+		/* if (is_perfect_square(i)) */
+		/* 	printf("%d\n", i); */
 
-		/* x = (int) sqrt((float) i); */
-		/* y = x * x == i; */
+		x = (int) sqrt((float) i);
+		if (x * x == i)
+			printf("%d\n", i);
 	}
 
 	/* for (prime = primes; prime != NULL; prime = prime->nxt) { */

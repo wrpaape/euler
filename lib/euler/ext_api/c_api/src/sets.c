@@ -11,6 +11,8 @@
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
+const int SQUARE_MASK = SQ_MASK;
+
 static bool (*FLIP_MAP[60])(const int) = {
 	NULL, flp1, NULL, NULL, NULL, NULL, NULL, flp2, NULL, NULL,
 	NULL, flp3, NULL, flp1, NULL, NULL, NULL, flp1, NULL, flp2,
@@ -19,7 +21,6 @@ static bool (*FLIP_MAP[60])(const int) = {
 	NULL, flp1, NULL, flp2, NULL, NULL, NULL, flp3, NULL, flp1,
 	NULL, NULL, NULL, flp1, NULL, NULL, NULL, NULL, NULL, flp3
 };
-extern const int SQ_MASK;
 /************************************************************************************
  *                            INLINE FUNCTION PROTOTYPES                            *
  ************************************************************************************/
@@ -32,7 +33,7 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
-extern inline bool is_perfect_square(long n);
+extern inline bool is_perfect_square(int n);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
@@ -100,8 +101,6 @@ struct IntNode *atkin_sieve(const int upto)
 	int q_i;
 	int start;
 	const int delta = (upto - 7) / 4;
-
-	bool sq_map =
 
 	/* split range into 4 intervals and sieve in parallel */
 	for (q_i = 0, start = 7; q_i < 3; ++q_i) {

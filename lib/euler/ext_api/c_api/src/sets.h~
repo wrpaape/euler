@@ -21,6 +21,20 @@
 
 #define UINT_MAX_PRIME 4294967291u
 #define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
+
+/* magic bitmask used in 'is_perfect_square', calculated below */
+#if UINT_MAX == UINT32_MAX
+#define SQ_MASK 0xC840C040
+#else
+#define SQ_MASK 0xC840C04048404040
+#endif
+/*
+ * #define NUM_INT_BITS (sizeof(int) * CHAR_BIT)
+ * #define LEAD_INT_BIT (1U << (NUM_INT_BITS - 1))
+ * for (int SQ_MASK = 0, bit = 0; bit < NUM_INT_BITS; ++bit)
+ * 	SQ_MASK |= (LEAD_INT_BIT >> ((bit * bit) % NUM_INT_BITS));
+ */
+
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
@@ -128,13 +142,19 @@ inline int nth_pow(int base, int n)
   return result;
 }
 
-for (int i = 0, mask = 0; i < (sizeof(int) * CHAR_BIT); ++i) {
-	mask |= (INT_MIN >> (i * i));
-}
-static const int SQ_MASK = mask;
+
+/*
+ * c implementation of user marrtinus's detailed answer from the stack overflow thread:
+ * stackoverflow.com/questions/295579/fastest-way-to-determine-if-an-integers-square-root-is-an-integer */
 inline bool is_perfect_square(int n)
 {
 	if ((SQ_MASK << n) >= 0)
 		return false;
 
+	int num_trailing_zeros = __builtin_ctz(n);
+
+	if ((num_trailing_zeros & 1) != )
+
+
+	return __builtin_ctz(n);
 }

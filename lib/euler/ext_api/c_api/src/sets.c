@@ -19,6 +19,7 @@ static bool (*FLIP_MAP[60])(const int) = {
 	NULL, flp1, NULL, flp2, NULL, NULL, NULL, flp3, NULL, flp1,
 	NULL, NULL, NULL, flp1, NULL, NULL, NULL, NULL, NULL, flp3
 };
+extern const int SQ_MASK;
 /************************************************************************************
  *                            INLINE FUNCTION PROTOTYPES                            *
  ************************************************************************************/

@@ -317,7 +317,7 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 			if ((y * y) == y_sq)
 				is_prime = !is_prime;
 
-			--x;
+			++x;
 
 		} else {
 

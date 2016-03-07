@@ -36,7 +36,6 @@ struct SquareTerms {
 struct SieveArg {
 	int start;
 	int until;
-	struct SquareTerms terms;
 	struct IntNode *head;
 	struct IntNode *last;
 };

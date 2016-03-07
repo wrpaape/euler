@@ -191,7 +191,8 @@ void *sieve_range(void *arg)
 
 	struct SquareTerms SQ_TERMS = {
 		.X_SQ_3 = x_sq_3,
-		.X_SQ_4 = x_sq_4
+		.X_SQ_4 = x_sq_4,
+		.x_min  = 2
 	};
 
 	for (int n = params->start; n < until; n+=2) {
@@ -236,24 +237,30 @@ inline bool flp1(const int n, struct SquareTerms *SQ_TERMS)
 
 inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
 {
-	const int *TERMS = SQ_TERMS->X_SQ_3;
-	bool is_prime	 = false;
-	int y_sq	 = n - 3;
-	int x		 = 2;
-	int y;
+	const int X_SQ_3_MIN = n - 1;
+	const int *TERMS     = SQ_TERMS->X_SQ_3;
+	bool is_prime	     = false;
+	int x, y_sq, y;
+
+
+	/* find 'x_min' that produces y² >= 1 */
+	for (x = SQ_TERMS->x_min; TERMS[x] < X_SQ_3_MIN; ++x);
+	/* update 'x_min' for next 'flp3' case */
+	SQ_TERMS->x_min = x;
 
 	while (1) {
-		y = (int) sqrtf((float) y_sq);
-
-		if ((y * y) == y_sq)
-			is_prime = !is_prime;
-
 		y_sq = n - TERMS[x];
 
-		if (y_sq < 1)
-			return is_prime;
+		y = (int) sqrtf((float) y_sq);
 
-		++x;
+		if (y < x) {
+			if ((y * y) == y_sq)
+				is_prime = !is_prime;
+
+			++x;
+		} else {
+			return is_prime;
+		}
 	}
 }
 

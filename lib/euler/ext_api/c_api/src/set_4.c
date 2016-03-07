@@ -234,18 +234,7 @@ void problem_35(char *result_buffer)
 	/* struct IntNode *prime; */
 
 	/* struct IntNode *primes = atkin_sieve(999999); */
-	/* struct IntNode *primes = atkin_sieve(999); */
-
-	int x;
-	bool y;
-	for (int i = 0; i < 1e4; ++i) {
-		/* if (is_perfect_square(i)) */
-		/* 	printf("%d\n", i); */
-
-		x = (int) sqrt((float) i);
-		if (x * x == i)
-			printf("%d\n", i);
-	}
+	struct IntNode *primes = atkin_sieve(999);
 
 	/* for (prime = primes; prime != NULL; prime = prime->nxt) { */
 	/* 	printf("prime->val%d\n", prime->val); */

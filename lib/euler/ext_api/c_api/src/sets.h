@@ -28,15 +28,10 @@ struct IntNode {
 	struct IntNode *nxt;
 };
 
-struct SquaresNode {
-	int n_sq_1;
-	int n_sq_3;
-	int n_sq_4;
-};
-
 struct SieveArg {
 	int start;
 	int until;
+	const int *SQ_TERMS;
 	struct IntNode *head;
 	struct IntNode *last;
 };
@@ -46,9 +41,9 @@ struct SieveArg {
 struct IntNode *prime_sieve(const int upto);
 struct IntNode *atkin_sieve(const int upto);
 void *sieve_range(void *arg);
-static inline bool flp1(const int n);
-static inline bool flp2(const int n);
-static inline bool flp3(const int n);
+static inline bool flp1(const int n, const int *SQ_TERMS);
+static inline bool flp2(const int n, const int *SQ_TERMS);
+static inline bool flp3(const int n, const int *SQ_TERMS);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/
@@ -125,27 +120,4 @@ inline int nth_pow(int base, int n)
   } while (n > 1);
 
   return result;
-}
-
-
-/*
- * c implementations of answers from the stack overflow thread:
- * stackoverflow.com/questions/295579/fastest-way-to-determine-if-an-integers-square-root-is-an-integer
- */
-
-/* John D. Cook */
-
-inline bool is_perfect_square(int n)
-{
-    int h = n & 0xF;  // h is the last hex "digit"
-    if (h > 9)
-        return false;
-    // Use lazy evaluation to jump out of the if statement as soon as possible
-    if (h != 2 && h != 3 && h != 5 && h != 6 && h != 7 && h != 8)
-    {
-        /* int t = (int) floor( sqrt((double) n) + 0.5 ); */
-        int t = (int) sqrtf((float) n);
-        return ((t * t) == n);
-    }
-    return false;
 }

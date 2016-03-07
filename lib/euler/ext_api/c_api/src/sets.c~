@@ -162,10 +162,8 @@ struct IntNode *atkin_sieve(const int upto)
 			}
 
 			if (cand->val < mult_val) {
-				prev = cand;
-				cand = cand->nxt;
-				continue;
 			}
+				continue;
 
 			if (cand->val == mult_val) {
 				prev->nxt = cand->nxt;

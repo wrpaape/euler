@@ -141,12 +141,12 @@ struct IntNode *atkin_sieve(const int upto)
 
 	for (q_i = 1; q_i < 4; ++q_i) {
 		handle_pthread_join(sieve_threads[q_i], NULL);
+		printf("q_i: %d", q_i);
+		fflush(stdout);
 		cand->nxt = args[q_i].head;
 		cand	  = args[q_i].last;
 	}
 
-	puts("doing good");
-	fflush(stdout);
 
 	cand->nxt = NULL;
 	int last_val = cand->val;
@@ -167,19 +167,16 @@ struct IntNode *atkin_sieve(const int upto)
 			if (cand->val < mult_sq) {
 				prev = cand;
 				cand = cand->nxt;
-
-				if (cand == NULL) {
-					puts("ooga booga");
-					fflush(stdout);
-					break;
-				}
-
 				continue;
 			}
 
 			if (cand->val == mult_sq) {
 				prev->nxt = cand->nxt;
 				free(cand);
+				cand = prev->nxt;
+			} else {
+				prev = cand;
+				cand = cand->nxt;
 			}
 
 			mult_sq += sq_val;
@@ -194,17 +191,6 @@ struct IntNode *atkin_sieve(const int upto)
 		/* 	fflush(stdout); */
 		/* } */
 	}
-
-
-	/* for (prime = primes; prime != NULL; prime = prime->nxt) */
-	/* 	printf("prime->val%d\n", prime->val); */
-
-
-	/* for (cand = candidates; cand != NULL; cand = cand->nxt) { */
-	/* 	printf("cand->val: %d\n", cand->val); */
-	/* } */
-
-
 }
 /************************************************************************
  *				HELPERS					*
@@ -240,7 +226,7 @@ void *sieve_range(void *arg)
 	int x_sq_3[NUM_TERMS];
 	int x_sq_4[NUM_TERMS];
 
-	for (int x = 2, x_sq; x < NUM_TERMS; ++x) {
+	for (int x = 0, x_sq; x < NUM_TERMS; ++x) {
 		x_sq = x * x;
 		x_sq_3[x] = 3 * x_sq;
 		x_sq_4[x] = 4 * x_sq;
@@ -251,6 +237,10 @@ void *sieve_range(void *arg)
 		.X_SQ_4 = x_sq_4,
 		.x_min  = 2
 	};
+
+	printf("params->start: %d\n", params->start);
+	printf("params->until: %d\n", params->until);
+	fflush(stdout);
 
 	for (int n = params->start; n < until; n+=2) {
 
@@ -317,16 +307,14 @@ inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
 
 inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 {
-	/* const int X_SQ_3_MIN = n + 1; */
-	const int *TERMS     = SQ_TERMS->X_SQ_3;
-	bool is_prime	     = false;
+	const int *TERMS = SQ_TERMS->X_SQ_3;
+	bool is_prime = false;
 	int x, y_sq, y;
 
 	/* find 'x_min' that produces y² >= 1 */
 	for (x = SQ_TERMS->x_min; TERMS[x] <= n; ++x);
 	/* update 'x_min' for next 'flp3' case */
 	SQ_TERMS->x_min = x;
-
 
 	while (1) {
 		y_sq = n - TERMS[x];

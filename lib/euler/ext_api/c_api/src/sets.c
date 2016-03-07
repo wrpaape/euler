@@ -98,9 +98,7 @@ struct IntNode *atkin_sieve(const int upto)
 	struct IntNode *cand;
 	int q_i;
 	int start;
-
-	const int DELTA	     = (upto - 7) / 4;
-
+	const int DELTA = (upto - 7) / 4;
 
 	/* split range into 4 intervals and sieve in parallel */
 	for (q_i = 0, start = 7; q_i < 3; ++q_i) {
@@ -157,28 +155,33 @@ void *sieve_range(void *arg)
 {
 	bool (*flip_fun)(const int, struct SquareTerms *);
 	struct IntNode *cand;
-	struct SquareTerms terms;
 
 	struct SieveArg *params = (struct SieveArg *) arg;
 	struct IntNode **prv    = &params->head;
 	const int until		= params->until;
 	const int NUM_TERMS	= (((int) sqrtf((float) until)) / 3) + 1;
 
-	terms.x_sq_3 = handle_malloc(sizeof(int) * NUM_TERMS);
-	terms.x_sq_4 = handle_malloc(sizeof(int) * NUM_TERMS);
+	int x_sq_3[NUM_TERMS];
+	int x_sq_4[NUM_TERMS];
 
-	for (int x = 0, x_sq; x < NUM_TERMS; ++x) {
+	for (int x = 2, x_sq; x < NUM_TERMS; ++x) {
 		x_sq = x * x;
-		terms.x_sq_3[x] = 3 * x_sq;
-		terms.x_sq_4[x] = 4 * x_sq;
+		x_sq_3[x] = 3 * x_sq;
+		x_sq_4[x] = 4 * x_sq;
 	}
+
+	struct SquareTerms SQ_TERMS = {
+		.X_SQ_3 = x_sq_3,
+		.X_SQ_4 = x_sq_4
+	};
 
 	for (int n = params->start; n < until; n+=2) {
 
-
 		flip_fun = FLIP_MAP[n % 60];
 
-		if (flip_fun && flip_fun(n, &terms)) {
+		if (flip_fun && flip_fun(n, &SQ_TERMS)) {
+
+			printf("n: %d\n", n);
 			cand = handle_malloc(sizeof(struct IntNode));
 			cand->val = n;
 			*prv = cand;
@@ -191,35 +194,29 @@ void *sieve_range(void *arg)
 	pthread_exit(NULL);
 }
 
-inline bool flp1(const int n, struct SquareTerms *terms)
+inline bool flp1(const int n, struct SquareTerms *SQ_TERMS)
 {
-	int x, y, x_cmp, y_sq;
-	bool is_prime = false;
+	const int *TERMS = SQ_TERMS->X_SQ_4;
+	bool is_prime	 = false;
 
-	for (int i = 0; i < n; ++i) {
-		printf("%d\n", terms->x_sq_3[i]);
-		fflush(stdout);
+	for (int x = 1, y_sq = n - 4, y; y_sq > 0; ++x, y_sq = n - TERMS[x]) {
+
+		y = (int) sqrtf((float) y_sq);
+
+		if ((y * y) == y_sq)
+			is_prime = !is_prime;
 	}
-	exit(0);
-
-	y = 0;
-
-	while (1) {
-		x_cmp =  n - (y * y);
-
-	}
-
 
 	return is_prime;
 }
 
-inline bool flp2(const int n, struct SquareTerms *terms)
+inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
 {
 	bool is_prime = false;
 	return is_prime;
 }
 
-inline bool flp3(const int n, struct SquareTerms *terms)
+inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 {
 	bool is_prime = false;
 	return is_prime;

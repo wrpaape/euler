@@ -133,8 +133,8 @@ struct IntNode *atkin_sieve(const int upto)
 
 	cand->nxt = NULL;
 
-	/* for (cand = candidates; cand != NULL; cand = cand->nxt) */
-	/* 	printf("cand->val%d\n", cand->val); */
+	for (cand = candidates; cand != NULL; cand = cand->nxt)
+		printf("cand->val%d\n", cand->val);
 
 
 	primes = handle_malloc(sizeof(struct IntNode) * 3);
@@ -180,8 +180,6 @@ void *sieve_range(void *arg)
 		flip_fun = FLIP_MAP[n % 60];
 
 		if (flip_fun && flip_fun(n, &SQ_TERMS)) {
-
-			printf("n: %d\n", n);
 			cand = handle_malloc(sizeof(struct IntNode));
 			cand->val = n;
 			*prv = cand;
@@ -197,9 +195,9 @@ void *sieve_range(void *arg)
 inline bool flp1(const int n, struct SquareTerms *SQ_TERMS)
 {
 	const int *TERMS = SQ_TERMS->X_SQ_4;
-	bool is_prime = false;
-	int x = 1;
-	int y_sq = n - 4;
+	bool is_prime	 = false;
+	int y_sq	 = n - 4;
+	int x		 = 2;
 	int y;
 
 	while (1) {
@@ -208,11 +206,12 @@ inline bool flp1(const int n, struct SquareTerms *SQ_TERMS)
 		if ((y * y) == y_sq)
 			is_prime = !is_prime;
 
-		++x;
 		y_sq = n - TERMS[x];
 
 		if (y_sq < 1)
 			return is_prime;
+
+		++x;
 	}
 }
 
@@ -220,30 +219,47 @@ inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
 {
 	const int *TERMS = SQ_TERMS->X_SQ_3;
 	bool is_prime	 = false;
+	int y_sq	 = n - 3;
+	int x		 = 2;
+	int y;
 
-	for (int x = 1, y_sq = n - 3, y; y_sq > 0; ++x, y_sq = n - TERMS[x]) {
-
+	while (1) {
 		y = (int) sqrtf((float) y_sq);
 
 		if ((y * y) == y_sq)
 			is_prime = !is_prime;
-	}
 
-	return is_prime;
+		y_sq = n - TERMS[x];
+
+		if (y_sq < 1)
+			return is_prime;
+
+		++x;
+	}
 }
 
 inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 {
 	const int *TERMS = SQ_TERMS->X_SQ_3;
 	bool is_prime	 = false;
+	int y_sq	 = n - 3;
+	int x		 = 2;
+	int y;
 
-	for (int x = 1, y_sq = n - 4, y; y_sq > 0; ++x, y_sq = n - TERMS[x]) {
-
+	while (1) {
 		y = (int) sqrtf((float) y_sq);
+
+		if (y > x)
+			return is_prime;
 
 		if ((y * y) == y_sq)
 			is_prime = !is_prime;
-	}
 
-	return is_prime;
+		y_sq = n - TERMS[x];
+
+		if (y_sq < 1)
+			return is_prime;
+
+		++x;
+	}
 }

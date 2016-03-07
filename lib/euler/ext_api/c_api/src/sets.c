@@ -295,8 +295,11 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 	bool is_prime = false;
 	int x, y_sq, y;
 
+
 	/* find 'x_min' that produces y² >= 1 */
 	for (x = SQ_TERMS->x_min; TERMS[x] <= n; ++x);
+
+	/* printf("n %d, x_min: %d, x: %d\n", n, SQ_TERMS->x_min, x); */
 	/* update 'x_min' for next 'flp3' case */
 	SQ_TERMS->x_min = x;
 
@@ -310,6 +313,10 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 
 			++x;
 		} else {
+
+			printf("n: %d, term: %d, x: %d, y: %d, y_sq: %d, is_prime: %s\n",
+			       n, TERMS[x], x, y, y_sq, is_prime ? "true" : "false");
+
 			return is_prime;
 		}
 	}

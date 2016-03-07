@@ -236,22 +236,22 @@ void problem_35(char *result_buffer)
 	/* struct IntNode *primes = atkin_sieve(9999999); */
 	struct IntNode *primes    = atkin_sieve(999);
 
-	int i = 1;
-	struct IntNode *prime = primes;
+	/* int i = 1; */
+	/* struct IntNode *prime = primes; */
 
-	while (1) {
-		printf("prime->val: %d\n", prime->val);
+	/* while (1) { */
+	/* 	printf("prime->val: %d\n", prime->val); */
 
-		if (prime->nxt == NULL) {
-			printf("i:	    %d\n", i);
-			printf("last: %d\n", prime->val);
-			return;
-		}
+	/* 	if (prime->nxt == NULL) { */
+	/* 		printf("i:    %d\n", i); */
+	/* 		printf("last: %d\n", prime->val); */
+	/* 		return; */
+	/* 	} */
 
-		prime = prime->nxt;
-		++i;
+	/* 	prime = prime->nxt; */
+	/* 	++i; */
 
-	}
+	/* } */
 
 
 }

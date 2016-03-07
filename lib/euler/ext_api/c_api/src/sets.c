@@ -264,15 +264,19 @@ inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
 
 inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 {
-	const int X_SQ_3_MIN = n - 1;
+	const int X_SQ_3_MIN = n + 1;
 	const int *TERMS     = SQ_TERMS->X_SQ_3;
 	bool is_prime	     = false;
 	int x, y_sq, y;
 
 	/* find 'x_min' that produces y² >= 1 */
 	for (x = SQ_TERMS->x_min; TERMS[x] < X_SQ_3_MIN; ++x);
+
+	printf("\nn: %d, x_min: %d, x: %d, TERMS[x]: %d\n",
+	       n, SQ_TERMS->x_min, x, TERMS[x]);
 	/* update 'x_min' for next 'flp3' case */
 	SQ_TERMS->x_min = x;
+
 
 	while (1) {
 		y_sq = n - TERMS[x];

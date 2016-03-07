@@ -197,9 +197,31 @@ void *sieve_range(void *arg)
 inline bool flp1(const int n, struct SquareTerms *SQ_TERMS)
 {
 	const int *TERMS = SQ_TERMS->X_SQ_4;
+	bool is_prime = false;
+	int x = 1;
+	int y_sq = n - 4;
+	int y;
+
+	while (1) {
+		y = (int) sqrtf((float) y_sq);
+
+		if ((y * y) == y_sq)
+			is_prime = !is_prime;
+
+		++x;
+		y_sq = n - TERMS[x];
+
+		if (y_sq < 1)
+			return is_prime;
+	}
+}
+
+inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
+{
+	const int *TERMS = SQ_TERMS->X_SQ_3;
 	bool is_prime	 = false;
 
-	for (int x = 1, y_sq = n - 4, y; y_sq > 0; ++x, y_sq = n - TERMS[x]) {
+	for (int x = 1, y_sq = n - 3, y; y_sq > 0; ++x, y_sq = n - TERMS[x]) {
 
 		y = (int) sqrtf((float) y_sq);
 
@@ -210,14 +232,18 @@ inline bool flp1(const int n, struct SquareTerms *SQ_TERMS)
 	return is_prime;
 }
 
-inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
-{
-	bool is_prime = false;
-	return is_prime;
-}
-
 inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 {
-	bool is_prime = false;
+	const int *TERMS = SQ_TERMS->X_SQ_3;
+	bool is_prime	 = false;
+
+	for (int x = 1, y_sq = n - 4, y; y_sq > 0; ++x, y_sq = n - TERMS[x]) {
+
+		y = (int) sqrtf((float) y_sq);
+
+		if ((y * y) == y_sq)
+			is_prime = !is_prime;
+	}
+
 	return is_prime;
 }

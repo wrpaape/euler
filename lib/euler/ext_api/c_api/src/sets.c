@@ -100,7 +100,7 @@ struct IntNode *atkin_sieve(const int upto)
 	int start;
 	int prime_val;
 	int sq_val;
-	int last_val;
+	int mult_val;
 	int mult_sq;
 	const int DELTA = (upto - 7) / 4;
 
@@ -137,59 +137,72 @@ struct IntNode *atkin_sieve(const int upto)
 	prime->nxt = args[0].head;
 	cand	   = args[0].last;
 
+	puts("doing good");
+	fflush(stdout);
+
+
 	for (q_i = 1; q_i < 4; ++q_i) {
 		handle_pthread_join(sieve_threads[q_i], NULL);
 		cand->nxt = args[q_i].head;
 		cand	  = args[q_i].last;
 	}
 
-	last_val  = cand->val;
 	cand->nxt = NULL;
+	int last_val = cand->val;
 
 	while (1) {
+		prime = prime->nxt;
 		prime_val = prime->val;
-		sq_val    = prime_val * prime_val;
-		mult_val  = sq_val;
+		sq_val = prime_val * prime_val;
 
+		if (sq_val > last_val)
+			return primes;
 
-		prev = prime;
-		cand = prev->nxt;
+		mult_sq = sq_val;
+		prev    = prime;
+		cand    = prime->nxt;
 
-		while (1) {
-			if (cand == NULL) {
-				last_val = prev->val;
-				break;
-			}
-
-			if (cand->val < mult_val) {
+		do {
+			if (cand->val < mult_sq) {
 				prev = cand;
 				cand = cand->nxt;
+
+				if (cand == NULL) {
+					puts("ooga booga");
+					fflush(stdout);
+					break;
+				}
+
 				continue;
 			}
 
-			if (cand->val == mult_val) {
+			if (cand->val == mult_sq) {
 				prev->nxt = cand->nxt;
 				free(cand);
 			}
 
-			mult_val += sq_val;
+			mult_sq += sq_val;
 
-			if (mult_val > last_val)
-				break;
-		}
+		} while (mult_sq <= last_val);
 
-		prime = prime->nxt;
-
-		if (prime == NULL)
-			return primes;
+		/* if (cand == NULL) { */
+		/* 	puts("BINGO"); */
+		/* 	printf("prime_val: %d\n", prime_val); */
+		/* 	printf("prev->val: %d\n", prev->val); */
+		/* 	printf("last_val: %d\n", last_val); */
+		/* 	fflush(stdout); */
+		/* } */
 	}
+
+
+	/* for (prime = primes; prime != NULL; prime = prime->nxt) */
+	/* 	printf("prime->val%d\n", prime->val); */
+
 
 	/* for (cand = candidates; cand != NULL; cand = cand->nxt) { */
 	/* 	printf("cand->val: %d\n", cand->val); */
 	/* } */
 
-	/* for (prime = primes; prime != NULL; prime = prime->nxt) */
-	/* 	printf("prime->val%d\n", prime->val); */
 
 }
 /************************************************************************
@@ -303,13 +316,13 @@ inline bool flp2(const int n, struct SquareTerms *SQ_TERMS)
 
 inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 {
-	const int X_SQ_3_MIN = n + 1;
+	/* const int X_SQ_3_MIN = n + 1; */
 	const int *TERMS     = SQ_TERMS->X_SQ_3;
 	bool is_prime	     = false;
 	int x, y_sq, y;
 
 	/* find 'x_min' that produces y² >= 1 */
-	for (x = SQ_TERMS->x_min; TERMS[x] < X_SQ_3_MIN; ++x);
+	for (x = SQ_TERMS->x_min; TERMS[x] <= n; ++x);
 	/* update 'x_min' for next 'flp3' case */
 	SQ_TERMS->x_min = x;
 

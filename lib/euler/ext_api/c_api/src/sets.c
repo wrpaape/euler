@@ -137,8 +137,6 @@ struct IntNode *atkin_sieve(const int upto)
 	prime->nxt = args[0].head;
 	cand	   = args[0].last;
 
-	puts("doing good");
-	fflush(stdout);
 
 
 	for (q_i = 1; q_i < 4; ++q_i) {
@@ -146,6 +144,9 @@ struct IntNode *atkin_sieve(const int upto)
 		cand->nxt = args[q_i].head;
 		cand	  = args[q_i].last;
 	}
+
+	puts("doing good");
+	fflush(stdout);
 
 	cand->nxt = NULL;
 	int last_val = cand->val;

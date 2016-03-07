@@ -234,13 +234,25 @@ void problem_35(char *result_buffer)
 	/* struct IntNode *prime; */
 
 	/* struct IntNode *primes = atkin_sieve(9999999); */
-	struct IntNode *primes    = atkin_sieve(11111111);
+	struct IntNode *primes    = atkin_sieve(999999);
 	/* struct IntNode *primes = atkin_sieve(99999); */
 
-	/* for (prime = primes; prime != NULL; prime = prime->nxt) { */
-	/* 	printf("prime->val%d\n", prime->val); */
-	/* 	fflush(stdout); */
-	/* } */
+	int i = 1;
+	struct IntNode *prime = primes;
+
+	while (1) {
+		if (prime->nxt == NULL) {
+			printf("i:	    %d\n", i);
+			printf("prime->val: %d\n", prime->val);
+			fflush(stdout);
+			return;
+		}
+
+		prime = prime->nxt;
+		++i;
+
+	}
+
 
 }
 

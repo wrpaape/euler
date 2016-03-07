@@ -28,11 +28,15 @@ struct IntNode {
 	struct IntNode *nxt;
 };
 
+struct SquareTerms {
+	int *x_sq_3;
+	int *x_sq_4;
+};
+
 struct SieveArg {
 	int start;
 	int until;
-	const int *X_SQ_3_TERMS;
-	const int *X_SQ_4_TERMS;
+	struct SquareTerms terms;
 	struct IntNode *head;
 	struct IntNode *last;
 };
@@ -42,9 +46,9 @@ struct SieveArg {
 struct IntNode *prime_sieve(const int upto);
 struct IntNode *atkin_sieve(const int upto);
 void *sieve_range(void *arg);
-static inline bool flp1(const int n, const int *X_SQ_4_TERMS);
-static inline bool flp2(const int n, const int *X_SQ_3_TERMS);
-static inline bool flp3(const int n, const int *X_SQ_3_TERMS);
+static inline bool flp1(const int n, struct SquareTerms *terms);
+static inline bool flp2(const int n, struct SquareTerms *terms);
+static inline bool flp3(const int n, struct SquareTerms *terms);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/

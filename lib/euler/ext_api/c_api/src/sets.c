@@ -99,24 +99,34 @@ struct IntNode *atkin_sieve(const int upto)
 	int q_i;
 	int start;
 
+	/* const int *SQ_TERMS[2] = {x_sq_3_terms, x_sq_4_terms}; */
+	/* SQ_TERMS[0] = handle_malloc(BUFF_SIZE); */
+	/* SQ_TERMS[1] = handle_malloc(BUFF_SIZE); */
+
 	const int DELTA = (upto - 7) / 4;
 	const int NUM_TERMS = (((int) sqrtf((float) upto)) / 3) + 2;
-	int sq_terms_mat[2][NUM_TERMS];
-	const int *SQ_TERMS = &sq_terms_mat[0][0];
+	const int BUFF_SIZE = sizeof(int) * NUM_TERMS;
+	int *x_sq_3_terms = handle_malloc(BUFF_SIZE);
+	int *x_sq_4_terms = handle_malloc(BUFF_SIZE);
 
 	for (int x = 0, x_sq; x < NUM_TERMS; ++x) {
 		x_sq = x * x;
-		sq_terms_mat[0][x] = 3 * x_sq;
-		sq_terms_mat[1][x] = 4 * x_sq;
+		x_sq_3_terms[x] = 3 * x_sq;
+		x_sq_4_terms[x] = 4 * x_sq;
 	}
 
+	for (int i = 0; i < NUM_TERMS; ++i) {
+		printf("%d\n", x_sq_3_terms[i]);
+		fflush(stdout);
+	}
 
 	/* split range into 4 intervals and sieve in parallel */
 	for (q_i = 0, start = 7; q_i < 3; ++q_i) {
-		args[q_i].start	   = start;
-		start		  += DELTA;
-		args[q_i].until	   = start;
-		args[q_i].SQ_TERMS = SQ_TERMS;
+		args[q_i].start = start;
+		start	       += DELTA;
+		args[q_i].until = start;
+		args[q_i].X_SQ_3_TERMS = x_sq_3_terms;
+		args[q_i].X_SQ_4_TERMS = x_sq_4_terms;
 
 		handle_pthread_create(&sieve_threads[q_i],
 				      NULL,
@@ -171,13 +181,21 @@ void *sieve_range(void *arg)
 	struct SieveArg *params = (struct SieveArg *) arg;
 	struct IntNode **prv    = &params->head;
 	const int until		= params->until;
-	const int *SQ_TERMS	= params->SQ_TERMS;
+	const int *X_SQ_3_TERMS	= params->X_SQ_3_TERMS;
+	const int *X_SQ_4_TERMS	= params->X_SQ_4_TERMS;
+
 
 	for (int n = params->start; n < until; n+=2) {
 
+	for (int i = 0; i < n; ++i) {
+		printf("%d\n", X_SQ_3_TERMS[i]);
+		fflush(stdout);
+	}
+	exit(0);
+
 		flip_fun = FLIP_MAP[n % 60];
 
-		if (flip_fun && flip_fun(n, SQ_TERMS)) {
+		if (flip_fun && flip_fun(n, X_SQ_3_TERMS)) {
 			cand = handle_malloc(sizeof(struct IntNode));
 			cand->val = n;
 			*prv = cand;
@@ -190,7 +208,7 @@ void *sieve_range(void *arg)
 	pthread_exit(NULL);
 }
 
-inline bool flp1(const int n, const int *SQ_TERMS)
+inline bool flp1(const int n, const int *X_SQ_4_TERMS)
 {
 	int x, y, x_cmp, y_sq;
 	bool is_prime = false;
@@ -208,13 +226,13 @@ inline bool flp1(const int n, const int *SQ_TERMS)
 	return is_prime;
 }
 
-inline bool flp2(const int n, const int *SQ_TERMS)
+inline bool flp2(const int n, const int *X_SQ_3_TERMS)
 {
 	bool is_prime = false;
 	return is_prime;
 }
 
-inline bool flp3(const int n, const int *SQ_TERMS)
+inline bool flp3(const int n, const int *X_SQ_3_TERMS)
 {
 	bool is_prime = false;
 	return is_prime;

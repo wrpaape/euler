@@ -157,7 +157,7 @@ struct IntNode *atkin_sieve(const int upto)
 		cand    = prime->nxt;
 		mult_sq = sq_val;
 
-		do {
+		while (1) {
 			if (cand->val < mult_sq) {
 				prev = cand;
 				cand = cand->nxt;
@@ -176,7 +176,10 @@ struct IntNode *atkin_sieve(const int upto)
 
 			mult_sq += sq_val;
 
-		} while (mult_sq <= SQ_CUTOFF);
+			if (mult_sq > SQ_CUTOFF)
+				break;
+		}
+
 
 		prime	  = prime->nxt;
 		prime_val = prime->val;

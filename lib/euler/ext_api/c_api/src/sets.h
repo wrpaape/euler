@@ -31,7 +31,6 @@ struct IntNode {
 struct SquareTerms {
 	const int *X_SQ_3;
 	const int *X_SQ_4;
-	int x_min;
 };
 
 struct SieveArg {

@@ -219,7 +219,7 @@ void *sieve_range(void *arg)
 	int *x_sq_3 = handle_malloc(sizeof(int) * NUM_TERMS);
 	int *x_sq_4 = handle_malloc(sizeof(int) * NUM_TERMS);
 
-	for (int x = 2, x_sq; x < NUM_TERMS; ++x) {
+	for (int x = 1, x_sq; x < NUM_TERMS; ++x) {
 		x_sq = x * x;
 		x_sq_3[x] = 3 * x_sq;
 		x_sq_4[x] = 4 * x_sq;
@@ -227,8 +227,7 @@ void *sieve_range(void *arg)
 
 	struct SquareTerms SQ_TERMS = {
 		.X_SQ_3 = x_sq_3,
-		.X_SQ_4 = x_sq_4,
-		.x_min  = 2
+		.X_SQ_4 = x_sq_4
 	};
 
 	for (int n = params->start; n < until; n+=2) {
@@ -301,25 +300,29 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 	int x, y_sq, y;
 
 
+
 	/* find 'x_min' that produces y² >= 1 */
-	for (x = SQ_TERMS->x_min; TERMS[x] < n; ++x);
+	/* for (x = SQ_TERMS->x_min; TERMS[x] < n; ++x); */
 
 	/* printf("n %d, x_min: %d, x: %d\n", n, SQ_TERMS->x_min, x); */
 	/* update 'x_min' for next 'flp3' case */
-	SQ_TERMS->x_min = x;
+	/* SQ_TERMS->x_min = x; */
+
+	const int X_MAX = (((int) sqrtf((float) ((n * 2) + 3))) - 1) / 2;
+
+	x = (int) sqrtf(((float) (n - 1)) / 3.0f);
 
 	while (1) {
 		/* printf("x_terms: %d, x: %d\n", TERMS[x], x); */
-		y_sq = n - TERMS[x];
+		y_sq = TERMS[x] - n;
 		y    = (int) sqrtf((float) y_sq);
 
-		if (y < x) {
-			if ((y * y) == y_sq)
-				is_prime = !is_prime;
+		if ((y * y) == y_sq)
+			is_prime = !is_prime;
 
-			--x;
+		++x;
 
-		} else {
+		if (x > X_MAX) {
 
 			printf("n: %d, term: %d, x: %d, y: %d, y_sq: %d, is_prime: %s\n",
 			       n, TERMS[x - 1], x, y, y_sq, is_prime ? "true" : "false");

@@ -125,3 +125,35 @@ inline int nth_pow(int base, int n)
 
   return result;
 }
+
+#define min(x, y) (x < y ? x : y)
+#define max(x, y) (x < y ? y : x)
+#define swp(x, y) { const int a = min(arr[x], arr[y]); \
+                    const int b = max(arr[x], arr[y]); \
+                    arr[x] = a; arr[y] = b; }
+
+inline void sort_net_3(int *arr)
+{
+	swp(1, 2); swp(0, 2); swp(0, 1);
+}
+
+inline void sort_net_4(int *arr)
+{
+	swp(0, 1); swp(2, 3); swp(0, 2); swp(1, 3); swp(1, 2);
+}
+
+inline void sort_net_5(int *arr)
+{
+	swp(0, 1); swp(3, 4); swp(2, 3); swp(1, 4);
+	swp(0, 3); swp(0, 2); swp(1, 3); swp(1, 2);
+}
+
+inline void sort_net_6(int *arr)
+{
+	swp(1, 2); swp(4, 5); swp(0, 2); swp(3, 5); swp(0, 1); swp(3, 4);
+	swp(2, 5); swp(0, 3); swp(1, 4); swp(2, 4); swp(1, 3); swp(2, 3);
+}
+
+#undef min
+#undef max
+#undef swp

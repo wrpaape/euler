@@ -31,7 +31,10 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
-extern inline bool is_perfect_square(int n);
+extern inline void sort_net_3(int *arr);
+extern inline void sort_net_4(int *arr);
+extern inline void sort_net_5(int *arr);
+extern inline void sort_net_6(int *arr);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

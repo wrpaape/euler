@@ -157,3 +157,27 @@ inline void sort_net_6(int *arr)
 #undef min
 #undef max
 #undef swp
+
+/* http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog */
+#define __LOG2A(s) ((s &0xffffffff00000000) ? (32 +__LOG2B(s >>32)): (__LOG2B(s)))
+#define __LOG2B(s) ((s &0xffff0000)         ? (16 +__LOG2C(s >>16)): (__LOG2C(s)))
+#define __LOG2C(s) ((s &0xff00)             ? (8  +__LOG2D(s >>8)) : (__LOG2D(s)))
+#define __LOG2D(s) ((s &0xf0)               ? (4  +__LOG2E(s >>4)) : (__LOG2E(s)))
+#define __LOG2E(s) ((s &0xc)                ? (2  +__LOG2F(s >>2)) : (__LOG2F(s)))
+#define __LOG2F(s) ((s &0x2)                ? (1)                  : (0))
+
+#define LOG2_UINT64 __LOG2A
+#define LOG2_UINT32 __LOG2B
+#define LOG2_UINT16 __LOG2C
+#define LOG2_UINT8  __LOG2D
+
+inline uint64_t next_power_of_2(uint64_t i)
+{
+#if defined(__GNUC__)
+    return 1UL <<(1 +(63 - __builtin_clzl(i - 1)));
+#else
+    i = i - 1;
+    i = LOG2_UINT64(i);
+    return 1UL <<(1 + i);
+#endif
+}

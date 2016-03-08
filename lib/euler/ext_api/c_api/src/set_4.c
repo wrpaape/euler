@@ -9,9 +9,6 @@
 #include "sets.h"
 #include "set_4.h"
 
-#define PRIME_BKTS(base) (((size_t)			\
-			   ((((double) base) * 90.0) /	\
-			    log((double) base))) + 1u)
 /************************************************************************
  *			TOP LEVEL FUNCTIONS				*
  ************************************************************************/
@@ -233,7 +230,7 @@ void problem_35(char *result_buffer)
 	size_t num_digs;
 	size_t *bkt_count;
 
-	for (prime = atkin_sieve(999);
+	for (prime = atkin_sieve(999999);
 	     prime->val < 100;
 	     prime = prime->nxt);
 
@@ -245,9 +242,9 @@ void problem_35(char *result_buffer)
 
 
 	num_digs   = 3u;
-	next_base  = 1000;
-	num_bkts   = PRIME_BKTS(100);
+	num_bkts   = num_prime_buckets(100);
 	count_map  = handle_calloc(num_bkts, sizeof(size_t));
+	next_base  = 1000;
 	circ_count = 0;
 
 	do {
@@ -255,7 +252,7 @@ void problem_35(char *result_buffer)
 
 		if (prime_val > next_base) {
 			free(count_map);
-			num_bkts = PRIME_BKTS(next_base);
+			num_bkts  = num_prime_buckets(next_base);
 			count_map = handle_calloc(num_bkts, sizeof(size_t));
 			++sort_digits;
 			++num_digs;
@@ -271,7 +268,7 @@ void problem_35(char *result_buffer)
 		/* printf("index: %lu\n", hash % num_bkts); */
 		/* printf("num_bkts: %lu\n", num_bkts); */
 		/* exit(0); */
-		if (hash == 341839278u) {
+		if (hash == 4812447016995113247) {
 			for (int i = 0; i < num_digs; ++i)
 				printf("%c\n", dig_buff[i] + '0');
 
@@ -285,9 +282,9 @@ void problem_35(char *result_buffer)
 
 		if ((*bkt_count) == num_digs) {
 			++circ_count;
-			printf("hash: %lu\n", hash);
-			printf("prime_val%d\n", prime_val);
-			printf("*bkt_count: %zu\n", *bkt_count);
+			/* printf("hash: %lu\n", hash); */
+			/* printf("prime_val%d\n", prime_val); */
+			/* printf("*bkt_count: %zu\n", *bkt_count); */
 		}
 
 		prime = prime->nxt;
@@ -327,6 +324,15 @@ size_t hash_digits(int n, int *dig_buff, void (*sort_digits)(int *))
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
+size_t num_prime_buckets(int base)
+{
+	uint64_t num_primes = (uint64_t) ((((double) base) * 9.0) /
+					  log((double) base));
+
+	return ((size_t) next_power_of_2(num_primes));
+}
+
+
 bool is_curious(int num, int den, int base_num, int base_den, int **digits_map)
 {
 	if (digits_map[num][0] == digits_map[den][1]) {

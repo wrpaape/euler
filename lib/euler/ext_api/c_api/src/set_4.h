@@ -28,3 +28,4 @@ bool is_curious(int num, int den, int base_num, int base_den, int **digs_map);
 static inline bool mult_match(int base_num, int match_num,
 			      int base_den, int match_den);
 size_t hash_digits(int n, int *dig_buff, void (*sort_digits)(int *));
+size_t num_prime_buckets(int base);

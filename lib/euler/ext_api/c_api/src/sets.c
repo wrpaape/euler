@@ -35,6 +35,7 @@ extern inline void sort_net_3(int *arr);
 extern inline void sort_net_4(int *arr);
 extern inline void sort_net_5(int *arr);
 extern inline void sort_net_6(int *arr);
+extern inline uint64_t next_power_of_2(uint64_t i);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

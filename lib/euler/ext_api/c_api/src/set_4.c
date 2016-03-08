@@ -218,7 +218,6 @@ DONE:
  ************************************************************************/
 void problem_35(char *result_buffer)
 {
-	int *count_map[7];
 	int num_digits;
 	int limit;
 	int max_hash;
@@ -226,12 +225,14 @@ void problem_35(char *result_buffer)
 	int *bkt_count;
 	int circ_count;
 	struct IntNode *prime;
+	int *count_map[7];
+	const int HASH_NINE = hash_digits(9);
 
-	for (num_digits = 3, max_hash = 81 * 3;
+	for (num_digits = 3, max_hash = HASH_NINE * 3;
 	     num_digits < 7;
-	     ++num_digits,   max_hash += 81) {
+	     ++num_digits,   max_hash += HASH_NINE) {
 
-		count_map[num_digits] = handle_calloc(max_hash + 1,
+		count_map[num_digits] = handle_calloc(HASH_NINE + 1,
 						      sizeof(int));
 	}
 
@@ -251,19 +252,19 @@ void problem_35(char *result_buffer)
 			limit *= 10;
 		}
 
-		printf("pval: %d\n", prime_val);
-		printf("hash: %d\n", hash_digits(prime_val));
+		/* printf("pval: %d\n", prime_val); */
+		/* printf("hash: %d\n", hash_digits(prime_val)); */
 
 		bkt_count = &(count_map[num_digits][hash_digits(prime_val)]);
 
-		printf("bkt_count: %d\n", *bkt_count);
+		/* printf("bkt_count: %d\n", *bkt_count); */
 
 		++(*bkt_count);
 
 		if ((*bkt_count) == num_digits) {
 			++circ_count;
 
-			/* printf("prime_val%d\n", prime_val); */
+			printf("prime_val%d\n", prime_val);
 		}
 
 		prime = prime->nxt;
@@ -273,19 +274,7 @@ void problem_35(char *result_buffer)
 
 	sprintf(result_buffer, "%d", circ_count);
 }
-/* while (1) { */
-/* 	printf("prime->val: %d\n", prime->val); */
 
-/* 	if (prime->nxt == NULL) { */
-/* 		printf("i:    %d\n", i); */
-/* 		printf("last: %d\n", prime->val); */
-/* 		return; */
-/* 	} */
-
-/* 	prime = prime->nxt; */
-/* 	++i; */
-
-/* } */
 
 int hash_digits(int n)
 {
@@ -294,7 +283,7 @@ int hash_digits(int n)
 
 	do {
 		digit = n % 10;
-		hash += (digit * digit);
+		hash += ((digit + 1) * (digit - 1));
 		n    /= 10;
 
 	} while (n > 0);

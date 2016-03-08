@@ -60,11 +60,8 @@ struct IntNode *prime_sieve(const int upto)
 
 	num->nxt = NULL;
 
-	prime = primes->nxt;
-
-	while (prime != NULL) {
+	for (prime = primes->nxt; prime != NULL; prime = prime->nxt) {
 		prime_val = prime->val;
-
 		prv = prime;
 		num = prv->nxt;
 
@@ -73,15 +70,12 @@ struct IntNode *prime_sieve(const int upto)
 			if (num->val % prime_val == 0) {
 				prv->nxt = num->nxt;
 				free(num);
-
 				num = prv->nxt;
 			} else {
 				prv = num;
 				num = num->nxt;
 			}
 		}
-
-		prime = prime->nxt;
 	}
 
 	return primes;
@@ -148,6 +142,7 @@ struct IntNode *atkin_sieve(const int upto)
 	cand->nxt = NULL;
 	const int SQ_CUTOFF = cand->val;
 
+	/* starting at node 7... */
 	--prime;
 	prime_val = 7;
 	sq_val	  = 49;
@@ -304,18 +299,8 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 	bool is_prime = false;
 	int x, y_sq, y;
 
-
-
-	/* find 'x_min' that produces y² >= 1 */
-	/* for (x = SQ_TERMS->x_min; TERMS[x] < n; ++x); */
-
-	/* printf("n %d, x_min: %d, x: %d\n", n, SQ_TERMS->x_min, x); */
-	/* update 'x_min' for next 'flp3' case */
-	/* SQ_TERMS->x_min = x; */
-
 	x    = (((int) sqrtf((float) ((n * 2) + 3))) - 1) / 2;
 	y_sq = TERMS[x] - n;
-	/* x = ((int) sqrtf(((float) (n - 1)) / 3.0f); */
 
 	while (1) {
 		y = (int) sqrtf((float) y_sq);
@@ -331,9 +316,3 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 			return is_prime;
 	}
 }
-	/* if (y_sq < 1) { */
-	/* printf("n: %d, term: %d, x: %d, y: %d, y_sq: %d, is_prime: %s\n", */
-	/*        n, TERMS[x], x, y, y_sq, is_prime ? "true" : "false"); */
-
-	/* 	return is_prime; */
-	/* } */

@@ -218,54 +218,86 @@ DONE:
  ************************************************************************/
 void problem_35(char *result_buffer)
 {
-	/* int *count_map[7]; */
-	/* int num_digits; */
-	/* int max_hash; */
+	int *count_map[7];
+	int num_digits;
+	int limit;
+	int max_hash;
+	int prime_val;
+	int *bkt_count;
+	int circ_count;
+	struct IntNode *prime;
 
-	/* for (num_digits = 3, max_hash = 81 * 3; */
-	/*      num_digits < 7; */
-	/*      ++num_digits, max_hash += 81) { */
+	for (num_digits = 3, max_hash = 81 * 3;
+	     num_digits < 7;
+	     ++num_digits,   max_hash += 81) {
 
-	/* 	count_map[num_digits] = handle_calloc(max_hash + 1, */
-	/* 					      sizeof(int)); */
-	/* } */
+		count_map[num_digits] = handle_calloc(max_hash + 1,
+						      sizeof(int));
+	}
+
+	for (prime = atkin_sieve(999999);
+	     prime->val < 100;
+	     prime = prime->nxt);
+
+	num_digits = 3;
+	limit = 1000;
+	circ_count = 0;
+
+	do {
+		prime_val = prime->val;
+
+		if (prime_val > limit) {
+			++num_digits;
+			limit *= 10;
+		}
+
+		printf("pval: %d\n", prime_val);
+		printf("hash: %d\n", hash_digits(prime_val));
+
+		bkt_count = &(count_map[num_digits][hash_digits(prime_val)]);
+
+		printf("bkt_count: %d\n", *bkt_count);
+
+		++(*bkt_count);
+
+		if ((*bkt_count) == num_digits) {
+			++circ_count;
+
+			/* printf("prime_val%d\n", prime_val); */
+		}
+
+		prime = prime->nxt;
+
+	} while (prime != NULL);
 
 
-	/* struct IntNode *prime; */
-
-	struct IntNode *primes = atkin_sieve(9999999);
-	/* struct IntNode *primes    = atkin_sieve(999); */
-
-	/* int i = 1; */
-	/* struct IntNode *prime = primes; */
-
-	/* while (1) { */
-	/* 	printf("prime->val: %d\n", prime->val); */
-
-	/* 	if (prime->nxt == NULL) { */
-	/* 		printf("i:    %d\n", i); */
-	/* 		printf("last: %d\n", prime->val); */
-	/* 		return; */
-	/* 	} */
-
-	/* 	prime = prime->nxt; */
-	/* 	++i; */
-
-	/* } */
-
-
+	sprintf(result_buffer, "%d", circ_count);
 }
+/* while (1) { */
+/* 	printf("prime->val: %d\n", prime->val); */
+
+/* 	if (prime->nxt == NULL) { */
+/* 		printf("i:    %d\n", i); */
+/* 		printf("last: %d\n", prime->val); */
+/* 		return; */
+/* 	} */
+
+/* 	prime = prime->nxt; */
+/* 	++i; */
+
+/* } */
 
 int hash_digits(int n)
 {
 	int digit;
 	int hash = 0;
 
-	while (n > 0) {
+	do {
 		digit = n % 10;
 		hash += (digit * digit);
 		n    /= 10;
-	}
+
+	} while (n > 0);
 
 	return hash;
 }

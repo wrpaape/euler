@@ -232,7 +232,7 @@ void problem_35(char *result_buffer)
 	     num_digits < 7;
 	     ++num_digits,   max_hash += HASH_NINE) {
 
-		count_map[num_digits] = handle_calloc(HASH_NINE + 1,
+		count_map[num_digits] = handle_calloc(max_hash + 1,
 						      sizeof(int));
 	}
 
@@ -241,7 +241,7 @@ void problem_35(char *result_buffer)
 	     prime = prime->nxt);
 
 	num_digits = 3;
-	limit = 1000;
+	limit	   = 1000;
 	circ_count = 0;
 
 	do {
@@ -257,14 +257,13 @@ void problem_35(char *result_buffer)
 
 		bkt_count = &(count_map[num_digits][hash_digits(prime_val)]);
 
-		/* printf("bkt_count: %d\n", *bkt_count); */
 
 		++(*bkt_count);
 
 		if ((*bkt_count) == num_digits) {
 			++circ_count;
-
 			printf("prime_val%d\n", prime_val);
+			printf("*bkt_count%d\n", *bkt_count);
 		}
 
 		prime = prime->nxt;
@@ -283,7 +282,7 @@ int hash_digits(int n)
 
 	do {
 		digit = n % 10;
-		hash += ((digit + 1) * (digit - 1));
+		hash += (nth_pow(digit + 11, 3) - nth_pow(digit + 17, 2));
 		n    /= 10;
 
 	} while (n > 0);

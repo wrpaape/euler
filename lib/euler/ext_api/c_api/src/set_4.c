@@ -282,7 +282,7 @@ int hash_digits(int n)
 
 	do {
 		digit = n % 10;
-		hash += (nth_pow(digit + 11, 3) - nth_pow(digit + 17, 2));
+		hash += (nth_pow(digit + 7, 5) - nth_pow(digit - 5, 2) + 33 * digit);
 		n    /= 10;
 
 	} while (n > 0);

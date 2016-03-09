@@ -232,11 +232,6 @@ void problem_35(char *result_buffer)
 	size_t hash;
 	size_t num_bkts;
 	size_t *bkt_count;
-	void (**sort_digits)(int *);
-
-	void (*sort_nets[4])(int *) = {
-		sort_net_3, sort_net_4, sort_net_5, sort_net_6
-	};
 
 
 	for (prime = atkin_sieve(999);
@@ -246,52 +241,54 @@ void problem_35(char *result_buffer)
 	num_digs    = 3;
 	num_bkts    = num_prime_buckets(100);
 	count_map   = handle_calloc(num_bkts, sizeof(size_t));
-	/* sort_digits = &sort_nets[0]; */
 	next_base   = 1000;
 	circ_count  = 13u;
 
-	dig_cyc[0]->nxt = &dig_cyc[1];
-	dig_cyc[1]->nxt = &dig_cyc[2];
-	dig_cyc[2]->nxt = &dig_cyc[0];
+	dig_cyc[0].nxt = &dig_cyc[1];
+	dig_cyc[1].nxt = &dig_cyc[2];
+	dig_cyc[2].nxt = &dig_cyc[0];
 
 	do {
 		prime_val = (size_t) prime->val;
+
+		int val = prime_val;
 
 		if (prime_val > next_base) {
 			free(count_map);
 			num_bkts  = num_prime_buckets(next_base);
 			count_map = handle_calloc(num_bkts, sizeof(size_t));
-			/* ++sort_digits; */
-			dig_cyc[num_digs - 1]->nxt = &dig_cyc[num_digs];
-			dig_cyc[num_digs]->nxt     = &dig_cyc[0];
+
+			dig_cyc[num_digs - 1].nxt = &dig_cyc[num_digs];
+			dig_cyc[num_digs].nxt     = &dig_cyc[0];
 
 			++num_digs;
-			num_perms *= num_digs;
 			next_base *= 10u;
 		}
 
 
-		for (dig_i = 0; dig_i < num_digs; ++dig_i, prime_val /= 10) {
+		for (dig_i = 0; dig_i < num_digs; ++dig_i) {
 
 			digit = prime_val % 10;
 
 			if ((digit & 1) == 0)
 				goto NEXT_PRIME;
 
-			dig_cyc[dig_i] = digit;
+			dig_cyc[dig_i].val = digit;
+
+			prime_val /= 10;
 		}
 
-		/* (*sort_digits)(dig_cyc); */
-
-		hash = hash_digits(dig_cyc, num_digs);
+		hash = hash_digits(&dig_cyc[0], num_digs);
 
 		bkt_count = &count_map[hash & (num_bkts - 1)];
 
-
 		++(*bkt_count);
 
-		if ((*bkt_count) > num_digs)
+		if ((*bkt_count) >= num_digs) {
 			circ_count += num_digs;
+			printf("val: %d\n", val);
+			printf("*bkt_count: %zu\n", *bkt_count);
+		}
 
 NEXT_PRIME:
 		prime = prime->nxt;
@@ -331,9 +328,9 @@ size_t hash_digits(struct IntNode *dig_cyc, const int num_digs)
 		dig_cyc	  = dig_cyc->nxt;
 	}
 
-	/* dig_hash += (dig_hash << 3); */
-	/* dig_hash ^= (dig_hash >> 11); */
-	/* dig_hash += (dig_hash << 15); */
+	dig_hash += (dig_hash << 3);
+	dig_hash ^= (dig_hash >> 11);
+	dig_hash += (dig_hash << 15);
 
 	return dig_hash;
 }

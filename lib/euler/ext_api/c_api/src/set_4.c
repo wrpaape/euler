@@ -294,10 +294,10 @@ void problem_35(char *result_buffer)
 
 		if ((*bkt_count) > num_digs) {
 			++circ_count;
-			/* printf("hash: %lu\n", hash); */
-			/* printf("*****%d\n", val); */
-			/* printf("*bkt_count: %zu\n", *bkt_count); */
-			/* printf("num_digs: %d\n", num_digs); */
+			printf("hash: %lu\n", hash);
+			printf("*****%d\n", val);
+			printf("*bkt_count: %zu\n", *bkt_count);
+			printf("index: %zu\n", hash & (num_bkts - 1));
 		}
 
 NEXT_PRIME:
@@ -308,8 +308,6 @@ NEXT_PRIME:
 
 	sprintf(result_buffer, "%zu", circ_count);
 }
-
-
 size_t hash_digits(int *dig_buff, const int num_digs, size_t hash)
 {
 	for (int dig_i = 0; dig_i < num_digs; ++dig_i) {

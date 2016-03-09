@@ -219,6 +219,12 @@ DONE:
  ************************************************************************/
 void problem_35(char *result_buffer)
 {
+
+	struct PrimeBucket {
+		size_t count;
+		size_t primes[10];
+	};
+
 	struct IntNode *prime;
 	int prime_val;
 	int digit;
@@ -228,7 +234,9 @@ void problem_35(char *result_buffer)
 	int next_base;
 	size_t dig_i;
 	size_t circ_count;
-	size_t *count_map;
+	/* size_t *count_map; */
+	struct PrimeBucket *count_map;
+	struct PrimeBucket *bucket;
 	size_t hash;
 	size_t num_bkts;
 	size_t *bkt_count;
@@ -239,13 +247,15 @@ void problem_35(char *result_buffer)
 	};
 
 
-	for (prime = atkin_sieve(9999);
+	for (prime = atkin_sieve(999);
 	     prime->val < 100;
 	     prime = prime->nxt);
 
 	num_digs    = 3;
 	num_bkts    = num_prime_buckets(100);
-	count_map   = handle_calloc(num_bkts, sizeof(size_t));
+	/* count_map   = handle_calloc(num_bkts, sizeof(size_t)); */
+	count_map   = handle_calloc(num_bkts,
+				    sizeof(struct PrimeBucket));
 	sort_digits = &sort_nets[0];
 	next_base   = 1000;
 	circ_count  = 13u;
@@ -265,7 +275,9 @@ void problem_35(char *result_buffer)
 		if (prime_val > next_base) {
 			free(count_map);
 			num_bkts  = num_prime_buckets(next_base);
-			count_map = handle_calloc(num_bkts, sizeof(size_t));
+			/* count_map = handle_calloc(num_bkts, sizeof(size_t)); */
+			count_map = handle_calloc(num_bkts,
+						  sizeof(struct PrimeBucket));
 			++sort_digits;
 			++num_digs;
 			next_base *= 10u;
@@ -289,21 +301,39 @@ void problem_35(char *result_buffer)
 			hash = jenkins_hash((unsigned char *) dig_buff,
 					    num_digs * sizeof(int),
 					    hash);
+			/* hash = hash_digits( dig_buff, */
+			/* 		    num_digs, */
+			/* 		    hash); */
 		}
 
 
-		bkt_count = &count_map[hash & (num_bkts - 1)];
+		/* bkt_count = &count_map[hash & (num_bkts - 1)]; */
+		bucket = &count_map[hash & (num_bkts - 1)];
 
-		++(*bkt_count);
 
-		if ((*bkt_count) > num_digs) {
+		bucket->primes[bucket->count] = val;
+
+		if (bucket->count == num_digs) {
 			circ_count += num_digs;
-			printf("*****\n****\n%d\n", val);
-			printf("hash: %lu\n", hash);
-			printf("*bkt_count: %zu\n", *bkt_count);
-			printf("index: %zu\n", hash & (num_bkts - 1));
-			printf("num_bkts: %zu\n", num_bkts);
+			for (int i = 0; i < 10; ++i) {
+				printf("primes[%d]: %lu\n", i, bucket->primes[i]);
+			}
+		} else {
+			++(bucket->count);
 		}
+
+
+
+		/* ++(*bkt_count); */
+
+		/* if ((*bkt_count) > num_digs) { */
+		/* 	circ_count += num_digs; */
+		/* 	printf("*****\n****\n%d\n", val); */
+		/* 	printf("hash: %lu\n", hash); */
+		/* 	printf("*bkt_count: %zu\n", *bkt_count); */
+		/* 	printf("index: %zu\n", hash & (num_bkts - 1)); */
+		/* 	printf("num_bkts: %zu\n", num_bkts); */
+		/* } */
 
 NEXT_PRIME:
 		prime = prime->nxt;
@@ -337,7 +367,7 @@ size_t hash_digits(int *dig_buff, const int num_digs, size_t hash)
 
 size_t num_prime_buckets(size_t base)
 {
-	uint64_t num_primes = (uint64_t) ((((double) base) * 900.0) /
+	uint64_t num_primes = (uint64_t) ((((double) base) * 9.0) /
 					  log((double) base));
 
 	return (size_t) next_power_of_2(num_primes);

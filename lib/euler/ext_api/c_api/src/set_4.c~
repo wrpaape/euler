@@ -223,7 +223,7 @@ void problem_35(char *result_buffer)
 	int circ_count;
 	int next_base;
 	struct IntNode *prime;
-	char dig_buff[6];
+	int dig_buff[6];
 	size_t *count_map;
 	size_t hash;
 	size_t num_bkts;
@@ -301,18 +301,24 @@ size_t hash_digits(int n, int *dig_buff, void (*sort_digits)(int *))
 	sort_digits(dig_buff);
 
 	do {
-		hash ^= dig_buff[i] ^ (hash >> 20) ^ (hash >> 12);
+		hash += (dig_buff[i] * dig_buff[i]);
+		hash += (hash << 10);
+		hash ^= (hash >> 6);
 		--i;
 	} while (i > -1);
 
-	return hash ^ (hash >> 7) ^ (hash >> 4);
+	hash += (hash << 3);
+	hash ^= (hash >> 11);
+	hash += (hash << 15);
+
+	return hash;
 }
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
 size_t num_prime_buckets(int base)
 {
-	uint64_t num_primes = (uint64_t) ((((double) base) * 90.0) /
+	uint64_t num_primes = (uint64_t) ((((double) base) * 9.0) /
 					  log((double) base));
 
 	return (size_t) next_power_of_2(num_primes);

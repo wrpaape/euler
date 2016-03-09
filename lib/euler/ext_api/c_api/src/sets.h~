@@ -184,80 +184,7 @@ inline uint64_t next_power_of_2(uint64_t i)
 
 
 /* The mixing step */
-#define mix(a,b,c)				\
-{						\
-	a -= b;  a -= c;  a ^= (c >> 13);	\
-	b -= c;  b -= a;  b ^= (a <<  8);	\
-	c -= a;  c -= b;  c ^= (b >> 13);	\
-	a -= b;  a -= c;  a ^= (c >> 12);	\
-	b -= c;  b -= a;  b ^= (a << 16);	\
-	c -= a;  c -= b;  c ^= (b >>  5);	\
-	a -= b;  a -= c;  a ^= (c >>  3);	\
-	b -= c;  b -= a;  b ^= (a << 10);	\
-	c -= a;  c -= b;  c ^= (b >> 15);	\
-}
-
-
-inline uint32_t jenkins_hash_32(register unsigned char *k, /* the key */
-				const size_t LENGTH,	   /* num bytes of key */
-				size_t init_val)	   /* prev hash or arb val */
-{
-	register uint32_t a, b, c; /* the internal state */
-	size_t len;		 /* how many key bytes still need mixing */
-
-	/* Set up the internal state */
-	a = b = 0x9e3779b9; /* the golden ratio; an arbitrary value */
-	c = init_val;       /* variable initialization of internal state */
-
-	/*---------------------------------------- handle most of the key */
-	for (len = LENGTH; len >= 12; k += 12, len -= 12) {
-
-		a += (k[0]
-		      + ((size_t) k[1] <<  8)
-		      + ((size_t) k[2] << 16)
-		      + ((size_t) k[3] << 24));
-
-		b += (k[4]
-		      + ((size_t) k[5] <<  8)
-		      + ((size_t) k[6] << 16)
-		      + ((size_t) k[7] << 24));
-
-		c += (k[8]
-		      + ((size_t) k[9]  <<  8)
-		      + ((size_t) k[10] << 16)
-		      + ((size_t) k[11] << 24));
-
-		mix(a, b, c);
-	}
-
-	/*------------------------------------- handle the last 11 bytes */
-	c += LENGTH;
-
-	switch(len) { /* all the case statements fall through */
-
-		case 11: c += ((size_t) k[10] << 24);
-		case 10: c += ((size_t) k[9]  << 16);
-		case  9: c += ((size_t) k[8]  <<  8);
-		/* the first byte of c is reserved for the length */
-		case  8: b += ((size_t) k[7]  << 24);
-		case  7: b += ((size_t) k[6]  << 16);
-		case  6: b += ((size_t) k[5]  <<  8);
-		case  5: b += k[4];
-		case  4: a += ((size_t) k[3]  << 24);
-		case  3: a += ((size_t) k[2]  << 16);
-		case  2: a += ((size_t) k[1]  <<  8);
-		case  1: a += k[0];
-		/* case 0: nothing left  to add */
-	}
-
-	mix(a, b, c);
-
-	/*-------------------------------------------- report the result */
-	return c;
-}
-
-#undef mix
-#define mix(a,b,c)				\
+#define mix(a, b, c)				\
 {						\
 	a -= b;  a -= c;  a ^= (c >> 43);	\
 	b -= c;  b -= a;  b ^= (a <<  9);	\
@@ -271,5 +198,75 @@ inline uint32_t jenkins_hash_32(register unsigned char *k, /* the key */
 	a -= b;  a -= c;  a ^= (c >> 12);	\
 	b -= c;  b -= a;  b ^= (a << 18);	\
 	c -= a;  c -= b;  c ^= (b >> 22);	\
+}
+
+inline uint64_t jenkins_hash(register unsigned char *k,	/* the key */
+			     const size_t length,	/* num bytes of key */
+			     uint32_t level)		/* prev hash or arb val */
+{
+	register uint64_t a, b, c; /* the internal state */
+	register size_t len;	   /* how many key bytes still need mixing */
+
+	/* Set up the internal state */
+	a = b = level;		  /* variable initialization of internal state */
+	c = 0x9e3779b97f4a7c13LL; /* the golden ratio; an arbitrary value */
+
+	/*---------------------------------------- handle most of the key */
+	for (len = length; len >= 24; k += 24, len -= 24) {
+
+		a += (k[ 0]
+		      + ((uint64_t) k[ 1] <<  8)
+		      + ((uint64_t) k[ 2] << 16)
+		      + ((uint64_t) k[ 3] << 24)
+		      + ((uint64_t) k[ 4] << 32)
+		      + ((uint64_t) k[ 5] << 40)
+		      + ((uint64_t) k[ 6] << 48)
+		      + ((uint64_t) k[ 7] << 56));
+
+		b += (k[ 8]
+		      + ((uint64_t) k[ 9] <<  8)
+		      + ((uint64_t) k[10] << 16)
+		      + ((uint64_t) k[11] << 24)
+		      + ((uint64_t) k[12] << 32)
+		      + ((uint64_t) k[13] << 40)
+		      + ((uint64_t) k[14] << 48)
+		      + ((uint64_t) k[15] << 56));
+
+		c += (k[16]
+		      + ((uint64_t) k[17] <<  8)
+		      + ((uint64_t) k[18] << 16)
+		      + ((uint64_t) k[19] << 24)
+		      + ((uint64_t) k[20] << 32)
+		      + ((uint64_t) k[21] << 40)
+		      + ((uint64_t) k[22] << 48)
+		      + ((uint64_t) k[23] << 56));
+
+		mix(a, b, c);
+	}
+
+	/*------------------------------------- handle the last 11 bytes */
+	c += length;
+
+	switch(len) { /* all the case statements fall through */
+
+		case 11: c += ((uint64_t) k[10] << 24);
+		case 10: c += ((uint64_t) k[9]  << 16);
+		case  9: c += ((uint64_t) k[8]  <<  8);
+		/* the first byte of c is reserved for the length */
+		case  8: b += ((uint64_t) k[7]  << 24);
+		case  7: b += ((uint64_t) k[6]  << 16);
+		case  6: b += ((uint64_t) k[5]  <<  8);
+		case  5: b += k[4];
+		case  4: a += ((uint64_t) k[3]  << 24);
+		case  3: a += ((uint64_t) k[2]  << 16);
+		case  2: a += ((uint64_t) k[1]  <<  8);
+		case  1: a += k[0];
+		/* case 0: nothing left  to add */
+	}
+
+	mix(a, b, c);
+
+	/*-------------------------------------------- report the result */
+	return c;
 }
 #undef mix

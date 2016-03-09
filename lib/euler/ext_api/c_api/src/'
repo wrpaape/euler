@@ -224,6 +224,8 @@ void problem_35(char *result_buffer)
 	int next_base;
 	struct IntNode *prime;
 	int dig_buff[6];
+	int dig_i;
+	int digit;
 	size_t *count_map;
 	size_t hash;
 	size_t num_bkts;
@@ -262,11 +264,24 @@ void problem_35(char *result_buffer)
 			next_base *= 10;
 		}
 
+		for (digit_i = 0; digit_i < num_digs; ++i) {
+			digit = prime_val % 10;
+
+			if ((digit & 1) == 0) {
+				/* TODO: break */
+				prime = prime->nxt;
+			}
+
+			dig_buff[dig_i] = digit;
+
+			n    /= 10;
+		}
+
+
 		hash = hash_digits(prime_val, dig_buff, *sort_digits);
 
+
 		bkt_count = &count_map[hash & (num_bkts - 1)];
-		printf("prime_val:  %d\n", prime_val);
-		printf("*bkt_count: %zu\n", *bkt_count);
 		++(*bkt_count);
 
 		if ((*bkt_count) == num_digs) {
@@ -290,13 +305,6 @@ size_t hash_digits(int n, int *dig_buff, void (*sort_digits)(int *))
 	int i = 0;
 	size_t hash = 0;
 
-	while (1) {
-		dig_buff[i] = n % 10;
-		n    /= 10;
-		if (n == 0)
-			break;
-		++i;
-	}
 
 	sort_digits(dig_buff);
 

@@ -239,6 +239,7 @@ void problem_35(char *result_buffer)
 	struct PrimeBucket *bucket;
 	size_t hash;
 	size_t num_bkts;
+	size_t num_perms;
 	size_t *bkt_count;
 	void (**sort_digits)(int *);
 
@@ -259,6 +260,7 @@ void problem_35(char *result_buffer)
 	sort_digits = &sort_nets[0];
 	next_base   = 1000;
 	circ_count  = 13u;
+	num_perms   = 6;
 
 		/* for (int i = 0; i < num_bkts; ++i) { */
 		/* 	printf("%lu", count_map[i]); */
@@ -280,6 +282,7 @@ void problem_35(char *result_buffer)
 						  sizeof(struct PrimeBucket));
 			++sort_digits;
 			++num_digs;
+			num_perms *= num_digs;
 			next_base *= 10u;
 		}
 
@@ -297,14 +300,17 @@ void problem_35(char *result_buffer)
 		(*sort_digits)(dig_buff);
 
 		hash = 0;
-		for (hash_cycle = 0; hash_cycle < 5; ++hash_cycle) {
+		hash = hash_digits( dig_buff,
+				    num_digs,
+				    hash);
+		/* for (hash_cycle = 0; hash_cycle < 5; ++hash_cycle) { */
 			/* hash = jenkins_hash((unsigned char *) dig_buff, */
 			/* 		    num_digs * sizeof(int), */
 			/* 		    hash); */
-			hash = hash_digits( dig_buff,
-					    num_digs,
-					    hash);
-		}
+			/* hash = hash_digits( dig_buff, */
+			/* 		    num_digs, */
+			/* 		    hash); */
+		/* } */
 
 
 		/* bkt_count = &count_map[hash & (num_bkts - 1)]; */
@@ -313,13 +319,13 @@ void problem_35(char *result_buffer)
 
 		bucket->primes[bucket->count] = val;
 
-		if (bucket->count == num_digs) {
-			circ_count += num_digs;
+		++(bucket->count);
+
+		if (bucket->count >= num_digs) {
+			circ_count += num_perms;
 			for (int i = 0; i < 10; ++i) {
 				printf("primes[%d]: %lu\n", i, bucket->primes[i]);
 			}
-		} else {
-			++(bucket->count);
 		}
 
 

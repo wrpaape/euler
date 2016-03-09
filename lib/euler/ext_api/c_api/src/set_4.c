@@ -220,6 +220,7 @@ DONE:
 void problem_35(char *result_buffer)
 {
 	struct IntNode *prime;
+	struct IntNode *skip;
 	int prime_val;
 	int digit;
 	struct IntNode dig_cyc[6];
@@ -233,48 +234,49 @@ void problem_35(char *result_buffer)
 	size_t num_bkts;
 	size_t *bkt_count;
 
-	for (prime = atkin_sieve(999999); /* generate all primes under 1 million*/
-	     prime->val < 100;		  /* skip to the first 3 digit prime */
-	     prime = prime->nxt);
+	/*
+	 * generate an ascending list of all primes under 1 million, skipping
+	 * primes with less than 3 digits
+	 */
+	for (prime = atkin_sieve(999999); prime->val < 100; prime = prime->nxt);
 
-	circ_count = 13u;
-	num_digs   = 3;
-	next_base  = 1000;
+	circ_count = 13u;  /* init count of circular primes to include givens */
+	num_digs   = 3;	   /* starting on 3-digit primes */
+	next_base  = 1000; /* all 3-digit primes will be under '1000' */
 
-	/* determine sizing for count_map for 3 digits */
-	num_bkts   = num_prime_buckets(100);
-	count_map  = handle_calloc(num_bkts,
-				   sizeof(size_t));
+	/* determine sizing for 'count_map' for 3 digits */
+	num_bkts = num_prime_buckets(100);
 
+	/* allocate memory and init all entry counts to 0 */
+	count_map  = handle_calloc(num_bkts, sizeof(size_t));
+
+	/* set cycle to 3 digits */
 	dig_cyc[0].nxt = &dig_cyc[1];
 	dig_cyc[1].nxt = &dig_cyc[2];
 	dig_cyc[2].nxt = &dig_cyc[0];
 
-	do {
-		prime_val = prime->val;
+	/* set integer value of first 3-digit prime node */
+	prime_val = prime->val;
 
-		if (prime_val > next_base) {
-
-			free(count_map);
-			num_bkts  = num_prime_buckets(next_base);
-			count_map = handle_calloc(num_bkts, sizeof(size_t));
-
-			dig_cyc[num_digs - 1].nxt = &dig_cyc[num_digs];
-			dig_cyc[num_digs].nxt     = &dig_cyc[0];
-
-			++num_digs;
-			next_base *= 10;
-		}
-
-
+	while (1) {
+		/*
+		 * Set head value of digits cycle to 'prime_val''s one's digit.
+		 * Because this digit must be odd, 'prime_val''s circularity is
+		 * still unfalsifiable.
+		 */
 		dig_cyc[0].val = prime_val % 10;
 		dig_i = 1;
 
+		/* generate cycle for remaining digits */
 		do {
 			prime_val /= 10;
 			digit = prime_val % 10;
 
-			/* ignore primes that contain any even numbers */
+			/*
+			 * ignore primes that contain any even digits, as at
+			 * least one of their rotations are guaranteed non-prime
+			 * i.e. 'prime_val' is guaranteed non-circular
+			 */
 			if ((digit & 1) == 0)
 				goto NEXT_PRIME;
 
@@ -284,21 +286,64 @@ void problem_35(char *result_buffer)
 		} while (dig_i < num_digs);
 
 
+		/*
+		 * generate hash for 'dig_cyc' that is unique to its ordering of
+		 * digits, i.e. hash(123) = hash(231) = hash(312)
+		 */
 		hash = hash_digits_cycle(dig_cyc, num_digs);
 
+		/*
+		 * Calculate lookup index for 'dig_cyc' by taking the modulo of
+		 * 'hash' and 'num_bkts'.  Because 'num_bkts' is a power of 2,
+		 * the mod operation can be reduced to a bitwise 'and' of
+		 * 'hash' and one less than 'num_bkts'.
+		 *
+		 * The value stored at this index corresponds to the
+		 * accumulating count of prime numbers whose digits can be
+		 * expressed as a rotation of 'prime_val''s digits.
+		 */
 		bkt_count = &count_map[hash & (num_bkts - 1)];
 
-		++(*bkt_count);
+		++(*bkt_count); /* inc acc */
 
+		/*
+		 * if there exists 'num_digs' rotations of a prime number with
+		 * 'num_digs' decimal digits, then that number and all of its
+		 * rotations are circular primes.
+		 */
 		if ((*bkt_count) == num_digs)
-			circ_count += num_digs;
+			circ_count += num_digs; /* record 'num_digs' circ primes */
 
 NEXT_PRIME:
 		prime = prime->nxt;
 
-	} while (prime != NULL);
+		/* break once all primes between 100 and 1e6 have been processed */
+		if (prime == NULL)
+			break;
 
 
+		prime_val = prime->val;
+
+		/* if 'prime_val' has one too many digits... */
+		if (prime_val > next_base) {
+
+			/* reinitialize hash table 'count_map' */
+			free(count_map);
+			num_bkts  = num_prime_buckets(next_base);
+			count_map = handle_calloc(num_bkts, sizeof(size_t));
+
+			/* expand cycle for additional digit */
+			dig_cyc[num_digs - 1].nxt = &dig_cyc[num_digs];
+			dig_cyc[num_digs].nxt     = &dig_cyc[0];
+
+			/* increment digit counter and set next 'next_base' */
+			++num_digs;
+			next_base *= 10;
+		}
+
+	}
+
+	/* return count of circular primes under 1 million */
 	sprintf(result_buffer, "%zu", circ_count);
 }
 
@@ -306,24 +351,26 @@ NEXT_PRIME:
  *				HELPERS					*
  ************************************************************************/
 /*
+ *			- hash_digits_cycle -
+ *
  * Hashes a circuluar list of integer digits, 'dig_cyc', with the goal
  * that all input rotations of 'dig_cyc' will output matching hashes, i.e.
  * input 'dig_cyc' orientations of:
  *
  *	        ┌───────────────────────────┐
- *	        V			    │
+ *	        ∨			    │
  * dig_cyc -> [ 1 | *─]─> [ 2 | *-]─> [ 3 | * ]
  *
  *	        ┌───────────────────────────┐
- *	        V			    │
+ *	        ∨			    │
  * dig_cyc -> [ 2 | *─]─> [ 3 | *-]─> [ 1 | * ]
  *
  *	        ┌───────────────────────────┐
- *	        V			    │
+ *	        ∨			    │
  * dig_cyc -> [ 3 | *─]─> [ 1 | *-]─> [ 2 | * ]
  *
  * corresponding to numbers '321', '123', and '213' from top to bottom
- * will share the same (hopefully) unique hash.
+ * will share the same (hopefully unique) hash.
  */
 size_t hash_digits_cycle(struct IntNode *dig_cyc, const int num_digs)
 {
@@ -336,9 +383,10 @@ size_t hash_digits_cycle(struct IntNode *dig_cyc, const int num_digs)
 
 	for (rot_i = 0; rot_i < num_digs; ++rot_i) {
 
-		/* generate hash 'rot_hash' for each rotation, implementing Bob
-		 * Jenkins's 'One-at-a-Time' hash... */
-
+		/*
+		 * generate hash 'rot_hash' for each rotation, implementing Bob
+		 * Jenkins's 'One-at-a-Time' hash...
+		 */
 		rot_hash = 0;
 
 		for (dig_i = 0; dig_i < num_digs; ++dig_i) {
@@ -360,27 +408,28 @@ size_t hash_digits_cycle(struct IntNode *dig_cyc, const int num_digs)
 		dig_cyc	  = dig_cyc->nxt; /* advance to next rotation */
 	}
 
-	return cyc_hash; /* */
+	return cyc_hash; /* return sum of rotation hashes */
 }
 
 
 size_t num_prime_buckets(int base)
 {
-	 /*
-	  * double the expected number of primes within the range:
-	  *
-	  *	(base, 10 * base)
-	  *
-	  * according to the naive prime counting function, π(N):
-	  *
-	  * π(N) ≈ N / log(N)
-	  *
-	  * where π estimates the number of primes expected to
-	  * exist within the range: (0, N)
-	  */
-	double est_num_bkts;
-
-	est_num_bkts = ((((double) base) * 18.0) / log((double) base));
+	/*
+	 * double the expected number of primes within the range:
+	 *
+	 *	(base, 10 * base)
+	 *
+	 * according to the naive prime counting function, π(N):
+	 *
+	 *	π(N) ≈ N / log(N)
+	 *
+	 *	where π estimates the number of primes expected to
+	 *	exist within the range: (0, N)
+	 *
+	 * for a conservative estimate of hash table buckets required
+	 * to eliminate collisions
+	 */
+	double est_num_bkts = ((((double) base) * 18.0) / log((double) base));
 
 	/* round upward to the next closest power of 2 to expedite indexing */
 	return (size_t) next_power_of_2((uint64_t) est_num_bkts);

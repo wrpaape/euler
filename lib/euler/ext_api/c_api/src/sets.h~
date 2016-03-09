@@ -213,19 +213,19 @@ inline uint32_t jenkins_hash_32(register unsigned char *k, /* the key */
 	for (len = LENGTH; len >= 12; k += 12, len -= 12) {
 
 		a += (k[0]
-		      + ((uint32_t) k[1] <<  8)
-		      + ((uint32_t) k[2] << 16)
-		      + ((uint32_t) k[3] << 24));
+		      + ((size_t) k[1] <<  8)
+		      + ((size_t) k[2] << 16)
+		      + ((size_t) k[3] << 24));
 
 		b += (k[4]
-		      + ((uint32_t) k[5] <<  8)
-		      + ((uint32_t) k[6] << 16)
-		      + ((uint32_t) k[7] << 24));
+		      + ((size_t) k[5] <<  8)
+		      + ((size_t) k[6] << 16)
+		      + ((size_t) k[7] << 24));
 
 		c += (k[8]
-		      + ((uint32_t) k[9]  <<  8)
-		      + ((uint32_t) k[10] << 16)
-		      + ((uint32_t) k[11] << 24));
+		      + ((size_t) k[9]  <<  8)
+		      + ((size_t) k[10] << 16)
+		      + ((size_t) k[11] << 24));
 
 		mix(a, b, c);
 	}
@@ -235,17 +235,17 @@ inline uint32_t jenkins_hash_32(register unsigned char *k, /* the key */
 
 	switch(len) { /* all the case statements fall through */
 
-		case 11: c += ((uint32_t) k[10] << 24);
-		case 10: c += ((uint32_t) k[9]  << 16);
-		case  9: c += ((uint32_t) k[8]  <<  8);
+		case 11: c += ((size_t) k[10] << 24);
+		case 10: c += ((size_t) k[9]  << 16);
+		case  9: c += ((size_t) k[8]  <<  8);
 		/* the first byte of c is reserved for the length */
-		case  8: b += ((uint32_t) k[7]  << 24);
-		case  7: b += ((uint32_t) k[6]  << 16);
-		case  6: b += ((uint32_t) k[5]  <<  8);
+		case  8: b += ((size_t) k[7]  << 24);
+		case  7: b += ((size_t) k[6]  << 16);
+		case  6: b += ((size_t) k[5]  <<  8);
 		case  5: b += k[4];
-		case  4: a += ((uint32_t) k[3]  << 24);
-		case  3: a += ((uint32_t) k[2]  << 16);
-		case  2: a += ((uint32_t) k[1]  <<  8);
+		case  4: a += ((size_t) k[3]  << 24);
+		case  3: a += ((size_t) k[2]  << 16);
+		case  2: a += ((size_t) k[1]  <<  8);
 		case  1: a += k[0];
 		/* case 0: nothing left  to add */
 	}

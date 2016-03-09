@@ -42,7 +42,7 @@ extern inline size_t jenkins_hash(register unsigned char *k,
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
-struct IntNode *prime_sieve(const int upto)
+struct IntNode *prime_sieve(const int sup)
 {
 	struct IntNode *primes = handle_malloc(sizeof(struct IntNode));
 	struct IntNode *num;
@@ -53,21 +53,17 @@ struct IntNode *prime_sieve(const int upto)
 	num = primes;
 	num->val = 2;
 
-	for (int n = 3; n < upto; n+=2) {
+	/* initialize sieve to all odd numbers between '2' and input supremum 'sup' */
+	for (int odd = 3; odd < sup; odd += 2) {
 		num->nxt = handle_malloc(sizeof(struct IntNode));
 		num = num->nxt;
-		num->val = n;
-	}
-
-	if (upto & 1) {
-		num->nxt = handle_malloc(sizeof(struct IntNode));
-		num = num->nxt;
-		num->val = upto;
+		num->val = odd;
 	}
 
 	num->nxt = NULL;
 
 	for (prime = primes->nxt; prime != NULL; prime = prime->nxt) {
+
 		prime_val = prime->val;
 		prv = prime;
 		num = prv->nxt;
@@ -89,7 +85,7 @@ struct IntNode *prime_sieve(const int upto)
 }
 
 
-struct IntNode *atkin_sieve(const int upto)
+struct IntNode *atkin_sieve(const int sup)
 {
 	pthread_t sieve_threads[4];
 	struct SieveArg args[4];
@@ -103,9 +99,9 @@ struct IntNode *atkin_sieve(const int upto)
 	int sq_val;
 	int mult_val;
 	int mult_sq;
-	const int DELTA = (upto - 13) / 4;
+	const int DELTA = (sup - 13) / 4;
 
-	/* initials result list 'primes' */
+	/* initialize result list 'primes' with first 5 prime numbers */
 	primes = handle_malloc(sizeof(struct IntNode) * 5);
 	prime  = primes;
 	prime->val = 2; prime->nxt = prime + 1; ++prime;
@@ -126,9 +122,9 @@ struct IntNode *atkin_sieve(const int upto)
 				      (void *) &args[q_i]);
 	}
 
-	/* ensure entire range is sieved */
+	/* ensure final sieve interval ends at input supremum 'sup' */
 	args[3].start = start;
-	args[3].until = upto + 1;
+	args[3].until = sup;
 
 	handle_pthread_create(&sieve_threads[3],
 			      NULL,

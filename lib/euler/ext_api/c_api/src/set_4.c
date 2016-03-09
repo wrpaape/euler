@@ -250,6 +250,11 @@ void problem_35(char *result_buffer)
 	next_base   = 1000;
 	circ_count  = 13u;
 
+		for (int i = 0; i < num_bkts; ++i)
+			printf("%lu", count_map[i]);
+
+		exit(0);
+
 	do {
 		prime_val = (size_t) prime->val;
 
@@ -265,6 +270,7 @@ void problem_35(char *result_buffer)
 			++num_digs;
 			next_base *= 10u;
 		}
+
 
 		for (dig_i = 0; dig_i < num_digs; ++dig_i, prime_val /= 10) {
 
@@ -283,9 +289,11 @@ void problem_35(char *result_buffer)
 		/* usleep(100000); */
 
 		hash = 0;
-		/* for (hash_cycle = 0; hash_cycle < 4; ++hash_cycle) { */
-			hash = hash_digits(dig_buff, num_digs, 0);
-		/* } */
+		for (hash_cycle = 0; hash_cycle < 4; ++hash_cycle) {
+			hash = jenkins_hash((unsigned char *) dig_buff,
+					    num_digs * sizeof(int),
+					    hash);
+		}
 
 
 		bkt_count = &count_map[hash & (num_bkts - 1)];
@@ -313,78 +321,6 @@ NEXT_PRIME:
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-/* The mixing step */
-#define mix(a,b,c) \
-{ \
-  a=a-b;  a=a-c;  a=a^(c>>13); \
-  b=b-c;  b=b-a;  b=b^(a<<8);  \
-  c=c-a;  c=c-b;  c=c^(b>>13); \
-  a=a-b;  a=a-c;  a=a^(c>>12); \
-  b=b-c;  b=b-a;  b=b^(a<<16); \
-  c=c-a;  c=c-b;  c=c^(b>>5);  \
-  a=a-b;  a=a-c;  a=a^(c>>3);  \
-  b=b-c;  b=b-a;  b=b^(a<<10); \
-  c=c-a;  c=c-b;  c=c^(b>>15); \
-}
-/* The whole new hash function */
-size_t hash(register unsigned char *k,	/* the key */
-	    const size_t length,	/* the length of the key in bytes */
-	    size_t init_val)		/* the previous hash, or an arbitrary value */
-{
-	register size_t a,b,c;  /* the internal state */
-	size_t          len;    /* how many key bytes still need mixing */
-
-	/* Set up the internal state */
-	len = length;
-	a = b = 0x9e3779b9;  /* the golden ratio; an arbitrary value */
-	c = init_val;        /* variable initialization of internal state */
-
-	/*---------------------------------------- handle most of the key */
-	while (len >= 12)
-	{
-		a = a + (k[0]
-		      + ((size_t) k[1] << 8)
-		      + ((size_t) k[2] << 16)
-		      + ((size_t) k[3] << 24));
-
-		b = b + (k[4]
-		      + ((size_t) k[5] << 8)
-		      + ((size_t) k[6] << 16)
-		      + ((size_t) k[7] << 24));
-
-		c = c + (k[8]
-		      + ((size_t) k[9]  << 8)
-		      + ((size_t) k[10] << 16)
-		      + ((size_t) k[11] << 24));
-
-		mix(a, b, c);
-
-		k += 12;
-		len -= 12;
-	}
-
-	/*------------------------------------- handle the last 11 bytes */
-	c = c+length;
-	switch(len)              /* all the case statements fall through */
-	{
-	case 11: c=c+((size_t)k[10]<<24);
-	case 10: c=c+((size_t)k[9]<<16);
-	case 9 : c=c+((size_t)k[8]<<8);
-	/* the first byte of c is reserved for the length */
-	case 8 : b=b+((size_t)k[7]<<24);
-	case 7 : b=b+((size_t)k[6]<<16);
-	case 6 : b=b+((size_t)k[5]<<8);
-	case 5 : b=b+k[4];
-	case 4 : a=a+((size_t)k[3]<<24);
-	case 3 : a=a+((size_t)k[2]<<16);
-	case 2 : a=a+((size_t)k[1]<<8);
-	case 1 : a=a+k[0];
-	/* case 0: nothing left to add */
-	}
-	mix(a,b,c);
-	/*-------------------------------------------- report the result */
-	return c;
-}
 
 
 size_t hash_digits(int *dig_buff, const int num_digs, size_t hash)

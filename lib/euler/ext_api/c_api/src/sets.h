@@ -181,3 +181,78 @@ inline uint64_t next_power_of_2(uint64_t i)
 	return 1UL <<(1 + i);
 #endif
 }
+
+
+/* The mixing step */
+#define mix(a,b,c)				\
+{						\
+	a -= b;  a -= c;  a ^= (c >> 13);	\
+	b -= c;  b -= a;  b ^= (a <<  8);	\
+	c -= a;  c -= b;  c ^= (b >> 13);	\
+	a -= b;  a -= c;  a ^= (c >> 12);	\
+	b -= c;  b -= a;  b ^= (a << 16);	\
+	c -= a;  c -= b;  c ^= (b >>  5);	\
+	a -= b;  a -= c;  a ^= (c >>  3);	\
+	b -= c;  b -= a;  b ^= (a << 10);	\
+	c -= a;  c -= b;  c ^= (b >> 15);	\
+}
+
+inline size_t jenkins_hash(register unsigned char *k, /* the key */
+			   const size_t LENGTH,	      /* length of the key in bytes */
+			   size_t init_val)	      /* prev hash or arb val */
+{
+	register size_t a, b, c; /* the internal state */
+	size_t len;		 /* how many key bytes still need mixing */
+
+	/* Set up the internal state */
+	a = b = 0x9e3779b9; /* the golden ratio; an arbitrary value */
+	c = init_val;       /* variable initialization of internal state */
+
+	/*---------------------------------------- handle most of the key */
+	for (len = LENGTH; len >= 12; k += 12, len -= 12) {
+
+		a += (k[0]
+		      + ((size_t) k[1] <<  8)
+		      + ((size_t) k[2] << 16)
+		      + ((size_t) k[3] << 24));
+
+		b += (k[4]
+		      + ((size_t) k[5] <<  8)
+		      + ((size_t) k[6] << 16)
+		      + ((size_t) k[7] << 24));
+
+		c += (k[8]
+		      + ((size_t) k[9]  <<  8)
+		      + ((size_t) k[10] << 16)
+		      + ((size_t) k[11] << 24));
+
+		mix(a, b, c);
+	}
+
+	/*------------------------------------- handle the last 11 bytes */
+	c += LENGTH;
+
+	switch(len) { /* all the case statements fall through */
+
+		case 11: c += ((size_t) k[10] << 24);
+		case 10: c += ((size_t) k[9]  << 16);
+		case  9: c += ((size_t) k[8]  <<  8);
+		/* the first byte of c is reserved for the length */
+		case  8: b += ((size_t) k[7]  << 24);
+		case  7: b += ((size_t) k[6]  << 16);
+		case  6: b += ((size_t) k[5]  <<  8);
+		case  5: b += k[4];
+		case  4: a += ((size_t) k[3]  << 24);
+		case  3: a += ((size_t) k[2]  << 16);
+		case  2: a += ((size_t) k[1]  <<  8);
+		case  1: a += k[0];
+		/* case 0: nothing left  to add */
+	}
+
+	mix(a, b, c);
+
+	/*-------------------------------------------- report the result */
+	return c;
+}
+
+#undef mix

@@ -36,6 +36,9 @@ extern inline void sort_net_4(int *arr);
 extern inline void sort_net_5(int *arr);
 extern inline void sort_net_6(int *arr);
 extern inline uint64_t next_power_of_2(uint64_t i);
+extern inline size_t jenkins_hash(register unsigned char *k,
+				  const size_t LENGTH,
+				  size_t init_val);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

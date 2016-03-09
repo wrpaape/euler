@@ -223,7 +223,7 @@ void problem_35(char *result_buffer)
 	int circ_count;
 	int next_base;
 	struct IntNode *prime;
-	int dig_buff[6];
+	char dig_buff[6];
 	size_t *count_map;
 	size_t hash;
 	size_t num_bkts;

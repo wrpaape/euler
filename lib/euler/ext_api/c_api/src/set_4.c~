@@ -251,6 +251,10 @@ void problem_35(char *result_buffer)
 	do {
 		prime_val = (size_t) prime->val;
 
+		/* if (prime_val == 931397) */
+		if (prime_val == 793139)
+			puts("LOLOLOL");
+
 		int val = prime_val;
 
 		if (prime_val > next_base) {

@@ -27,5 +27,5 @@ int greatest_common_divisor(int num, int den, struct DivNode **mult_map);
 bool is_curious(int num, int den, int base_num, int base_den, int **digs_map);
 static inline bool mult_match(int base_num, int match_num,
 			      int base_den, int match_den);
-size_t hash_digits(size_t *dig_buff, const size_t num_digs);
+size_t hash_digits(int *dig_buff, const int num_digs, size_t hash);
 size_t num_prime_buckets(size_t base);

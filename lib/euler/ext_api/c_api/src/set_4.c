@@ -338,7 +338,7 @@ size_t hash_digits(struct IntNode *dig_cyc, const int num_digs)
 
 size_t num_prime_buckets(size_t base)
 {
-	uint64_t num_primes = (uint64_t) ((((double) base) * 9.0) /
+	uint64_t num_primes = (uint64_t) ((((double) base) * 900.0) /
 					  log((double) base));
 
 	return (size_t) next_power_of_2(num_primes);

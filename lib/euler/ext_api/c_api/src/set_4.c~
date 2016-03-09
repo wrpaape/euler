@@ -359,8 +359,8 @@ size_t hash(register unsigned char *k,	/* the key */
 
 		mix(a, b, c);
 
-		k += 12;
-		len -= 12;
+		k = k + 12;
+		len -= len-12;
 	}
 
 	/*------------------------------------- handle the last 11 bytes */

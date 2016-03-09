@@ -250,13 +250,12 @@ void problem_35(char *result_buffer)
 	next_base   = 1000;
 	circ_count  = 13u;
 
-		for (int i = 0; i < num_bkts; ++i) {
-			printf("%lu", count_map[i]);
-			fflush(stdout);
-			usleep(1000);
-		}
-
-		exit(0);
+		/* for (int i = 0; i < num_bkts; ++i) { */
+		/* 	printf("%lu", count_map[i]); */
+		/* 	fflush(stdout); */
+		/* 	usleep(1000); */
+		/* } */
+		/* exit(0); */
 
 	do {
 		prime_val = (size_t) prime->val;
@@ -266,8 +265,6 @@ void problem_35(char *result_buffer)
 		if (prime_val > next_base) {
 			free(count_map);
 			num_bkts  = num_prime_buckets(next_base);
-			/* printf("\nnum_bkts: %zu\n", num_bkts); */
-			/* printf("num_digs: %d\n", num_digs); */
 			count_map = handle_calloc(num_bkts, sizeof(size_t));
 			++sort_digits;
 			++num_digs;
@@ -287,12 +284,8 @@ void problem_35(char *result_buffer)
 
 		(*sort_digits)(dig_buff);
 
-		/* for (int i = 0; i < num_digs; ++i) */
-		/* 	printf("%d", dig_buff[i]); */
-		/* usleep(100000); */
-
 		hash = 0;
-		for (hash_cycle = 0; hash_cycle < 4; ++hash_cycle) {
+		for (hash_cycle = 0; hash_cycle < 5; ++hash_cycle) {
 			hash = jenkins_hash((unsigned char *) dig_buff,
 					    num_digs * sizeof(int),
 					    hash);
@@ -344,7 +337,7 @@ size_t hash_digits(int *dig_buff, const int num_digs, size_t hash)
 
 size_t num_prime_buckets(size_t base)
 {
-	uint64_t num_primes = (uint64_t) ((((double) base) * 90.0) /
+	uint64_t num_primes = (uint64_t) ((((double) base) * 900.0) /
 					  log((double) base));
 
 	return (size_t) next_power_of_2(num_primes);

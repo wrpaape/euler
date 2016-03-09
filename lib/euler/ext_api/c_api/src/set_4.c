@@ -298,12 +298,12 @@ void problem_35(char *result_buffer)
 
 		hash = 0;
 		for (hash_cycle = 0; hash_cycle < 5; ++hash_cycle) {
-			hash = jenkins_hash((unsigned char *) dig_buff,
-					    num_digs * sizeof(int),
-					    hash);
-			/* hash = hash_digits( dig_buff, */
-			/* 		    num_digs, */
+			/* hash = jenkins_hash((unsigned char *) dig_buff, */
+			/* 		    num_digs * sizeof(int), */
 			/* 		    hash); */
+			hash = hash_digits( dig_buff,
+					    num_digs,
+					    hash);
 		}
 
 

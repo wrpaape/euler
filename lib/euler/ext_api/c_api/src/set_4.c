@@ -245,13 +245,16 @@ void problem_35(char *result_buffer)
 
 	num_digs    = 3;
 	num_bkts    = num_prime_buckets(100);
-	count_map   = handle_calloc(num_bkts, sizeof(int));
+	count_map   = handle_calloc(num_bkts, sizeof(size_t));
 	sort_digits = &sort_nets[0];
 	next_base   = 1000;
 	circ_count  = 13u;
 
-		for (int i = 0; i < num_bkts; ++i)
+		for (int i = 0; i < num_bkts; ++i) {
 			printf("%lu", count_map[i]);
+			fflush(stdout);
+			usleep(1000);
+		}
 
 		exit(0);
 

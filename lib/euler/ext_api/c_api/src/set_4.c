@@ -409,16 +409,19 @@ bool is_bin_palindrome(int n)
 
 	for (shift = 1; shift < halfway; ++shift) {
 
-		if ((lead_bit & (n << shift)) == 0) {
+	if ((lead_bit & (n << shift)) ^
+	    (0x000001 & (n >> shift)))
+		return false;
+		/* if ((lead_bit & (n << shift)) == 0) { */
 
-			if ((1 & (n >> shift)) == 1)
-				return false;
+		/* 	if ((1 & (n >> shift)) == 1) */
+		/* 		return false; */
 
-		} else {
-			if ((1 & (n >> shift)) == 0)
-				return false;
+		/* } else { */
+		/* 	if ((1 & (n >> shift)) == 0) */
+		/* 		return false; */
 
-		}
+		/* } */
 	}
 
 	return true;

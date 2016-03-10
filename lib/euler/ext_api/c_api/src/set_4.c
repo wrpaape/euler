@@ -398,19 +398,20 @@ void problem_36(char *result_buffer)
  ************************************************************************/
 bool is_bin_palindrome(int n)
 {
-	int shift;
+	int lil_shift;
+	int big_shift;
 
 	const int bit_len = INT_BITS - __builtin_clz(n);
 	const int halfway = bit_len / 2;
 
-	printf("bit_len: %d\n", bit_len);
+	/* printf("bit_len: %d\n", bit_len); */
 
-	const int lead_bit = 1 << (bit_len - 1);
+	for (lil_shift = 1, big_shift = bit_len - 2;
+	     lil_shift < halfway;
+	     ++lil_shift, --big_shift) {
 
-	for (shift = 1; shift < halfway; ++shift) {
-
-	if ((lead_bit & (n << shift)) ^
-	    (0x000001 & (n >> shift)))
+	if ((1 & (n >> lil_shift)) ^
+	    (1 & (n >> big_shift)))
 		return false;
 		/* if ((lead_bit & (n << shift)) == 0) { */
 

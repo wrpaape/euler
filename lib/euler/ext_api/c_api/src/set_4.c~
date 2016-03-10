@@ -220,9 +220,9 @@ DONE:
 void problem_35(char *result_buffer)
 {
 	struct IntNode *prime;
+	struct IntNode dig_cyc[6];
 	int prime_val;
 	int digit;
-	struct IntNode dig_cyc[6];
 	int num_digs;
 	int hash_cycle;
 	int next_base;
@@ -230,9 +230,16 @@ void problem_35(char *result_buffer)
 	size_t circ_count;
 	size_t hash;
 	size_t num_bkts;
-	size_t *bkt_count;
-
-	size_t *count_map; /* hash table recording */
+	size_t *bucket;
+	/*
+	 * hash table recording number of instances of a particular ordering of
+	 * digits, 'dig_cycle', for a particular number of digits, 'num_digs'
+	 *
+	 * i.e. number 'keys' of '123', '231', and '312' will produce identical
+	 * hashes unique to their 3-digit cycle and thus will all map to an
+	 * accumulating count of their instances housed at 'bucket'
+	 */
+	size_t *count_map;
 
 	/*
 	 * generate an ascending list of all primes under 1 million and skip
@@ -248,7 +255,7 @@ void problem_35(char *result_buffer)
 	num_bkts = num_prime_buckets(100);
 
 	/* allocate memory and init all entry counts to 0 */
-	count_map  = handle_calloc(num_bkts, sizeof(size_t));
+	count_map = handle_calloc(num_bkts, sizeof(size_t));
 
 	/* set cycle to 3 digits */
 	dig_cyc[0].nxt = &dig_cyc[1];
@@ -302,16 +309,16 @@ void problem_35(char *result_buffer)
 		 * accumulating count of prime numbers whose digits can be
 		 * expressed as a rotation of 'prime_val''s digits.
 		 */
-		bkt_count = &count_map[hash & (num_bkts - 1)];
+		bucket = &count_map[hash & (num_bkts - 1)];
 
-		++(*bkt_count); /* inc acc */
+		++(*bucket); /* increment cycle instance counter */
 
 		/*
 		 * If there exists 'num_digs' rotations of a prime number with
 		 * 'num_digs' decimal digits, then that number and all of its
 		 * rotations are circular primes.
 		 */
-		if ((*bkt_count) == num_digs)
+		if ((*bucket) == num_digs)
 			circ_count += num_digs; /* record 'num_digs' circ primes */
 
 NEXT_PRIME:
@@ -456,7 +463,7 @@ inline bool mult_match(int base_num, int match_num, int base_den, int match_den)
 	if ((base_num == match_num) && (base_den == match_den))
 		return true;
 
-	for (int den = base_den * 2, num = base_num * 2;
+	for (int den = base_den * 2, num  = base_num * 2;
 	     den < 10;
 	     den += base_den,        num += base_num) {
 

@@ -46,7 +46,6 @@ int main(int argc, char *argv[])
 	char *set_str = argv[1];
 
 	for (set_num = 0; *set_str != '\0'; ++set_str) {
-		set_num += *set_str +
 	}
 
 

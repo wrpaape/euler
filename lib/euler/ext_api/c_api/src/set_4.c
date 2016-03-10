@@ -9,6 +9,7 @@
 #include "sets.h"
 #include "set_4.h"
 
+#define INT_BITS (sizeof(int) * CHAR_BIT)
 /************************************************************************
  *			TOP LEVEL FUNCTIONS				*
  ************************************************************************/
@@ -352,15 +353,65 @@ NEXT_PRIME:
 	/* return count of circular primes under 1 million */
 	sprintf(result_buffer, "%zu", circ_count);
 }
-
-
+/************************************************************************
+ *				- problem_36 -				*
+ *									*
+ * The decimal number, 585 = 1001001001₂ (binary), is palindromic in	*
+ * both bases.								*
+ *									*
+ * Find the sum of all numbers, less than one million, which are	*
+ * palindromic in base 10 and base 2.					*
+ *									*
+ * (Please note that the palindromic number, in either base, may not	*
+ * include leading zeros.)						*
+ ************************************************************************/
 void problem_36(char *result_buffer)
 {
-	sprintf(result_buffer, "%d", 42);
+	int sum = 0;
+
+	/*
+	 * skip even numbers as they cannot be palindromic in base 2
+	 * (trailing 0)
+	 */
+	for (int n = 585; n < 1e6; n += 2) {
+
+		if (is_bin_palindrome(n) &&
+		    is_dec_palindrome(n))
+			sum += n;
+
+	}
+
+	sprintf(result_buffer, "%d", sum);
 }
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
+bool is_bin_palindrome(int n)
+{
+	int bit_i;
+	int bits[INT_BITS];
+
+	const int length = INT_BITS - __builtin_clz(n);
+
+	bits[0] = 1; /* n is guaranteed odd */
+
+	for (bit_i = 1; bit_i < length; ++bit_i)
+		bits[bit_i] = 1 & (n >> bit_i);
+
+	for (bit_i = length - 1; bit_i > -1; --bit_i)
+		printf("%d", bits[bit_i]);
+
+	exit(0);
+
+	return false;
+}
+
+bool is_dec_palindrome(int n)
+{
+	return false;
+}
+
+
 /*
  *			- hash_digits_cycle -
  *

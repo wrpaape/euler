@@ -22,6 +22,8 @@ void problem_34(char *result_buffer);
 void problem_35(char *result_buffer);
 void problem_36(char *result_buffer);
 struct DivNode **init_mult_map(void);
+bool is_bin_palindrome(int n);
+bool is_dec_palindrome(int n);
 int **init_digits_map(void);
 struct DivNode **init_divisors_map(void);
 int greatest_common_divisor(int num, int den, struct DivNode **mult_map);

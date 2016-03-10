@@ -353,6 +353,11 @@ NEXT_PRIME:
 	sprintf(result_buffer, "%zu", circ_count);
 }
 
+
+void problem_36(char *result_buffer)
+{
+	sprintf(result_buffer, "%d", 42);
+}
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/

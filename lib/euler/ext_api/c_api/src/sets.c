@@ -31,6 +31,7 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
+extern inline uint64_t next_power_of_2(uint64_t i);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

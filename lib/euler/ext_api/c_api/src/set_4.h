@@ -20,6 +20,7 @@ struct DivNode {
 void problem_33(char *result_buffer);
 void problem_34(char *result_buffer);
 void problem_35(char *result_buffer);
+void problem_36(char *result_buffer);
 struct DivNode **init_mult_map(void);
 int **init_digits_map(void);
 struct DivNode **init_divisors_map(void);

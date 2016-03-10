@@ -21,12 +21,12 @@
 /************************************************************************************
  *                               FUNCTION PROTOTYPES                                *
  ************************************************************************************/
-void parse_num(char *arg, unsigned int *num_ptr);
-void dispatch(const unsigned int set_num, const unsigned int prob_num);
+void parse_num(char *arg, int *num_ptr);
+void dispatch(const int set_num, const int prob_num);
 void time_func(void (*func_ptr)(char *));
 void arg_error(void);
 void parse_error(const char *arg);
-void missing_set_error(const unsigned int set_num,
-		       const unsigned int prob_num);
-void missing_prob_error(const unsigned int prob_num,
-			const unsigned int set_num);
+void missing_set_error(const int set_num,
+		       const int prob_num);
+void missing_prob_error(const int prob_num,
+			const int set_num);

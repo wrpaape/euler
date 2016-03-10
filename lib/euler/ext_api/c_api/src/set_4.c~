@@ -391,7 +391,7 @@ void problem_36(char *result_buffer)
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-bool is_bin_palindrome(int n)
+bool is_bin_palindrome(int n, int *bit_buff)
 {
 	int shift;
 

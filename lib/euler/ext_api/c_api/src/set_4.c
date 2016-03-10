@@ -368,23 +368,28 @@ NEXT_PRIME:
 void problem_36(char *result_buffer)
 {
 
+		if (is_bin_palindrome(585))
+			puts("585 checks out");
+
+		if (is_bin_palindrome(123))
+			puts("123 checks out");
 	int sum;
-	int *bit_ptr;
-	int bit_buff[(INT_BITS - 2) / 2]; /* ignore first and last '1's */
-	int dig_buff[3];
+	/* int *bit_ptr; */
+	/* int bit_buff[(INT_BITS - 2) / 2]; /1* ignore first and last '1's *1/ */
+	/* int dig_buff[3]; */
 
 	/*
 	 * skip even numbers as they cannot be palindromic in base 2
 	 * (trailing 0), set first el of 'bit_buff' to 1.
 	 */
-	sum	    = 0;
-	for (int n = 1; n < 1e6; n += 2) {
+	sum = 0;
+	/* for (int n = 1; n < 1e6; n += 2) { */
 
-		if (is_bin_palindrome(n, bit_buff) &&
-		    is_dec_palindrome(n, dig_buff))
-			sum += n;
+	/* 	if (is_bin_palindrome(n) && */
+	/* 	    is_dec_palindrome(n, dig_buff)) */
+	/* 		sum += n; */
 
-	}
+	/* } */
 
 	sprintf(result_buffer, "%d", sum);
 }
@@ -398,18 +403,23 @@ bool is_bin_palindrome(int n)
 	const int bit_len = INT_BITS - __builtin_clz(n);
 	const int halfway = bit_len / 2;
 
-	for (shift = 1; shift < halfway; ++shift)
-		*bit_buff = 1 & (n >> shift);
+	printf("bit_len: %d\n", bit_len);
 
-	if (bit_len & 1)
-		++shift;
+	const int lead_bit = 1 << (bit_len - 1);
 
-	while (shift < bit_len)
+	for (shift = 1; shift < halfway; ++shift) {
 
-	for (shift = bit_len - 1; shift > -1; --shift)
-		printf("%d", bits[shift]);
+		if ((lead_bit & (n << shift)) == 0) {
 
-	exit(0);
+			if ((1 & (n >> shift)) == 1)
+				return false;
+
+		} else {
+			if ((1 & (n >> shift)) == 0)
+				return false;
+
+		}
+	}
 
 	return true;
 }

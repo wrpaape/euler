@@ -376,14 +376,15 @@ void problem_36(char *result_buffer)
 	int sum;
 
 	int lead_dig;
+	int last_dig;
 	/* int dig_buff[3]; */
 
 	/*
 	 * skip even numbers as they cannot be palindromic in base 2
 	 * (trailing 0), set first el of 'bit_buff' to 1.
 	 */
-	sum = 0;
-	for (int n = 1, sig_base = 1, nxt_base = 10;
+	sum = 1;
+	for (int n = 3, sig_base = 1, nxt_base = 10;
 	     sig_base < 1e6;
 	     sig_base = nxt_base,     nxt_base *= 10) {
 
@@ -400,23 +401,22 @@ void problem_36(char *result_buffer)
 				++lead_dig;
 			}
 
-			if (lead_dig != n % 10) {
-				n += 2;
-				continue;
+			last_dig = n % 10;
+
+			if (last_dig != lead_dig) {
+				n += lead_dig - last_dig;
 			}
 
-			if (is_bin_palindrome(n))
-				continue;
+			n += (n - lead_dig);
 
 
-			    is_dec_palindrome(n, sig_base))
+
+			if (lead_dig == (n % 10)  &&
+			    is_bin_palindrome(n)) &&
+			    is_dec_palindrome(n, sig_base)
 				sum += n;
 
 			n += 2;
-
-			if (~((n / sig_base) & 1)) {
-			}
-
 		}
 	}
 
@@ -450,7 +450,9 @@ bool is_bin_asym(const int n)
 
 bool is_dec_palindrome(int n, int sig_base)
 {
-	return false;
+
+	for (int lead_dig)
+	return true;
 }
 
 

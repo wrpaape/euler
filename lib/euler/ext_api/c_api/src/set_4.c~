@@ -460,7 +460,14 @@ struct IntNode *init_dec_palindromes(void)
 
 	int pals[10 + 100 + 1000];
 
+	gen_odd_pals(100001,
+		     90000,
+		     pals)
+
+
 	int *pal = pals;
+
+	int
 
 	for (pal_val = 1; pal_val < 10, pal_val += 2, ++pal)
 		*pal = pal_val;
@@ -479,36 +486,37 @@ struct IntNode *init_dec_palindromes(void)
 		}
 	}
 
+	for (pal_val = 1001, pal_cap = 2000;
+	     pal_val < 10000,
+	     pal_val += 2002, pal_cap += 2000) {
 
-
-	for (size_t size_pals = sizeof(struct IntNode) * 5;)
-
-	for (int sig_mag = 10,
-	     sig_delta = 20,
-	     big_delta = 1,
-	     num_mid_digs = 1,
-		sig_mag < 1e7;
-			big_delta = sig_mag,
-			sig_mag *= 10,
-			sig_delta = sig_mag * 2,
-			++num_mid_digs) {
-
-
-		for (sig_base = sig_mag,    last_dig = 1;
-		     last_dig < 10;
-		     sig_base += sig_delta, last_dig += 2) {
-
-
-
-			pal_cap = sig_base + sig_mag;
-
-			pal->nxt = handle_malloc(sizeof(struct IntNode));
-			pal = pal->nxt;
-			pal->val = sig_base + last_dig;
+		while (pal_val < pal_cap) {
+			*pal = pal_val;
+			++pal;
+			pal_val += 110;
 		}
 	}
 
-	pal->nxt = NULL;
+
+	for (pal_val = 10001, pal_cap = 20000;
+	     pal_val < 100000,
+	     pal_val += 20002, pal_cap += 20000) {
+
+		while (pal_val < pal_cap) {
+			*pal = pal_val;
+
+			for (pal_val = 1010, pal_cap = 2000;
+			     pal_val < 10000,
+			     pal_val += 2020, pal_cap += 200) {
+
+				while (pal_val < pal_cap) {
+					*pal = pal_val;
+					++pal;
+					pal_val += 100;
+				}
+			}
+		}
+	}
 
 
 	return pals;

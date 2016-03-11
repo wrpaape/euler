@@ -21,7 +21,7 @@ void problem_33(char *result_buffer);
 void problem_34(char *result_buffer);
 void problem_35(char *result_buffer);
 void problem_36(char *result_buffer);
-void init_dec_palindromes(int *pals);
+int *init_odd_dec_pals(void);
 void add_mid_digs(int odd_base, int lil_delta, int big_delta, int **pal);
 struct DivNode **init_mult_map(void);
 bool is_bin_palindrome(const int n);

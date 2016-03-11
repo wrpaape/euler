@@ -369,11 +369,8 @@ void problem_36(char *result_buffer)
 {
 
 	int sum;
-	int lead_dig;
-	int last_dig;
-	int pal_buff[10 + 100 + 1000];
 
-	init_dec_palindromes(pal_buff);
+	int *pals = init_odd_dec_pals();
 
 	/* int dig_buff[3]; */
 
@@ -388,28 +385,51 @@ void problem_36(char *result_buffer)
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-void init_dec_palindromes(int *pals)
+int *init_odd_dec_pals(void)
 {
-	for (int big_delta = 10,
-	     odd_base = 101,
-	     delta_base = 202,
-	     rbound = 1000;
-		     odd_base < 1e6;
-			     big_delta  = rbound / 10,
-			     odd_base   = rbound + 1,
-			     delta_base = odd_base * 2,
-			     rbound *= 10) {
+	int odd_base;
+	int base_cap;
+	int delta_base;
+	int big_delta;
+	int *pals;
+	int *pal;
 
-		while (odd_base < rbound) {
+	pals	 = handle_malloc(sizeof(int) * 1020);
+	pal	 = pals;
+	odd_base = 1;
 
-			/* printf("odd_base: %d\n", odd_base); */
-			/* fflush(stdout); */
+	do {
+		*pal = odd_base;
+		++pal;
+		odd_base += 2;
 
-			add_mid_digs(odd_base, 10, big_delta, &pals);
+	} while (odd_base < 10);
 
+	do {
+		*pal = odd_base;
+		++pal;
+		odd_base += 22;
+
+	} while (odd_base < 100);
+
+	odd_base = 101;
+	base_cap = 1000;
+
+	while (1) {
+		delta_base = odd_base * 2;
+		big_delta  = odd_base / 10;
+
+		do {
+			add_mid_digs(odd_base, 10, big_delta, &pal);
 			odd_base += delta_base;
-		}
 
+		} while (odd_base < base_cap);
+
+		if (odd_base > 1e6)
+			return pals;
+
+		odd_base  = base_cap + 1;
+		base_cap *= 10;
 	}
 }
 

@@ -368,15 +368,17 @@ NEXT_PRIME:
 void problem_36(char *result_buffer)
 {
 
-		if (is_bin_palindrome(585))
-			puts("585 checks out");
-
-		if (is_bin_palindrome(123))
-			puts("123 checks out");
 	int sum;
-
 	int lead_dig;
 	int last_dig;
+
+	struct IntNode *pals = init_dec_palindromes();
+
+	while (pals != NULL) {
+		printf("pals->val: %d\n", pals->val);
+		pals = pals->nxt;
+	}
+
 	/* int dig_buff[3]; */
 
 	/*
@@ -384,47 +386,144 @@ void problem_36(char *result_buffer)
 	 * (trailing 0), set first el of 'bit_buff' to 1.
 	 */
 	sum = 1;
-	for (int n = 3, sig_base = 1, nxt_base = 10;
-	     sig_base < 1e6;
-	     sig_base = nxt_base,     nxt_base *= 10) {
+	/* for (int n = 3, sig_base = 1, nxt_base = 10; */
+	/*      sig_base < 1e6; */
+	/*      sig_base = nxt_base,     nxt_base *= 10) { */
 
-		while (1) {
-			lead_dig = n / sig_base;
+	/* 	while (1) { */
+	/* 		lead_dig = n / sig_base; */
 
-			/* skip intervals with leading even decimal digit */
-			if (~(lead_dig & 1)) {
-				n += sig_base;
+	/* 		/1* skip intervals with leading even decimal digit *1/ */
+	/* 		if (~(lead_dig & 1)) { */
+	/* 			n += sig_base; */
 
-				if (n > nxt_base)
-					break;
+	/* 			if (n > nxt_base) */
+	/* 				break; */
 
-				++lead_dig;
-			}
+	/* 			++lead_dig; */
+	/* 		} */
 
-			last_dig = n % 10;
+	/* 		last_dig = n % 10; */
 
-			if (last_dig != lead_dig) {
-			}
+	/* 		if (last_dig != lead_dig) { */
+	/* 			n += lead_dig > last_dig; */
+	/* 		} */
 
-			n += (n - lead_dig);
+	/* 		n += (n - lead_dig); */
 
 
 
-			if (lead_dig == (n % 10)  &&
-			    is_bin_palindrome(n)) &&
-			    is_dec_palindrome(n, sig_base)
-				sum += n;
+	/* 		if (lead_dig == (n % 10)  && */
+	/* 		    is_bin_palindrome(n)) && */
+	/* 		    is_dec_palindrome(n, sig_base) */
+	/* 			sum += n; */
 
-			n += 2;
-		}
-	}
+	/* 		n += 2; */
+	/* 	} */
+	/* } */
+
 
 	sprintf(result_buffer, "%d", sum);
 }
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-bool is_bin_asym(const int n)
+struct IntNode *init_dec_palindromes(void)
+{
+	struct IntNode *pals = handle_malloc(sizeof(struct IntNode) * 10);
+	struct IntNode *pal  = pals;
+
+	/* init pals with no mid digits */
+	pal->val =  1; pal->nxt = pal + 1; ++pal;
+	pal->val =  3; pal->nxt = pal + 1; ++pal;
+	pal->val =  5; pal->nxt = pal + 1; ++pal;
+	pal->val =  7; pal->nxt = pal + 1; ++pal;
+	pal->val =  9; pal->nxt = pal + 1; ++pal;
+	pal->val = 11; pal->nxt = pal + 1; ++pal;
+	pal->val = 33; pal->nxt = pal + 1; ++pal;
+	pal->val = 55; pal->nxt = pal + 1; ++pal;
+	pal->val = 77; pal->nxt = pal + 1; ++pal;
+	pal->val = 99;
+
+	int sig_mag, sig_base, last_dig, sig_delta, big_delta, pal_val, pal_cap;
+
+	int num_mid_digs;
+
+
+
+	size_t size_interval = sizeof(int) * 10;
+	size_t size_pals = size_interval;
+	size_intv *= 10;
+	size_pals += size_interval;
+	size_intv *= 10;
+	size_pals += size_interval;
+
+	int pals[10 + 100 + 1000];
+
+	int *pal = pals;
+
+	for (pal_val = 1; pal_val < 10, pal_val += 2, ++pal)
+		*pal = pal_val;
+
+	for (pal_val = 11; pal_val < 100, pal_val+= 22, ++pal)
+		*pal = pal_val;
+
+	for (pal_val = 101, pal_cap = 200;
+	     pal_val < 1000,
+	     pal_val += 202, pal_cap += 200) {
+
+		while (pal_val < pal_cap) {
+			*pal = pal_val;
+			++pal;
+			pal_val += 10;
+		}
+	}
+
+
+
+	for (size_t size_pals = sizeof(struct IntNode) * 5;)
+
+	for (int sig_mag = 10,
+	     sig_delta = 20,
+	     big_delta = 1,
+	     num_mid_digs = 1,
+		sig_mag < 1e7;
+			big_delta = sig_mag,
+			sig_mag *= 10,
+			sig_delta = sig_mag * 2,
+			++num_mid_digs) {
+
+
+		for (sig_base = sig_mag,    last_dig = 1;
+		     last_dig < 10;
+		     sig_base += sig_delta, last_dig += 2) {
+
+
+
+			pal_cap = sig_base + sig_mag;
+
+			pal->nxt = handle_malloc(sizeof(struct IntNode));
+			pal = pal->nxt;
+			pal->val = sig_base + last_dig;
+		}
+	}
+
+	pal->nxt = NULL;
+
+
+	return pals;
+}
+
+void gen_mid_digits(const int big_delta,
+		    const int lil_delta,
+		    int pal_val;
+		    struct IntNode **pal)
+{
+
+}
+
+
+bool is_bin_palindrome(const int n)
 {
 	const int bit_len = INT_BITS - __builtin_clz(n);
 	const int halfway = bit_len / 2;
@@ -450,7 +549,6 @@ bool is_bin_asym(const int n)
 bool is_dec_palindrome(int n, int sig_base)
 {
 
-	for (int lead_dig)
 	return true;
 }
 

@@ -371,13 +371,9 @@ void problem_36(char *result_buffer)
 	int sum;
 	int lead_dig;
 	int last_dig;
+	int pal_buff[10 + 100 + 1000];
 
-	struct IntNode *pals = init_dec_palindromes();
-
-	while (pals != NULL) {
-		printf("pals->val: %d\n", pals->val);
-		pals = pals->nxt;
-	}
+	init_dec_palindromes(pal_buff);
 
 	/* int dig_buff[3]; */
 
@@ -386,86 +382,45 @@ void problem_36(char *result_buffer)
 	 * (trailing 0), set first el of 'bit_buff' to 1.
 	 */
 	sum = 1;
-	/* for (int n = 3, sig_base = 1, nxt_base = 10; */
-	/*      sig_base < 1e6; */
-	/*      sig_base = nxt_base,     nxt_base *= 10) { */
-
-	/* 	while (1) { */
-	/* 		lead_dig = n / sig_base; */
-
-	/* 		/1* skip intervals with leading even decimal digit *1/ */
-	/* 		if (~(lead_dig & 1)) { */
-	/* 			n += sig_base; */
-
-	/* 			if (n > nxt_base) */
-	/* 				break; */
-
-	/* 			++lead_dig; */
-	/* 		} */
-
-	/* 		last_dig = n % 10; */
-
-	/* 		if (last_dig != lead_dig) { */
-	/* 			n += lead_dig > last_dig; */
-	/* 		} */
-
-	/* 		n += (n - lead_dig); */
-
-
-
-	/* 		if (lead_dig == (n % 10)  && */
-	/* 		    is_bin_palindrome(n)) && */
-	/* 		    is_dec_palindrome(n, sig_base) */
-	/* 			sum += n; */
-
-	/* 		n += 2; */
-	/* 	} */
-	/* } */
-
 
 	sprintf(result_buffer, "%d", sum);
 }
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-int *init_dec_palindromes(void)
+void init_dec_palindromes(int *pals)
 {
-	int pals[10 + 100 + 1000];
-	int *pal = pals;
-
-
-	for (int big_delta = 1,
-	     odd_base = 1,
-	     delta_base = 2,
-	     rbound = 10;
+	for (int big_delta = 10,
+	     odd_base = 101,
+	     delta_base = 202,
+	     rbound = 1000;
 		     odd_base < 1e6;
-			     big_delta  = rbound,
-			     odd_base   = big_delta + 1,
+			     big_delta  *= 10,
+			     odd_base   = rbound + 1,
 			     delta_base = odd_base * 2,
 			     rbound *= 10) {
 
 		while (odd_base < rbound) {
 
-			add_mid_digs(odd_base,
-				     10,
-				     big_delta,
-				     &pal)
+			/* printf("odd_base: %d\n", odd_base); */
+			/* fflush(stdout); */
+
+			add_mid_digs(odd_base, 10, big_delta, &pals);
 
 			odd_base += delta_base;
 		}
 
 	}
+}
 
 
-	int *pal = pals;
-
-void add_mid_digs(int odd_base,
-		  int lil_delta,
-		  int big_delta,
-		  int **pal)
+void add_mid_digs(int odd_base, int lil_delta, int big_delta, int **pal)
 {
 	**pal = odd_base;
 	++(*pal);
+
+	printf("odd_base: %d\n", odd_base);
+	fflush(stdout);
 
 	if (big_delta < lil_delta)
 		return;
@@ -490,10 +445,7 @@ void add_mid_digs(int odd_base,
 
 		odd_base += delta;
 
-		add_mid_digs(odd_base,
-			     lil_delta,
-			     big_delta,
-			     pal)
+		add_mid_digs(odd_base, lil_delta, big_delta, pal);
 	}
 
 }

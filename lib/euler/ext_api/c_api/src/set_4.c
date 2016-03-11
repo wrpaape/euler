@@ -428,105 +428,73 @@ void problem_36(char *result_buffer)
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-struct IntNode *init_dec_palindromes(void)
+int *init_dec_palindromes(void)
 {
-	struct IntNode *pals = handle_malloc(sizeof(struct IntNode) * 10);
-	struct IntNode *pal  = pals;
-
-	/* init pals with no mid digits */
-	pal->val =  1; pal->nxt = pal + 1; ++pal;
-	pal->val =  3; pal->nxt = pal + 1; ++pal;
-	pal->val =  5; pal->nxt = pal + 1; ++pal;
-	pal->val =  7; pal->nxt = pal + 1; ++pal;
-	pal->val =  9; pal->nxt = pal + 1; ++pal;
-	pal->val = 11; pal->nxt = pal + 1; ++pal;
-	pal->val = 33; pal->nxt = pal + 1; ++pal;
-	pal->val = 55; pal->nxt = pal + 1; ++pal;
-	pal->val = 77; pal->nxt = pal + 1; ++pal;
-	pal->val = 99;
-
-	int sig_mag, sig_base, last_dig, sig_delta, big_delta, pal_val, pal_cap;
-
-	int num_mid_digs;
-
-
-
-	size_t size_interval = sizeof(int) * 10;
-	size_t size_pals = size_interval;
-	size_intv *= 10;
-	size_pals += size_interval;
-	size_intv *= 10;
-	size_pals += size_interval;
-
 	int pals[10 + 100 + 1000];
+	int *pal = pals;
 
-	gen_odd_pals(100001,
-		     90000,
-		     pals);
+
+	for (int big_delta = 1,
+	     odd_base = 1,
+	     delta_base = 2,
+	     rbound = 10;
+		     odd_base < 1e6;
+			     big_delta  = rbound,
+			     odd_base   = big_delta + 1,
+			     delta_base = odd_base * 2,
+			     rbound *= 10) {
+
+		while (odd_base < rbound) {
+
+			add_mid_digs(odd_base,
+				     10,
+				     big_delta,
+				     &pal)
+
+			odd_base += delta_base;
+		}
+
+	}
 
 
 	int *pal = pals;
 
-	int
-
-	for (pal_val = 1; pal_val < 10, pal_val += 2, ++pal)
-		*pal = pal_val;
-
-	for (pal_val = 11; pal_val < 100, pal_val+= 22, ++pal)
-		*pal = pal_val;
-
-	for (pal_val = 101, pal_cap = 200;
-	     pal_val < 1000,
-	     pal_val += 202, pal_cap += 200) {
-
-		while (pal_val < pal_cap) {
-			*pal = pal_val;
-			++pal;
-			pal_val += 10;
-		}
-	}
-
-	for (pal_val = 1001, pal_cap = 2000;
-	     pal_val < 10000,
-	     pal_val += 2002, pal_cap += 2000) {
-
-		while (pal_val < pal_cap) {
-			*pal = pal_val;
-			++pal;
-			pal_val += 110;
-		}
-	}
-
-
-	for (pal_val = 10001, pal_cap = 20000;
-	     pal_val < 100000,
-	     pal_val += 20002, pal_cap += 20000) {
-
-		while (pal_val < pal_cap) {
-			*pal = pal_val;
-
-			for (pal_val = 1010, pal_cap = 2000;
-			     pal_val < 10000,
-			     pal_val += 2020, pal_cap += 200) {
-
-				while (pal_val < pal_cap) {
-					*pal = pal_val;
-					++pal;
-					pal_val += 100;
-				}
-			}
-		}
-	}
-
-
-	return pals;
-}
-
-void gen_mid_digits(const int big_delta,
-		    const int lil_delta,
-		    int pal_val;
-		    struct IntNode **pal)
+void add_mid_digs(int odd_base,
+		  int lil_delta,
+		  int big_delta,
+		  int **pal)
 {
+	**pal = odd_base;
+	++(*pal);
+
+	if (big_delta < lil_delta)
+		return;
+
+	if (lil_delta == big_delta) {
+
+		for (int mid_dig = 1; mid_dig < 10; ++mid_dig) {
+			odd_base += lil_delta;
+			**pal = odd_base;
+			++(*pal);
+		}
+
+		return;
+	}
+
+	int delta = lil_delta + big_delta;
+
+	lil_delta *= 10;
+	big_delta /= 10;
+
+	for (int rec_count = 0; rec_count < 9; ++rec_count) {
+
+		odd_base += delta;
+
+		add_mid_digs(odd_base,
+			     lil_delta,
+			     big_delta,
+			     pal)
+	}
 
 }
 

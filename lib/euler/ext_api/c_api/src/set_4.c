@@ -368,9 +368,21 @@ NEXT_PRIME:
 void problem_36(char *result_buffer)
 {
 
-	int sum;
+	const int num_odd_dec_pals = 1020;
 
-	int *pals = init_odd_dec_pals();
+	int pals_buff[num_odd_dec_pals];
+
+	init_odd_dec_pals(pals_buff);
+
+	int sum = 0;
+	int *pal = pals_buff;
+
+	for (int pal_i = 0; pal_i < num_odd_dec_pals; ++pal_i) {
+		if (is_bin_palindrome(*pal))
+			sum += *pal;
+
+		++pal;
+	}
 
 	/* int dig_buff[3]; */
 
@@ -378,24 +390,19 @@ void problem_36(char *result_buffer)
 	 * skip even numbers as they cannot be palindromic in base 2
 	 * (trailing 0), set first el of 'bit_buff' to 1.
 	 */
-	sum = 1;
 
 	sprintf(result_buffer, "%d", sum);
 }
 /************************************************************************
  *				HELPERS					*
  ************************************************************************/
-int *init_odd_dec_pals(void)
+void init_odd_dec_pals(int *pal)
 {
 	int odd_base;
 	int base_cap;
 	int delta_base;
 	int big_delta;
-	int *pals;
-	int *pal;
 
-	pals	 = handle_malloc(sizeof(int) * 1020);
-	pal	 = pals;
 	odd_base = 1;
 
 	do {
@@ -426,7 +433,7 @@ int *init_odd_dec_pals(void)
 		} while (odd_base < base_cap);
 
 		if (odd_base > 1e6)
-			return pals;
+			return;
 
 		odd_base  = base_cap + 1;
 		base_cap *= 10;
@@ -438,9 +445,6 @@ void add_mid_digs(int odd_base, int lil_delta, int big_delta, int **pal)
 {
 	**pal = odd_base;
 	++(*pal);
-
-	printf("odd_base: %d\n", odd_base);
-	fflush(stdout);
 
 	if (big_delta < lil_delta)
 		return;
@@ -462,9 +466,7 @@ void add_mid_digs(int odd_base, int lil_delta, int big_delta, int **pal)
 	big_delta /= 10;
 
 	for (int rec_count = 0; rec_count < 9; ++rec_count) {
-
 		odd_base += delta;
-
 		add_mid_digs(odd_base, lil_delta, big_delta, pal);
 	}
 
@@ -490,12 +492,6 @@ bool is_bin_palindrome(const int n)
 		    ((n >> big_shift) & 1))
 			return false;
 	}
-
-	return true;
-}
-
-bool is_dec_palindrome(int n, int sig_base)
-{
 
 	return true;
 }

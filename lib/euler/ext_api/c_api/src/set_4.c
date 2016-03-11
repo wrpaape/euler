@@ -395,7 +395,7 @@ void init_dec_palindromes(int *pals)
 	     delta_base = 202,
 	     rbound = 1000;
 		     odd_base < 1e6;
-			     big_delta  *= 10,
+			     big_delta  = rbound / 10,
 			     odd_base   = rbound + 1,
 			     delta_base = odd_base * 2,
 			     rbound *= 10) {

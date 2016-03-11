@@ -368,89 +368,101 @@ NEXT_PRIME:
 void problem_36(char *result_buffer)
 {
 
-	const int num_odd_dec_pals = 1020;
+	int sum;
+	int lead_dig;
+	int last_dig;
 
-	int pals_buff[num_odd_dec_pals];
+	struct IntNode *pals = init_dec_palindromes();
 
-	init_odd_dec_pals(pals_buff);
-
-	int sum = 0;
-	int *pal = pals_buff;
-
-	for (int pal_i = 0; pal_i < num_odd_dec_pals; ++pal_i, ++pal) {
-		if (is_bin_palindrome(*pal))
-			sum += *pal;
+	while (pals != NULL) {
+		printf("pals->val: %d\n", pals->val);
+		pals = pals->nxt;
 	}
+
+	/* int dig_buff[3]; */
+
+	/*
+	 * skip even numbers as they cannot be palindromic in base 2
+	 * (trailing 0), set first el of 'bit_buff' to 1.
+	 */
+	sum = 1;
+	/* for (int n = 3, sig_base = 1, nxt_base = 10; */
+	/*      sig_base < 1e6; */
+	/*      sig_base = nxt_base,     nxt_base *= 10) { */
+
+	/* 	while (1) { */
+	/* 		lead_dig = n / sig_base; */
+
+	/* 		/1* skip intervals with leading even decimal digit *1/ */
+	/* 		if (~(lead_dig & 1)) { */
+	/* 			n += sig_base; */
+
+	/* 			if (n > nxt_base) */
+	/* 				break; */
+
+	/* 			++lead_dig; */
+	/* 		} */
+
+	/* 		last_dig = n % 10; */
+
+	/* 		if (last_dig != lead_dig) { */
+	/* 			n += lead_dig > last_dig; */
+	/* 		} */
+
+	/* 		n += (n - lead_dig); */
+
+
+
+	/* 		if (lead_dig == (n % 10)  && */
+	/* 		    is_bin_palindrome(n)) && */
+	/* 		    is_dec_palindrome(n, sig_base) */
+	/* 			sum += n; */
+
+	/* 		n += 2; */
+	/* 	} */
+	/* } */
 
 
 	sprintf(result_buffer, "%d", sum);
 }
 /************************************************************************
- *				- problem_37 -				*
- *									*
- * The number 3797 has an interesting property. Being prime itself, it	*
- * is possible to continuously remove digits from left to right, and	*
- * remain prime at each stage: 3797, 797, 97, and 7. Similarly we can	*
- * work from right to left: 3797, 379, 37, and 3.			*
- *									*
- * Find the sum of the only eleven primes that are both truncatable	*
- * from left to right and right to left.				*
- *									*
- * NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.	*
- *
- ************************************************************************/
-void problem_37(char *result_buffer)
-{
-}
-/************************************************************************
  *				HELPERS					*
  ************************************************************************/
-void init_odd_dec_pals(int *pal)
+int *init_dec_palindromes(void)
 {
-	int odd_base;
-	int base_cap;
-	int delta_base;
-	int big_delta;
+	int pals[10 + 100 + 1000];
+	int *pal = pals;
 
-	odd_base = 1;
 
-	do {
-		*pal = odd_base;
-		++pal;
-		odd_base += 2;
+	for (int big_delta = 1,
+	     odd_base = 1,
+	     delta_base = 2,
+	     rbound = 10;
+		     odd_base < 1e6;
+			     big_delta  = rbound,
+			     odd_base   = big_delta + 1,
+			     delta_base = odd_base * 2,
+			     rbound *= 10) {
 
-	} while (odd_base < 10);
+		while (odd_base < rbound) {
 
-	do {
-		*pal = odd_base;
-		++pal;
-		odd_base += 22;
+			add_mid_digs(odd_base,
+				     10,
+				     big_delta,
+				     &pal)
 
-	} while (odd_base < 100);
-
-	odd_base = 101;
-	base_cap = 1000;
-
-	while (1) {
-		delta_base = odd_base * 2;
-		big_delta  = odd_base / 10;
-
-		do {
-			add_mid_digs(odd_base, 10, big_delta, &pal);
 			odd_base += delta_base;
+		}
 
-		} while (odd_base < base_cap);
-
-		if (odd_base > 1e6)
-			return;
-
-		odd_base  = base_cap + 1;
-		base_cap *= 10;
 	}
-}
 
 
-void add_mid_digs(int odd_base, int lil_delta, int big_delta, int **pal)
+	int *pal = pals;
+
+void add_mid_digs(int odd_base,
+		  int lil_delta,
+		  int big_delta,
+		  int **pal)
 {
 	**pal = odd_base;
 	++(*pal);
@@ -475,8 +487,13 @@ void add_mid_digs(int odd_base, int lil_delta, int big_delta, int **pal)
 	big_delta /= 10;
 
 	for (int rec_count = 0; rec_count < 9; ++rec_count) {
+
 		odd_base += delta;
-		add_mid_digs(odd_base, lil_delta, big_delta, pal);
+
+		add_mid_digs(odd_base,
+			     lil_delta,
+			     big_delta,
+			     pal)
 	}
 
 }
@@ -486,18 +503,27 @@ bool is_bin_palindrome(const int n)
 {
 	const int bit_len = INT_BITS - __builtin_clz(n);
 	const int halfway = bit_len / 2;
-	const int big_pos = bit_len - 1;
 
-	for (int shift = 1; shift < halfway; ++shift) {
+	for (int lil_shift = 1, big_shift = bit_len - 2;
+	     lil_shift < halfway;
+	     ++lil_shift,	--big_shift) {
+
 		/*
 		 * if small bit is 0 and mirrored big bit is 1 or
 		 * if small bit is 1 and mirrored big bit is 0
 		 *
 		 * n is not palindromic in base 2
 		 */
-		if (((n >> shift) & 1) ^ ((n >> (big_pos - shift)) & 1))
+		if (((n >> lil_shift) & 1) ^
+		    ((n >> big_shift) & 1))
 			return false;
 	}
+
+	return true;
+}
+
+bool is_dec_palindrome(int n, int sig_base)
+{
 
 	return true;
 }

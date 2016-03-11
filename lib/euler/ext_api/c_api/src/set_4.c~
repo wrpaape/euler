@@ -399,7 +399,7 @@ void problem_36(char *result_buffer)
  * NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.	*
  *
  ************************************************************************/
-void problem_37(char *result_buffer)
+void problem_36(char *result_buffer)
 {
 }
 /************************************************************************

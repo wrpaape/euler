@@ -212,7 +212,6 @@ void *sieve_range(void *arg)
 	const int LENGTH_TERMS =
 		((((int) sqrtf((float) ((until * 2) + 3))) - 1) / 2) + 1;
 
-
 	int x_sq_3[LENGTH_TERMS];
 	int x_sq_4[LENGTH_TERMS];
 

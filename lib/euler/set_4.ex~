@@ -98,4 +98,30 @@ defmodule Euler.Set4 do
   55
   """
   def problem_35, do: CAPI.call(~w(4 35))
+
+  @doc """
+  36) Double-base Palindromes
+
+  The decimal number, 585 = 1001001001₂ (binary), is palindromic in both bases.
+
+  Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
+
+  (Please note that the palindromic number, in either base, may not include leading zeros.)
+
+  03/10/16
+
+  iex> Euler.Set4.problem_36 |> elem(1)
+  872187
+  """
+  def problem_36, do: CAPI.call(~w(4 36))
+
+
+  @doc """
+  The number 3797 has an interesting property. Being prime itself, it is possible to continuously remove digits from left to right, and remain prime at each stage: 3797, 797, 97, and 7. Similarly we can work from right to left: 3797, 379, 37, and 3.
+
+  Find the sum of the only eleven primes that are both truncatable from left to right and right to left.
+
+  NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
+  """
+  def problem_37, do: CAPI.call(~w(4 37))
 end

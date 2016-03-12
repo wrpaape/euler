@@ -171,11 +171,11 @@ productsLoop:
 		return Integer.valueOf(maxPandigital);
 	}
 
-	private static class PandigitalSet {
+	private static class DigitSet {
 		private final boolean remDigits[10];
 		private final int size;
 
-		private PandigitalSet(int lengthMultiplicand, int lengthMultiplier) {
+		private DigitSet(int lengthMultiplicand, int lengthMultiplier) {
 			lengthFirst  = lengthMultiplicand;
 			lengthSecond = lengthMultiplier;
 			products	 = new HashSet<Integer>();

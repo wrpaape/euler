@@ -6,6 +6,7 @@
  ******************************************************************************/
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Set;
 
 public abstract class Sets {
 	/**************************************************************************
@@ -66,5 +67,28 @@ public abstract class Sets {
 			listIter.add(nextEl);
 
 		} while (listIter.hasNext());
+	}
+
+
+	public static class DigitsSet implements Set {
+		private boolean[] taken;
+		private boolean[] base;
+		private int min;
+		private int max;
+		private int size;
+
+		public DigitSet(int... exclude) {
+			base = new boolean[10];
+
+			for (int digit : exclude) {
+				base[digit]  = digit;
+				taken[digit] = digit;
+			}
+
+		}
+
+		public DigitSet(int from, int upto) {
+
+		}
 	}
 }

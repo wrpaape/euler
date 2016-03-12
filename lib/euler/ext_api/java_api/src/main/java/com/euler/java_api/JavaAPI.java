@@ -17,7 +17,7 @@ public class JavaAPI {
 
 	private JavaAPI(String setNum, String probNum) {
 		try {
-			Class<?> problemSet = Class.forName("Set" + setNum);
+			Class<?> problemSet = Class.forName("com.euler.java_api.Set" + setNum);
 			problemMethod		= problemSet.getDeclaredMethod("problem" + probNum);
 
 		} catch(ClassNotFoundException e) {

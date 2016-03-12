@@ -99,14 +99,18 @@ public abstract class Set4 {
 		int n;
 		int product;
 		int prodDigs;
+		int digit;
 		int offset;
 		int concatProducts;
 
 
-		HashSet<Integer> digits = new HashSet<>();
+		// HashSet<Integer> digits = new HashSet<>();
 		// ArrayDeque<Integer> products = new ArrayDeque<>();
+		//
 
-		private static final int SEARCH_CEIL = 987654321 / 3 + 1;
+		boolean [10];
+
+		final int SEARCH_CEIL = 987654321 / 3 + 1;
 
 		maxPandigital = 0;
 
@@ -115,15 +119,27 @@ public abstract class Set4 {
 			product = n;
 			offset  = 10_000_000;
 
+
 			concatProducts = 0;
+
+
+			digits[0] = true;
 
 productsLoop:
 			while (true) {
 
-				digits.add(Integer.valueOf(product % 10));
-				prodDigs = product / 10;
+				// digits.add(Integer.valueOf(product % 10));
 
-				while (prodDigs > 0) {
+
+				while (true) {
+					digit = product % 10;
+
+					if (digits[digit]) {
+					}
+
+
+					prodDigs = product;
+
 					if (digits.add(Integer.valueOf(prodDigs % 10))) {
 						prodDigs /= 10;
 						offset   /= 10;
@@ -134,9 +150,12 @@ productsLoop:
 
 				concatProducts += (product * offset);
 
-				if (digits.size() == 9) {
+				if (digits.size() == 10) {
+						System.out.println(concatProducts);
+						System.out.println(digits);
 
 					if (concatProducts > maxPandigital) {
+
 						maxPandigital = concatProducts;
 					}
 
@@ -145,17 +164,23 @@ productsLoop:
 
 				product += n;
 			}
-
-			digits.clear();
 		}
-
-
 
 
 
 		return Integer.valueOf(maxPandigital);
 	}
 
+	private static class PandigitalSet {
+		private final boolean remDigits[10];
+		private final int size;
+
+		private PandigitalSet(int lengthMultiplicand, int lengthMultiplier) {
+			lengthFirst  = lengthMultiplicand;
+			lengthSecond = lengthMultiplier;
+			products	 = new HashSet<Integer>();
+		}
+	}
 
 	/*
 	 * Stores conditions for generating 1 through 9 pandigital product

@@ -10,6 +10,7 @@
 #include "set_4.h"
 
 #define INT_BITS (sizeof(int) * CHAR_BIT)
+#define PRIME_CEIL 100000
 /************************************************************************
  *			TOP LEVEL FUNCTIONS				*
  ************************************************************************/
@@ -401,6 +402,60 @@ void problem_36(char *result_buffer)
  ************************************************************************/
 void problem_37(char *result_buffer)
 {
+	struct IntNode *primes;
+	struct IntNode *prime;
+	int trunc_count;
+	int prime_val;
+	int trunc;
+	int sum;
+
+	bool prime_map[(PRIME_CEIL / 10) + 1] = { false };
+
+	primes = atkin_sieve(PRIME_CEIL);
+
+	for (prime = primes,	 prime_val = prime->val;
+	     prime_val <= (PRIME_CEIL / 10);
+	     prime = prime->nxt, prime_val = prime->val)
+		prime_map[prime_val] = true;
+
+
+	for (prime = primes; prime->val <= 7; prime = prime->nxt);
+
+	trunc_count = 0;
+	sum = 0;
+
+	while (1) {
+		prime_val = prime->val;
+
+
+		trunc = 10;
+
+		while (1) {
+			if (prime_map[prime_val / trunc] &&
+			    prime_map[prime_val % trunc])
+				trunc *= 10;
+			else
+				break;
+
+			if (trunc > prime_val) {
+				sum += prime_val;
+				++trunc_count;
+
+				printf("prime_val: %d\n", prime_val);
+				printf("trunc_count: %d\n", trunc_count);
+				fflush(stdout);
+
+				if (trunc_count == 11) {
+					sprintf(result_buffer, "%d", sum);
+					return;
+				}
+			}
+
+
+		}
+
+		prime = prime->nxt;
+	}
 }
 /************************************************************************
  *				HELPERS					*

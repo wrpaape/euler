@@ -26,7 +26,7 @@ public abstract class Set4 {
 	 * HINT: Some products can be obtained in more than one way so be sure to   *
 	 * only include it once in your sum.                                        *
 	 ****************************************************************************/
-	public static Integer problem32() { 
+	public static Integer problem32() {
 		/*
 		 * Let 'a', 'b', and 'c' represent the multipicand, multiplier, and
 		 * product, respectively, of the multiplication statement:
@@ -68,6 +68,44 @@ public abstract class Set4 {
 		// merge and sum the unique products from the valid identities
 		return Integer.valueOf(tree144.mergeProducts(tree234)
 					  				  .sumProducts());
+	}
+
+import java.util.stream.IntStream;
+	/************************************************************************
+	 *							- problem_38 -								*
+	 *																		*
+	 * Take the number 192 and multiply it by each of 1, 2, and 3:			*
+	 *																		*
+	 * 192 × 1 = 192														*
+	 * 192 × 2 = 384														*
+	 * 192 × 3 = 576														*
+	 *																		*
+	 * By concatenating each product we get the 1 to 9 pandigital,			*
+	 * 192384576. We will call 192384576 the concatenated product of 192	*
+	 * and (1, 2, 3)														*
+	 *																		*
+	 * The same can be achieved by starting with 9 and multiplying by 1, 2,	*
+	 * 3, 4, and 5, giving the pandigital, 918273645, which is the			*
+	 * concatenated product of 9 and (1, 2, 3, 4, 5).						*
+	 *																		*
+	 * What is the largest 1 to 9 pandigital 9-digit number that can be		*
+	 * formed as the concatenated product of an integer with				*
+	 * (1, 2, ... , n) where n > 1?											*
+	 ************************************************************************/
+	public static Integer problem38() {
+
+		int maxPandigital;
+
+		private static final int SEARCH_CEIL = 987654321 / 3 + 1;
+
+		for (int i = 1; i < SEARCH_CEIL; i++) {
+			
+		}
+
+
+
+
+		return Integer.valueOf(maxPandigital);
 	}
 
 
@@ -125,7 +163,7 @@ public abstract class Set4 {
 				if (!prodDigs.add(remProd % 10)) {
 					return;
 				}
-			} 
+			}
 
 			// if digits coincides with those remaining in 'pool'...
 			if (prodDigs.containsAll(leaf.pool)) {

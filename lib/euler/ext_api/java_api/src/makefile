@@ -16,5 +16,9 @@ default: classes
 
 classes: $(CLASSES:.java=.class)
 
+JavaAPI.class:
+	$(JC) $(JFLAGS) -d $(DESTDIR) -classpath $(DESTDIR) -sourcepath $(SRCDIR) $*.java
+	
+
 clean:
 	$(RM) $(DESTDIR)*.class

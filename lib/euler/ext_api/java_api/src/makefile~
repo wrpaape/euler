@@ -10,7 +10,7 @@ MAIN_JAVA_FILE_NAME = JavaAPI.java
 .SUFFIXES: .java .class
 
 .java.class:
-	$(JC) $(JFLAGS) -d $(DESTDIR) -classpath $(DESTDIR) $*.java
+	$(JC) $(JFLAGS) -d $(DESTDIR) -classpath $(DESTDIR) -sourcepath $(SRCDIR) $*.java
 
 default: classes
 

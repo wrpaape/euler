@@ -3,6 +3,8 @@
  *                                                                                  *
  * Abstract class 'Set3' houses solutions for problems 11-20.                       *
  ************************************************************************************/
+package tastyham.euler;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
@@ -22,7 +24,7 @@ public abstract class Set3 {
    *                                                                                *
    * Evaluate the sum of all the amicable numbers under 10000.                      *
    **********************************************************************************/
-  public static Integer problem21() { 
+  public static Integer problem21() {
     int sumAmicableNumbers = 0;
 
     Map<Integer, Integer> divsSumMap = new ConcurrentHashMap<>();

@@ -3,6 +3,8 @@
  *                                                                                  *
  * Abstract class 'Set2' houses solutions for problems 11-20.                       *
  ************************************************************************************/
+package tastyham.euler;
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -22,7 +24,7 @@ public abstract class Set2 {
     int digAcc;                           // used to 'carry' overflow to next 'place'
 
 		digitsList = new LinkedList<Integer>();     // initialize 'digitsList'
-		digitsList.push(2);                          // set head digit (ones) to '2'
+		digitsList.add(2);                          // set head digit (ones) to '2'
 
 		digitsIterator = digitsList.listIterator(); // initialize iterator
     remNumMults = 999;                          // 999 mults to go

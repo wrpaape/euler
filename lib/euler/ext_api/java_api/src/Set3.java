@@ -22,7 +22,7 @@ public abstract class Set3 {
    *                                                                                *
    * Evaluate the sum of all the amicable numbers under 10000.                      *
    **********************************************************************************/
-  public static Integer problem21() { 
+  public static Integer problem21() {
     int sumAmicableNumbers = 0;
 
     Map<Integer, Integer> divsSumMap = new ConcurrentHashMap<>();

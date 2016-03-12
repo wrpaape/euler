@@ -164,7 +164,8 @@ public abstract class Set4 {
 
 
 
-		return Integer.valueOf(maxPandigital);
+		// return Integer.valueOf(maxPandigital);
+		return Integer.valueOf(42);
 	}
 
 

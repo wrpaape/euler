@@ -70,49 +70,49 @@ public abstract class Sets {
 	}
 
 
-	public static class DigitsSet implements Set {
-		private static final int NUM_DIGITS = 10;
+	// public static class DigitsSet implements Set {
+	// 	private static final int NUM_DIGITS = 10;
 
-		private boolean[] taken;
-		private boolean[] base;
-		private int size;
+	// 	private boolean[] taken;
+	// 	private boolean[] base;
+	// 	private int size;
 
-		public DigitSet(int... excludeFromBase) {
-			base  = new boolean[NUM_DIGITS];
-			taken = new boolean[NUM_DIGITS];
-			size  = 0;
+	// 	public DigitsSet(int... excludeFromBase) {
+	// 		base  = new boolean[NUM_DIGITS];
+	// 		taken = new boolean[NUM_DIGITS];
+	// 		size  = 0;
 
-			for (int digit : excludeFromBase) {
-				base[digit]  = true;
-				taken[digit] = true;
-				size++;
-			}
-		}
+	// 		for (int digit : excludeFromBase) {
+	// 			base[digit]  = true;
+	// 			taken[digit] = true;
+	// 			size++;
+	// 		}
+	// 	}
 
-		public boolean add(int digit) {
-			if (this.taken[digit]) {
-				return false;
-			}
+	// 	public boolean add(int digit) {
+	// 		if (this.taken[digit]) {
+	// 			return false;
+	// 		}
 
-			this.taken[digit] = true;
-			size++;
-			return true;
-		}
+	// 		this.taken[digit] = true;
+	// 		size++;
+	// 		return true;
+	// 	}
 
-		public boolean remove(int digit) {
-			boolean wasTaken  = this.taken[digit];
-			this.taken[digit] = false;
-			return wasTaken;
-		}
+	// 	public boolean remove(int digit) {
+	// 		boolean wasTaken  = this.taken[digit];
+	// 		this.taken[digit] = false;
+	// 		return wasTaken;
+	// 	}
 
-		public void clear() {
-			System.arraycopy(this.base,  0,
-							 this.taken, 0,
-							 NUM_DIGITS);
-			this.size = 0;
-		}
+	// 	public void clear() {
+	// 		System.arraycopy(this.base,  0,
+	// 						 this.taken, 0,
+	// 						 NUM_DIGITS);
+	// 		this.size = 0;
+	// 	}
 
 
-	}
+	// }
 
 }

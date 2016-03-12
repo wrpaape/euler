@@ -1,18 +1,20 @@
-JFLAGS = -g -Xlint
-# JFLAGS = -g -Xlint -Xdiags:verbose
-
 JC = javac
+JFLAGS = -g -Xlint -Xdiags:verbose
+# SOURCES = JavaAPI.java Set2.java Set3.java Set4.java
+CLASSES = $(wildcard *.java)
+# CLASSES = $(SOURCES:.java=.class)
+SRCDIR = ./
+DESTDIR = ../
+MAIN_JAVA_FILE_NAME = JavaAPI.java
 
 .SUFFIXES: .java .class
 
 .java.class:
-	$(JC) $(JFLAGS) $*.java -d ../
-
-CLASSES = JavaAPI.java Set2.java Set3.java Set4.java
+	$(JC) $(JFLAGS) -d $(DESTDIR) -classpath $(DESTDIR) $*.java
 
 default: classes
 
 classes: $(CLASSES:.java=.class)
 
 clean:
-	$(RM) ../*.class
+	$(RM) $(DESTDIR)*.class

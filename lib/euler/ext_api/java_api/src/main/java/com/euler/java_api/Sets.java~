@@ -4,7 +4,7 @@
  * Abstract class 'Sets' houses common functionality shared amongst problem	  *
  * 'SetX' modules. 															  *
  ******************************************************************************/
-package euler
+package com.euler.java_api;
 
 import java.util.LinkedList;
 import java.util.ListIterator;

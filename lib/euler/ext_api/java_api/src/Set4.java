@@ -108,79 +108,66 @@ public abstract class Set4 {
 		// ArrayDeque<Integer> products = new ArrayDeque<>();
 		//
 
-		boolean [10];
+		// final int SEARCH_CEIL = 987654321 / 3 + 1;
 
-		final int SEARCH_CEIL = 987654321 / 3 + 1;
+		// maxPandigital = 0;
 
-		maxPandigital = 0;
+		// for (n = 1; n < SEARCH_CEIL; n++) {
 
-		for (n = 1; n < SEARCH_CEIL; n++) {
-
-			product = n;
-			offset  = 10_000_000;
+		// 	product = n;
+		// 	offset  = 10_000_000;
 
 
-			concatProducts = 0;
+		// 	concatProducts = 0;
 
 
-			digits[0] = true;
+// productsLoop:
+		// 	while (true) {
 
-productsLoop:
-			while (true) {
-
-				// digits.add(Integer.valueOf(product % 10));
+		// 		// digits.add(Integer.valueOf(product % 10));
 
 
-				while (true) {
-					digit = product % 10;
+		// 		while (true) {
+		// 			digit = product % 10;
 
-					if (digits[digit]) {
-					}
+		// 			if (digits[digit]) {
+		// 			}
 
 
-					prodDigs = product;
+		// 			prodDigs = product;
 
-					if (digits.add(Integer.valueOf(prodDigs % 10))) {
-						prodDigs /= 10;
-						offset   /= 10;
-					} else {
-						break productsLoop;
-					}
-				}
+		// 			if (digits.add(Integer.valueOf(prodDigs % 10))) {
+		// 				prodDigs /= 10;
+		// 				offset   /= 10;
+		// 			} else {
+		// 				break productsLoop;
+		// 			}
+		// 		}
 
-				concatProducts += (product * offset);
+		// 		concatProducts += (product * offset);
 
-				if (digits.size() == 10) {
-						System.out.println(concatProducts);
-						System.out.println(digits);
+		// 		if (digits.size() == 10) {
+		// 				System.out.println(concatProducts);
+		// 				System.out.println(digits);
 
-					if (concatProducts > maxPandigital) {
+		// 			if (concatProducts > maxPandigital) {
 
-						maxPandigital = concatProducts;
-					}
+		// 				maxPandigital = concatProducts;
+		// 			}
 
-					break;
-				}
+		// 			break;
+		// 		}
 
-				product += n;
-			}
-		}
+		// 		product += n;
+		// 	}
+		// }
 
 
 
-		return Integer.valueOf(maxPandigital);
+		// return Integer.valueOf(maxPandigital);
+		return Integer.valueOf(42);
 	}
 
-	private static class DigitSet {
-		private final boolean remDigits[10];
-		private final int size;
-
-		private DigitSet(int lengthMultiplicand, int lengthMultiplier) {
-			lengthFirst  = lengthMultiplicand;
-			lengthSecond = lengthMultiplier;
-			products	 = new HashSet<Integer>();
-		}
-	}
 
 	/*
 	 * Stores conditions for generating 1 through 9 pandigital product

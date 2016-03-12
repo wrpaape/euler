@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.ArrayDeque;
 
 public abstract class Set4 {
   	/****************************************************************************
@@ -70,7 +71,7 @@ public abstract class Set4 {
 					  				  .sumProducts());
 	}
 
-import java.util.stream.IntStream;
+
 	/************************************************************************
 	 *							- problem_38 -								*
 	 *																		*
@@ -95,12 +96,59 @@ import java.util.stream.IntStream;
 	public static Integer problem38() {
 
 		int maxPandigital;
+		int n;
+		int product;
+		int prodDigs;
+		int offset;
+		int concatProducts;
 
-		private static final int SEARCH_CEIL = 987654321 / 3 + 1;
 
-		for (int i = 1; i < SEARCH_CEIL; i++) {
-			
+		HashSet<Integer> digits = new HashSet<>();
+		// ArrayDeque<Integer> products = new ArrayDeque<>();
+
+		final int SEARCH_CEIL = 987654321 / 3 + 1;
+
+		maxPandigital = 0;
+
+		for (n = 1; n < SEARCH_CEIL; n++) {
+
+			product = n;
+			offset  = 10_000_000;
+
+			concatProducts = 0;
+
+productsLoop:
+			while (true) {
+
+				digits.add(Integer.valueOf(product % 10));
+				prodDigs = product / 10;
+
+				while (prodDigs > 0) {
+					if (digits.add(Integer.valueOf(prodDigs % 10))) {
+						prodDigs /= 10;
+						offset   /= 10;
+					} else {
+						break productsLoop;
+					}
+				}
+
+				concatProducts += (product * offset);
+
+				if (digits.size() == 9) {
+
+					if (concatProducts > maxPandigital) {
+						maxPandigital = concatProducts;
+					}
+
+					break;
+				}
+
+				product += n;
+			}
+
+			digits.clear();
 		}
+
 
 
 

@@ -398,20 +398,17 @@ void problem_36(char *result_buffer)
  * from left to right and right to left.				*
  *									*
  * NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.	*
- *
  ************************************************************************/
 void problem_37(char *result_buffer)
 {
-	struct IntNode *primes;
 	struct IntNode *prime;
 	int trunc_count;
-	int prime_val;
 	int trunc;
+	int prime_val;
 	int sum;
 
 	bool prime_map[(PRIME_CEIL / 10) + 1] = { false };
-
-	primes = atkin_sieve(PRIME_CEIL);
+	struct IntNode *primes = atkin_sieve(PRIME_CEIL);
 
 	for (prime = primes,	 prime_val = prime->val;
 	     prime_val <= (PRIME_CEIL / 10);
@@ -439,10 +436,6 @@ void problem_37(char *result_buffer)
 				sum += prime_val;
 				++trunc_count;
 
-				printf("prime_val: %d\n", prime_val);
-				printf("trunc_count: %d\n", trunc_count);
-				fflush(stdout);
-
 				if (trunc_count == 11)
 					goto DONE;
 				else
@@ -452,8 +445,36 @@ void problem_37(char *result_buffer)
 
 		prime = prime->nxt;
 	}
+
 DONE:
 	sprintf(result_buffer, "%d", sum);
+}
+
+
+/************************************************************************
+ *				- problem_38 -				*
+ *									*
+ * Take the number 192 and multiply it by each of 1, 2, and 3:		*
+ *									*
+ * 192 × 1 = 192							*
+ * 192 × 2 = 384							*
+ * 192 × 3 = 576							*
+ *									*
+ * By concatenating each product we get the 1 to 9 pandigital,		*
+ * 192384576. We will call 192384576 the concatenated product of 192	*
+ * and (1, 2, 3)							*
+ *									*
+ * The same can be achieved by starting with 9 and multiplying by 1, 2,	*
+ * 3, 4, and 5, giving the pandigital, 918273645, which is the		*
+ * concatenated product of 9 and (1, 2, 3, 4, 5).			*
+ *									*
+ * What is the largest 1 to 9 pandigital 9-digit number that can be	*
+ * formed as the concatenated product of an integer with		*
+ * (1, 2, ... , n) where n > 1?						*
+ ************************************************************************/
+void problem_38(char *result_buffer)
+{
+	sprintf(result_buffer, "%d", 42);
 }
 /************************************************************************
  *				HELPERS					*

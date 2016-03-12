@@ -4,7 +4,7 @@
  * Houses the main class of the Java API, responsible for communication between     *
  * Elixir Mix project 'euler' and problems solved in Java.                          *
  ************************************************************************************/
-package tastyham.euler;
+package euler
 
 import java.lang.Class;
 import java.lang.reflect.Method;

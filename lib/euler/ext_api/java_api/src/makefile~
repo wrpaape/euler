@@ -50,7 +50,7 @@ JAVA_SRCS = JavaAPI.java \
 CLASSES = $(JAVA_SRCS:.java=.class)
 
 edit.jar : $(CLASSES)
-	jar cf JavaAPI.jar -C ../classes/ $(CLASSES)
+	jar cf JavaAPI.jar -C ../classes
 
 $(CLASSES): $(JAVA_SRCS)
 	javac $(JFLAGS) -d ../classes/ -cp ../classes/ -sourcepath ./ $(JAVA_SRCS)

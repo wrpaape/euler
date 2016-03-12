@@ -41,7 +41,7 @@ JAR_FILE = $(MAIN).jar
 # 	$(RM) $(CLASS_DIR)*.class $(JAR_FILE)
 # Makefile for simple editor
 JFLAGS = -g
-JAVA_SRCS = JavaAPI.java \
+SOURCES = JavaAPI.java \
 	    Sets.java 	 \
 	    Set2.java 	 \
 	    Set3.java 	 \

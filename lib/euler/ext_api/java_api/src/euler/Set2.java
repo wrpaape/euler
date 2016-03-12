@@ -3,7 +3,7 @@
  *                                                                                  *
  * Abstract class 'Set2' houses solutions for problems 11-20.                       *
  ************************************************************************************/
-package tastyham.euler;
+package euler
 
 import java.util.LinkedList;
 import java.util.ListIterator;

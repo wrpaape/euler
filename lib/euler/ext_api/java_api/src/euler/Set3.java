@@ -3,7 +3,7 @@
  *                                                                                  *
  * Abstract class 'Set3' houses solutions for problems 11-20.                       *
  ************************************************************************************/
-package tastyham.euler;
+package euler
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

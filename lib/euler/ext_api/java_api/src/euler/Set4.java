@@ -3,6 +3,8 @@
  *                                                                            *
  * Abstract class 'Set4' houses solutions for problems 31-40.                 *
  ******************************************************************************/
+package euler
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;

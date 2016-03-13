@@ -115,8 +115,6 @@ public abstract class Set4 {
 
 		 	product = n;
 		 	offset  = 100_000_000;
-
-
 		 	concatProducts = 0;
 
 
@@ -124,22 +122,27 @@ public abstract class Set4 {
 		 	while (true) {
 				remProd = product;
 
-		 		do {
-
+		 		while (true) {
 		 			if (digits.add(remProd % 10)) {
 		 				remProd /= 10;
-		 				offset  /= 10;
 		 			} else {
 		 				break productsLoop;
 		 			}
 
-		 		} while(remProd > 0);
+					if (remProd > 0) {
+		 				offset  /= 10;
+					} else {
+						break;
+					}
+				}
 
 		 		concatProducts += (product * offset);
 
 		 		if (digits.size() == 9) {
-		 				System.out.println(concatProducts);
-		 				System.out.println(digits);
+		 				// System.out.println("concatProducts: " + concatProducts);
+		 				// System.out.println("digits:			" + digits);
+		 				// System.out.println("offset:			" + offset);
+		 				// System.out.println("n: 				" + n);
 
 		 			if (concatProducts > maxPandigital) {
 		 				maxPandigital = concatProducts;
@@ -148,16 +151,15 @@ public abstract class Set4 {
 		 			break;
 		 		}
 
+				offset /= 10;
 		 		product += n;
 		 	}
 
 			digits.clear();
 		}
 
-
-
-		// return Integer.valueOf(maxPandigital);
-		return Integer.valueOf(42);
+		return Integer.valueOf(maxPandigital);
+		// return Integer.valueOf(42);
 	}
 
 

@@ -96,25 +96,21 @@ public abstract class Set4 {
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
 	public static String problem38() {
-		LinkedHashSet<Integer> maxDigits = LinkedHashSet<>(9);
-		LinkedHashSet<Integer> digits 	 = LinkedHashSet<>(9);
-
-
 		int base;
 		int remBase;
 		int product;
 		int digit;
 
+		// boolean[] digSet = new boolean[10];
 		boolean[] digSet;
-
-		int digBuff[10];
-		int maxDigs[10];
-
+		int[] digBuff = new int[10];
+		int[] maxDigs = new int[10];
+		int nextMult;
 		int digI;
 
 
 mainLoop:
-		for (int base = 9876; base > 0; base--) {
+		for (base = 1; base <= 9876; base++) {
 
 			digit = base % 10;
 
@@ -123,15 +119,24 @@ mainLoop:
 			}
 
 			digSet = new boolean[10];
+			digSet[0] = true;
 			digSet[digit] = true;
 			digBuff[0] = digit;
 			digI = 1;
 
-			for (remBase = base / 10; remBase > 0; remBase /= 10) {
+			nextMult = 2 * base;
+			remBase = base / 10;
+
+			while (true) {
+
+				if (remBase == 0) {
+					remBase = nextMult;
+					nextMult += base;
+				}
 
 				digit = remBase % 10;
 
-				if (digit == 0 || digSet[digit]) {
+				if (digSet[digit]) {
 					continue mainLoop;
 				}
 
@@ -161,21 +166,18 @@ mainLoop:
 				digSet[digit] = true;
 				digBuff[digI] = digit;
 				digI++;
+				remBase /= 10;
 			}
 
 		}
 
-	}
+		StringBuilder maxString = new StringBuilder();
 
-	public static ArrayDeque<Integer> initCandidateNumbers() {
-		ArrayDeque<Integer> candidates = new ArrayDeque<>();
+		for (int dig : maxDigs) {
+			maxString.append(Integer.toString(dig));
+		}
 
-
-		for (int n = 1;)
-
-
-
-		return candidates;
+		return maxString.toString();
 	}
 
 

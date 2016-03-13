@@ -105,48 +105,13 @@ public abstract class Set4 {
 
 		PanDigHandler handler = new PanDigHandler();
 
-		int magProd;
-		int nextMagProd;
-		int magN = 10;
-		int nextMagN = 100;
-		int n = 11;
+		int magN = 1;
+		int nextMagN = 10;
+		int n = 1;
 
 		while (true) {
 
-			if (handler.processFirst(n, magN)) {
-
-				product = 2 * n;
-
-				if (product < nextMagN) {
-					magProd = magN;
-					nextMagProd = nextMagN;
-
-				} else {
-					magProd = nextMagN;
-					nextMagProd = magProd * 10;
-				}
-
-				while (handler.concatProduct(product, magProd)) {
-
-					// System.out.println("\nn: 		  " + n);
-					// System.out.println("magN: 		 " + magN);
-					// System.out.println("nextMagN: 	 " + nextMagN);
-					// System.out.println("magProd: 	 " + magProd);
-					// System.out.println("nextMagProd: " + nextMagProd);
-					// System.out.println("product: 	 " + product);
-
-					product += n;
-
-					if (product >= nextMagProd) {
-						magProd = nextMagProd;
-						nextMagProd *= 10;
-					}
-				}
-			}
-
-			System.out.println("\nn: 		  " + n);
-			System.out.println("magN: 		 " + magN);
-			System.out.println("nextMagN: 	 " + nextMagN);
+			handler.process(n, magN);
 
 			n++;
 
@@ -156,10 +121,9 @@ public abstract class Set4 {
 				n++;
 			}
 
-			if (n > 192) {
+			if (n > SEARCH_CEIL) {
 				return handler.reportMax();
 			}
-
 		}
 	}
 
@@ -170,59 +134,117 @@ public abstract class Set4 {
 		private boolean[] taken;
 		private boolean matchMax;
 		private int digI;
+		private int n;
+		private int magN;
+		private int nextProd;
+		private int nextMagProd;
 
 		private PanDigHandler() {
-			maxConcatDigs = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+			maxConcatDigs = new int[9];
 			concatDigs    = new int[9];
 			taken    = new boolean[10];
 			taken[0] = true;
 			digI     = 1;
 		}
 
-		private boolean processFirst(int n, int magN) {
+		private void process(int n, int magN) {
+
 			int digit = n / magN;
 
 			if (digit < maxConcatDigs[0]) {
-				return false;
+				return;
 			}
 
-			concatDigs[0] = digit;
-			taken[digit] = true;
+			this.n = n;
+			this.magProd = magN;
+			// this.nextProd = 2 * n;
+			// this.nextMagProd = magN;
 
-			return concatProduct(n % magN, magN / 10);
+			this.concatDigs[0] = digit;
+			this.taken[digit] = true;
+
+			if (digit == maxConcatDigs[0]) {
+				concatCautious(n, n % magN, magN / 10);
+
+			} else {
+				concatProduct(n, n % magN, magN / 10);
+			}
 		}
 
-		private boolean concatProduct(int product, int magProd) {
-
+		private void concatCautious(int base, int remProd, int remMag) {
 			int digit;
 
-			while (true) {
+			while (remMag > 0) {
 
-				digit = product / magProd;
+				digit = remProd / remMag;
 
-				if (taken[digit]) {
+				if (taken[digit] || digit < maxConcatDigs[digI]) {
 					reset();
-					return false;
+					return;
 				}
 
 				taken[digit] = true;
 				concatDigs[digI] = digit;
 				digI++;
 
-				if (digI == 9) {
+
+				if (digit > maxConcatDigs[digI]) {
+					concatProduct(remProd % magN, remMag / 10);
+					return;
+				}
+
+				remProd %= remMag;
+				remMag /= 10;
+			}
+
+			base += this.n;
+			digit = base / this.magProd;
+
+			if (digit > 9) {
+				remMag = this.magProd;
+				this.magProd *= 10;
+
+			} else {
+				remMag = 
+			}
+
+
+
+			concatCautious(base, remProd, remMag);
+		}
+
+
+		private void concatProduct(int product, int remMag) {
+
+			int digit;
+			while (magProd > 0) {
+
+				digit = product / magProd;
+
+				if (taken[digit]) {
+					reset();
+					return;
+				}
+
+				taken[digit] = true;
+				concatDigs[digI] = digit;
+
+				if (digI == 8) {
 					if (magProd == 1) {
 						System.arraycopy(concatDigs,	0,
 										 maxConcatDigs, 0, 9);
 					}
 
 					reset();
-					return false;
+					return;
 				}
 
 				if (magProd == 1) {
-					return true;
+					reset();
+					return;
 				}
 
+				digI++;
 				product %= magProd;
 				magProd /= 10;
 			}

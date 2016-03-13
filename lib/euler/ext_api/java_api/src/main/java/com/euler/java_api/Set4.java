@@ -105,12 +105,14 @@ public abstract class Set4 {
 
 		PanDigSet digits  = new PanDigSet();
 		int maxPandigital = 0;
+		int maxLeadDigit = 0;
 
-		for (int n = 1; n < SEARCH_CEIL; n++) {
+		for (int n = 1, magN = 1; n < SEARCH_CEIL; n++) {
 
 		 	product = n;
 		 	offset  = 100_000_000;
 		 	concatProds = 0;
+
 
 
  productsLoop:
@@ -159,13 +161,14 @@ public abstract class Set4 {
 		private int size;
 
 		private PanDigSet() {
-			taken = new boolean[NUM_DIGITS];
-			base  = new boolean[NUM_DIGITS];
-			size  = 0;
-
-			base[0]  = true;
+			taken    = new boolean[NUM_DIGITS];
 			taken[0] = true;
+			size     = 0;
 		}
+
+		// private boolean processProduct(int product) {
+
+		// }
 
 		private boolean add(int digit) {
 			if (this.taken[digit]) {
@@ -178,15 +181,10 @@ public abstract class Set4 {
 		}
 
 		private void clear() {
-			System.arraycopy(this.base,  0,
-							 this.taken, 0,
-							 NUM_DIGITS);
-			this.size = 0;
+			this.taken	  = new boolean[NUM_DIGITS];
+			this.taken[0] = true;
+			this.size	  = 0;
 		}
-
-		// private int size() {
-		// 	return this.size;
-		// }
 	}
 
 

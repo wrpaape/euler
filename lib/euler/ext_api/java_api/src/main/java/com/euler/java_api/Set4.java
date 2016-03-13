@@ -95,27 +95,22 @@ public abstract class Set4 {
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
 	public static Integer problem38() {
+		final int SEARCH_CEIL = 987654321 / 3 + 1;
 
-		int maxPandigital;
-		int n;
 		int product;
 		int remProd;
 		int digit;
 		int offset;
-		int concatProducts;
+		int concatProds;
 
-		DecDigSet digits = new DecDigSet(0);
+		DecDigSet digits  = new DecDigSet(0);
+		int maxPandigital = 0;
 
-
-		final int SEARCH_CEIL = 987654321 / 3 + 1;
-
-		maxPandigital = 0;
-
-		for (n = 1; n < SEARCH_CEIL; n++) {
+		for (int n = 1; n < SEARCH_CEIL; n++) {
 
 		 	product = n;
 		 	offset  = 100_000_000;
-		 	concatProducts = 0;
+		 	concatProds = 0;
 
 
  productsLoop:
@@ -136,16 +131,12 @@ public abstract class Set4 {
 					}
 				}
 
-		 		concatProducts += (product * offset);
+		 		concatProds += (product * offset);
 
 		 		if (digits.size() == 9) {
-		 				// System.out.println("concatProducts: " + concatProducts);
-		 				// System.out.println("digits:			" + digits);
-		 				// System.out.println("offset:			" + offset);
-		 				// System.out.println("n: 				" + n);
 
-		 			if (concatProducts > maxPandigital) {
-		 				maxPandigital = concatProducts;
+		 			if (concatProds > maxPandigital) {
+		 				maxPandigital = concatProds;
 		 			}
 
 		 			break;
@@ -159,7 +150,6 @@ public abstract class Set4 {
 		}
 
 		return Integer.valueOf(maxPandigital);
-		// return Integer.valueOf(42);
 	}
 
 

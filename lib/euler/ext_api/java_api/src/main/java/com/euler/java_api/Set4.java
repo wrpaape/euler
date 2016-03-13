@@ -98,10 +98,7 @@ public abstract class Set4 {
 		final int SEARCH_CEIL = 987654321 / 3;
 
 		int product;
-		int maxConcatProd;
 		int remProd;
-		int digit;
-		int digI
 		int remN;
 		int offset;
 		int concatProds;
@@ -110,11 +107,11 @@ public abstract class Set4 {
 		int maxConcatDigs[] = new int[9];
 		int concatDigs[]    = new int[9];
 
-		int n = 1;
 		int magProd;
 		int nextMagProd;
 		int magN = 1;
 		int nextMagN = 10;
+		int n = 1;
 
 		while (true) {
 
@@ -248,7 +245,7 @@ public abstract class Set4 {
 				if (digI == 9) {
 					if (magProd == 1) {
 						System.arraycopy(concatDigs,	0,
-										 maxConcatProd, 0, 9);
+										 maxConcatDigs, 0, 9);
 					}
 
 					reset();
@@ -274,11 +271,11 @@ public abstract class Set4 {
 
 			StringBuilder maxString = new StringBuilder(9);
 
-			for (int digit : maxConcatProd) {
+			for (int digit : maxConcatDigs) {
 				maxString.append(digit);
 			}
 
-			return maxString;
+			return maxString.toString();
 		}
 	}
 

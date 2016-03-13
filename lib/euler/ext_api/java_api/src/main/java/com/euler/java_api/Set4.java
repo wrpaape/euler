@@ -114,7 +114,7 @@ public abstract class Set4 {
 		for (n = 1; n < SEARCH_CEIL; n++) {
 
 		 	product = n;
-		 	offset  = 10_000_000;
+		 	offset  = 100_000_000;
 
 
 		 	concatProducts = 0;

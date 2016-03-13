@@ -106,57 +106,53 @@ public abstract class Set4 {
 
 		DecDigSet digits = new DecDigSet(0);
 
-		digits.add(8);
-		digits.add(3);
 
-		System.out.println(digits);
+		final int SEARCH_CEIL = 987654321 / 3 + 1;
 
-		// final int SEARCH_CEIL = 987654321 / 3 + 1;
+		maxPandigital = 0;
 
-		// maxPandigital = 0;
+		for (n = 1; n < SEARCH_CEIL; n++) {
 
-		// for (n = 1; n < SEARCH_CEIL; n++) {
-
-		//  	product = n;
-		//  	offset  = 10_000_000;
+		 	product = n;
+		 	offset  = 10)_000_000;
 
 
-		//  	concatProducts = 0;
+		 	concatProducts = 0;
 
 
- // productsLoop:
-		//  	while (true) {
-		// 		remProd = product;
+ productsLoop:
+		 	while (true) {
+				remProd = product;
 
-		//  		do {
+		 		do {
 
-		//  			if (digits.add(remProd % 10)) {
-		//  				remProd /= 10;
-		//  				offset  /= 10;
-		//  			} else {
-		//  				break productsLoop;
-		//  			}
+		 			if (digits.add(remProd % 10)) {
+		 				remProd /= 10;
+		 				offset  /= 10;
+		 			} else {
+		 				break productsLoop;
+		 			}
 
-		//  		} while(remProd > 0);
+		 		} while(remProd > 0);
 
-		//  		concatProducts += (product * offset);
+		 		concatProducts += (product * offset);
 
-		//  		if (digits.size() == 9) {
-		//  				System.out.println(concatProducts);
-		//  				System.out.println(digits);
+		 		if (digits.size() == 9) {
+		 				System.out.println(concatProducts);
+		 				System.out.println(digits);
 
-		//  			if (concatProducts > maxPandigital) {
-		//  				maxPandigital = concatProducts;
-		//  			}
+		 			if (concatProducts > maxPandigital) {
+		 				maxPandigital = concatProducts;
+		 			}
 
-		//  			break;
-		//  		}
+		 			break;
+		 		}
 
-		//  		product += n;
-		//  	}
+		 		product += n;
+		 	}
 
-		// 	digits.clear();
-		// }
+			digits.clear();
+		}
 
 
 

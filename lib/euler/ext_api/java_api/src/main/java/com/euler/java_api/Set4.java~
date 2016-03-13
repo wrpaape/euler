@@ -103,7 +103,7 @@ public abstract class Set4 {
 		int offset;
 		int concatProds;
 
-		DecDigSet digits  = new DecDigSet(0);
+		PanDigSet digits  = new PanDigSet();
 		int maxPandigital = 0;
 
 		for (int n = 1; n < SEARCH_CEIL; n++) {
@@ -133,7 +133,7 @@ public abstract class Set4 {
 
 		 		concatProds += (product * offset);
 
-		 		if (digits.size() == 9) {
+		 		if (digits.size == 9) {
 
 		 			if (concatProds > maxPandigital) {
 		 				maxPandigital = concatProds;
@@ -150,6 +150,43 @@ public abstract class Set4 {
 		}
 
 		return Integer.valueOf(maxPandigital);
+	}
+
+	private static class PanDigSet {
+		private static final int NUM_DIGITS = 10;
+		private boolean[] taken;
+		private boolean[] base;
+		private int size;
+
+		private PanDigSet() {
+			taken = new boolean[NUM_DIGITS];
+			base  = new boolean[NUM_DIGITS];
+			size  = 0;
+
+			base[0]  = true;
+			taken[0] = true;
+		}
+
+		private boolean add(int digit) {
+			if (this.taken[digit]) {
+				return false;
+			}
+
+			this.taken[digit] = true;
+			this.size++;
+			return true;
+		}
+
+		private void clear() {
+			System.arraycopy(this.base,  0,
+							 this.taken, 0,
+							 NUM_DIGITS);
+			this.size = 0;
+		}
+
+		// private int size() {
+		// 	return this.size;
+		// }
 	}
 
 

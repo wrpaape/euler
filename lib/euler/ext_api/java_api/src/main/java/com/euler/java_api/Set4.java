@@ -94,96 +94,191 @@ public abstract class Set4 {
 	 * formed as the concatenated product of an integer with				*
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
-	public static Integer problem38() {
-		final int SEARCH_CEIL = 987654321 / 3 + 1;
+	public static String problem38() {
+		final int SEARCH_CEIL = 987654321 / 3;
 
 		int product;
+		int maxConcatProd;
 		int remProd;
 		int digit;
+		int digI
+		int remN;
 		int offset;
 		int concatProds;
 
-		PanDigSet digits  = new PanDigSet();
-		int maxPandigital = 0;
-		int maxLeadDigit = 0;
+		PanDigSet digits    = new PanDigSet();
+		int maxConcatDigs[] = new int[9];
+		int concatDigs[]    = new int[9];
 
-		for (int n = 1, magN = 1; n < SEARCH_CEIL; n++) {
+		int n = 1;
+		int magProd;
+		int nextMagProd;
+		int magN = 1;
+		int nextMagN = 10;
 
-		 	product = n;
-		 	offset  = 100_000_000;
-		 	concatProds = 0;
+		while (true) {
 
+			magProd = magN;
+			nextMagProd = nextMagN;
 
+			if (digits.processFirst(n, magN)) {
 
- productsLoop:
-		 	while (true) {
-				remProd = product;
+				product = 2 * n;
 
-		 		while (true) {
-		 			if (digits.add(remProd % 10)) {
-		 				remProd /= 10;
-		 			} else {
-		 				break productsLoop;
-		 			}
-
-					if (remProd > 0) {
-		 				offset  /= 10;
-					} else {
-						break;
-					}
+				if (product >= nextMagProd) {
+					magProd = nextMagProd;
+					nextMagProd *= 10;
 				}
 
-		 		concatProds += (product * offset);
+				while (digits.concatProduct(product, magProd)) {
+					product += n;
 
-		 		if (digits.size == 9) {
+					if (product >= nextMagProd) {
+						magProd = nextMagProd;
+						nextMagProd *= 10;
+					}
 
-		 			if (concatProds > maxPandigital) {
-		 				maxPandigital = concatProds;
-		 			}
+				}
 
-		 			break;
-		 		}
+				n++;
 
-				offset /= 10;
-		 		product += n;
-		 	}
+				if (n == nextMagN) {
+					magN = nextMagProd;
+					nextMagN *= 10;
+					n++;
+				}
 
-			digits.clear();
+				if (n > SEARCH_CEIL) {
+					return digits.reportMax();
+				}
+			}
 		}
-
-		return Integer.valueOf(maxPandigital);
 	}
 
-	private static class PanDigSet {
-		private static final int NUM_DIGITS = 10;
-		private boolean[] taken;
-		private boolean[] base;
-		private int size;
 
-		private PanDigSet() {
-			taken    = new boolean[NUM_DIGITS];
-			taken[0] = true;
-			size     = 0;
-		}
 
-		// private boolean processProduct(int product) {
 
+		 	// product = n;
+		 	// offset  = 100_000_000;
+		 	// concatProds = 0;
+
+
+
+ // productsLoop:
+		 	// while (true) {
+				// remProd = product;
+
+		 	// 	while (true) {
+		 	// 		if (digits.add(remProd % 10)) {
+		 	// 			remProd /= 10;
+		 	// 		} else {
+		 	// 			break productsLoop;
+		 	// 		}
+
+					// if (remProd > 0) {
+		 	// 			offset  /= 10;
+					// } else {
+						// break;
+					// }
+				// }
+
+		 	// 	concatProds += (product * offset);
+
+		 	// 	if (digits.size == 9) {
+
+		 	// 		if (concatProds > maxPandigital) {
+		 	// 			maxPandigital = concatProds;
+		 	// 		}
+
+		 	// 		break;
+		 	// 	}
+
+				// offset /= 10;
+		 	// 	product += n;
+		 	// }
+
+			// digits.clear();
 		// }
 
-		private boolean add(int digit) {
-			if (this.taken[digit]) {
+
+
+	private static class PanDigSet {
+		private int[] maxConcatDigs;
+		private int[] concatDigs;
+		private boolean[] taken;
+		private int digI;
+
+		private PanDigSet() {
+			maxConcatDigs = new int[9];
+			concatDigs    = new int[9];
+			taken    = new boolean[10];
+			taken[0] = true;
+			digI     = 1;
+		}
+
+		private boolean processFirst(int n, int magN) {
+			int digit = n / magN;
+
+			if (digit < maxConcatDigs[0]) {
 				return false;
 			}
 
-			this.taken[digit] = true;
-			this.size++;
-			return true;
+			concatDigs[0] = digit;
+
+			return concatProduct(n % magN, magN / 10);
 		}
 
-		private void clear() {
-			this.taken	  = new boolean[NUM_DIGITS];
-			this.taken[0] = true;
-			this.size	  = 0;
+		private boolean concatProduct(int product, int magProd) {
+
+			int digit;
+
+			while (true) {
+
+				digit = product / magProd;
+
+				if (digit < maxConcatDigs[digI] || taken[digit]) {
+					reset();
+					return false;
+				}
+
+				taken[digit] = true;
+				concatDigs[digI] = digit;
+				digI++;
+
+				if (digI == 9) {
+					if (magProd == 1) {
+						System.arraycopy(concatDigs,	0,
+										 maxConcatProd, 0, 9);
+					}
+
+					reset();
+					return false;
+				}
+
+				if (magProd == 1) {
+					return true;
+				}
+
+				product %= magProd;
+				magProd /= 10;
+			}
+		}
+
+		private void reset() {
+			taken	 = new boolean[10];
+			taken[0] = true;
+			digI	 = 1;
+		}
+
+		private String reportMax() {
+
+			StringBuilder maxString = new StringBuilder(9);
+
+			for (int digit : maxConcatProd) {
+				maxString.append(digit);
+			}
+
+			return maxString;
 		}
 	}
 

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.ArrayDeque;
+import java.util.Iterator;
 
 public abstract class Set4 {
   	/****************************************************************************
@@ -95,15 +97,24 @@ public abstract class Set4 {
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
 	public static String problem38() {
-		final int SEARCH_CEIL = 987654321 / 3;
+		int n = 9876;
+		ArrayDeque<Integer> digits = new ArrayDeque<>();
+
+		digits.push(Integer.valueOf(9));
+		digits.push(Integer.valueOf(8));
+		digits.push(Integer.valueOf(7));
+		digits.push(Integer.valueOf(6));
+
+		Iterator<Integer> digIter = digits.iterator();
+
+
+
 
 		int product;
 		int remProd;
 		int remN;
 		int offset;
 		int concatProds;
-
-		PanDigHandler handler = new PanDigHandler();
 
 		int magN = 1;
 		int nextMagN = 10;
@@ -124,147 +135,6 @@ public abstract class Set4 {
 			if (n > SEARCH_CEIL) {
 				return handler.reportMax();
 			}
-		}
-	}
-
-
-	private static class PanDigHandler {
-		private int[] maxConcatDigs;
-		private int[] concatDigs;
-		private boolean[] taken;
-		private boolean matchMax;
-		private int digI;
-		private int n;
-		private int magN;
-		private int nextProd;
-		private int nextMagProd;
-
-		private PanDigHandler() {
-			maxConcatDigs = new int[9];
-			concatDigs    = new int[9];
-			taken    = new boolean[10];
-			taken[0] = true;
-			digI     = 1;
-		}
-
-		private void process(int n, int magN) {
-
-			int digit = n / magN;
-
-			if (digit < maxConcatDigs[0]) {
-				return;
-			}
-
-			this.n = n;
-			this.magProd = magN;
-			// this.nextProd = 2 * n;
-			// this.nextMagProd = magN;
-
-			this.concatDigs[0] = digit;
-			this.taken[digit] = true;
-
-			if (digit == maxConcatDigs[0]) {
-				concatCautious(n, n % magN, magN / 10);
-
-			} else {
-				concatProduct(n, n % magN, magN / 10);
-			}
-		}
-
-		private void concatCautious(int base, int remProd, int remMag) {
-			int digit;
-
-			while (remMag > 0) {
-
-				digit = remProd / remMag;
-
-				if (taken[digit] || digit < maxConcatDigs[digI]) {
-					reset();
-					return;
-				}
-
-				taken[digit] = true;
-				concatDigs[digI] = digit;
-				digI++;
-
-
-				if (digit > maxConcatDigs[digI]) {
-					concatProduct(remProd % magN, remMag / 10);
-					return;
-				}
-
-				remProd %= remMag;
-				remMag /= 10;
-			}
-
-			base += this.n;
-			digit = base / this.magProd;
-
-			if (digit > 9) {
-				remMag = this.magProd;
-				this.magProd *= 10;
-
-			} else {
-				remMag = 
-			}
-
-
-
-			concatCautious(base, remProd, remMag);
-		}
-
-
-		private void concatProduct(int product, int remMag) {
-
-			int digit;
-			while (magProd > 0) {
-
-				digit = product / magProd;
-
-				if (taken[digit]) {
-					reset();
-					return;
-				}
-
-				taken[digit] = true;
-				concatDigs[digI] = digit;
-
-				if (digI == 8) {
-					if (magProd == 1) {
-						System.arraycopy(concatDigs,	0,
-										 maxConcatDigs, 0, 9);
-					}
-
-					reset();
-					return;
-				}
-
-				if (magProd == 1) {
-					reset();
-					return;
-				}
-
-				digI++;
-				product %= magProd;
-				magProd /= 10;
-			}
-		}
-
-		private void reset() {
-			taken	 = new boolean[10];
-			taken[0] = true;
-			digI	 = 1;
-		}
-
-		private String reportMax() {
-
-			StringBuilder maxString = new StringBuilder(9);
-
-			for (int digit : maxConcatDigs) {
-				maxString.append(digit);
-			}
-
-			return maxString.toString();
 		}
 	}
 

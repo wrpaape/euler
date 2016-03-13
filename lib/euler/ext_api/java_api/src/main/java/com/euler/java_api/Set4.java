@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.ArrayDeque;
 
 public abstract class Set4 {
   	/****************************************************************************
@@ -75,7 +74,7 @@ public abstract class Set4 {
 
 
 	/************************************************************************
-	 *							- problem_38 -								*
+	 *							- problem38 -								*
 	 *																		*
 	 * Take the number 192 and multiply it by each of 1, 2, and 3:			*
 	 *																		*
@@ -100,69 +99,60 @@ public abstract class Set4 {
 		int maxPandigital;
 		int n;
 		int product;
-		int prodDigs;
+		int remProd;
 		int digit;
 		int offset;
 		int concatProducts;
 
-
-		// HashSet<Integer> digits = new HashSet<>();
-		// ArrayDeque<Integer> products = new ArrayDeque<>();
-		//
-
-		// final int SEARCH_CEIL = 987654321 / 3 + 1;
-
-		// maxPandigital = 0;
-
-		// for (n = 1; n < SEARCH_CEIL; n++) {
-
-		// 	product = n;
-		// 	offset  = 10_000_000;
+		DecDigSet digits = new DecDigSet(0);
 
 
-		// 	concatProducts = 0;
+		final int SEARCH_CEIL = 987654321 / 3 + 1;
+
+		maxPandigital = 0;
+
+		for (n = 1; n < SEARCH_CEIL; n++) {
+
+		 	product = n;
+		 	offset  = 10_000_000;
 
 
-// productsLoop:
-		// 	while (true) {
-
-		// 		// digits.add(Integer.valueOf(product % 10));
+		 	concatProducts = 0;
 
 
-		// 		while (true) {
-		// 			digit = product % 10;
+ productsLoop:
+		 	while (true) {
+				remProd = product;
 
-		// 			if (digits[digit]) {
-		// 			}
+		 		do {
 
+		 			if (digits.add(remProd % 10)) {
+		 				remProd /= 10;
+		 				offset  /= 10;
+		 			} else {
+		 				break productsLoop;
+		 			}
 
-		// 			prodDigs = product;
+		 		} while(remProd > 0);
 
-		// 			if (digits.add(Integer.valueOf(prodDigs % 10))) {
-		// 				prodDigs /= 10;
-		// 				offset   /= 10;
-		// 			} else {
-		// 				break productsLoop;
-		// 			}
-		// 		}
+		 		concatProducts += (product * offset);
 
-		// 		concatProducts += (product * offset);
+		 		if (digits.size() == 9) {
+		 				System.out.println(concatProducts);
+		 				System.out.println(digits);
 
-		// 		if (digits.size() == 10) {
-		// 				System.out.println(concatProducts);
-		// 				System.out.println(digits);
+		 			if (concatProducts > maxPandigital) {
+		 				maxPandigital = concatProducts;
+		 			}
 
-		// 			if (concatProducts > maxPandigital) {
+		 			break;
+		 		}
 
-		// 				maxPandigital = concatProducts;
-		// 			}
+		 		product += n;
+		 	}
 
-		// 			break;
-		// 		}
-
-		// 		product += n;
-		// 	}
-		// }
+			digits.clear();
+		}
 
 
 

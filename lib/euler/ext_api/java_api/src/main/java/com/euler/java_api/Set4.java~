@@ -9,8 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.ArrayDeque;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 public abstract class Set4 {
   	/****************************************************************************
@@ -97,45 +96,86 @@ public abstract class Set4 {
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
 	public static String problem38() {
-		int n = 9876;
-		ArrayDeque<Integer> digits = new ArrayDeque<>();
-
-		digits.push(Integer.valueOf(9));
-		digits.push(Integer.valueOf(8));
-		digits.push(Integer.valueOf(7));
-		digits.push(Integer.valueOf(6));
-
-		Iterator<Integer> digIter = digits.iterator();
+		LinkedHashSet<Integer> maxDigits = LinkedHashSet<>(9);
+		LinkedHashSet<Integer> digits 	 = LinkedHashSet<>(9);
 
 
-
-
+		int base;
+		int remBase;
 		int product;
-		int remProd;
-		int remN;
-		int offset;
-		int concatProds;
+		int digit;
 
-		int magN = 1;
-		int nextMagN = 10;
-		int n = 1;
+		boolean[] digSet;
 
-		while (true) {
+		int digBuff[10];
+		int maxDigs[10];
 
-			handler.process(n, magN);
+		int digI;
 
-			n++;
 
-			if (n == nextMagN) {
-				magN = nextMagN;
-				nextMagN *= 10;
-				n++;
+mainLoop:
+		for (int base = 9876; base > 0; base--) {
+
+			digit = base % 10;
+
+			if (digit == 0 || digit < maxDigs[0]) {
+				continue;
 			}
 
-			if (n > SEARCH_CEIL) {
-				return handler.reportMax();
+			digSet = new boolean[10];
+			digSet[digit] = true;
+			digBuff[0] = digit;
+			digI = 1;
+
+			for (remBase = base / 10; remBase > 0; remBase /= 10) {
+
+				digit = remBase % 10;
+
+				if (digit == 0 || digSet[digit]) {
+					continue mainLoop;
+				}
+
+				if (digI == 8) {
+					if (remBase < 10) {
+
+						digI = 0;
+
+						while (digBuff[digI] == maxDigs[digI]) {
+							digI++;
+
+							if (digI == 8) {
+								continue mainLoop;
+							}
+						}
+
+						if (digBuff[digI] > maxDigs[digI]) {
+							System.arraycopy(digBuff, 0,
+											 maxDigs, 0, 9);
+						}
+
+					}
+
+					continue mainLoop;
+				}
+
+				digSet[digit] = true;
+				digBuff[digI] = digit;
+				digI++;
 			}
+
 		}
+
+	}
+
+	public static ArrayDeque<Integer> initCandidateNumbers() {
+		ArrayDeque<Integer> candidates = new ArrayDeque<>();
+
+
+		for (int n = 1;)
+
+
+
+		return candidates;
 	}
 
 

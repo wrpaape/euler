@@ -103,26 +103,31 @@ public abstract class Set4 {
 
 		// boolean[] digSet = new boolean[10];
 		boolean[] digSet;
-		int[] digBuff = new int[10];
-		int[] maxDigs = new int[10];
+		int[] buff = new int[4];
+		int[] digs = new int[9];
+		int[] maxDigs = new int[]{9, 1, 8, 2, 7, 3, 6, 4, 5};
 		int nextMult;
-		int digI;
+		int digsI;
+		int buffI;
+		int numBuffDigs;
+		int lengthBuff;
 
 
 mainLoop:
-		for (base = 1; base <= 9876; base++) {
+		for (base = 19; base < 9876; base += 10) {
 
 			digit = base % 10;
 
-			if (digit == 0 || digit < maxDigs[0]) {
+			if (digit < maxDigs[1] || digit == 0) {
 				continue;
 			}
 
 			digSet = new boolean[10];
 			digSet[0] = true;
 			digSet[digit] = true;
-			digBuff[0] = digit;
-			digI = 1;
+			buff[3] = digit;
+			digsI = 1;
+			buffI = 2;
 
 			nextMult = 2 * base;
 			remBase = base / 10;
@@ -130,6 +135,11 @@ mainLoop:
 			while (true) {
 
 				if (remBase == 0) {
+					numBuffDigs = 3 - buffI;
+					System.arraycopy(buff, buffI + 1,
+									 digs, digsI - numBuffDigs, numBuffDigs);
+
+					buffI = 3;
 					remBase = nextMult;
 					nextMult += base;
 				}
@@ -140,32 +150,41 @@ mainLoop:
 					continue mainLoop;
 				}
 
-				if (digI == 8) {
+				digSet[digit] = true;
+				buff[buffI] = digit;
+				buffI--;
+				digsI++;
+
+				if (digsI == 9) {
 					if (remBase < 10) {
 
-						digI = 0;
+						numBuffDigs = 3 - buffI;
+						System.arraycopy(buff, buffI + 1,
+										 digs, digsI - numBuffDigs, numBuffDigs);
 
-						while (digBuff[digI] == maxDigs[digI]) {
-							digI++;
+						System.out.println("base: " + base);
+						System.out.println("digs:  " + Arrays.toString(digs));
 
-							if (digI == 8) {
+						digsI = 0;
+
+						while (digs[digsI] == maxDigs[digsI]) {
+							digsI++;
+
+							if (digsI == 8) {
 								continue mainLoop;
 							}
 						}
 
-						if (digBuff[digI] > maxDigs[digI]) {
-							System.arraycopy(digBuff, 0,
+						if (digs[digsI] > maxDigs[digsI]) {
+							System.arraycopy(digs,	  0,
 											 maxDigs, 0, 9);
 						}
-
 					}
 
 					continue mainLoop;
+
 				}
 
-				digSet[digit] = true;
-				digBuff[digI] = digit;
-				digI++;
 				remBase /= 10;
 			}
 

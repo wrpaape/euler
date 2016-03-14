@@ -97,8 +97,9 @@ public abstract class Set4 {
 	 ************************************************************************/
 	public static String problem38() {
 		int root;
-		int cap;
+		int ceil;
 		int base;
+		int floor;
 		int n;
 		int digit;
 
@@ -113,9 +114,9 @@ public abstract class Set4 {
 		int nextMag;
 
 rootLoop:
-		for (root = 9876, cap = 10_000, base = 1_000;
+		for (root = 9876, ceil = 10_000, base = 1_000, floor = 100;
 			 base > 0;
-			 root /= 10,  cap = base, 	base /= 10) {
+			 root /= 10,  ceil = base, 	 base = floor, floor /= 10) {
 
 nLoop:
 			for (n = root; n > base; n--) {
@@ -126,22 +127,24 @@ nLoop:
 					continue rootLoop;
 				}
 
+
 				digSet 		  = new boolean[10];
-				digSet[0]	  = true;
 				digSet[digit] = true;
+				digSet[0]	  = true;
 				digBuff[0]	  = digit;
 				digsI		  = 1;
-				nextProd 	  = 2 * n;
 				baseMag 	  = base;
-				nextMag 	  = cap;
+				nextMag 	  = ceil;
+				nextProd 	  = 2 * n;
 
 				remProd = n % baseMag;
-				remMag  = baseMag / 10;
+				remMag  = floor;
+
 
 				while (true) {
 
 					if (remMag == 0) {
-						if (nextProd > nextMag) {
+						if (nextProd >= nextMag) {
 							baseMag = nextMag;
 							nextMag *= 10;
 						}
@@ -152,6 +155,7 @@ nLoop:
 					}
 
 					digit = remProd / remMag;
+
 
 					if (digSet[digit]) {
 						continue nLoop;
@@ -173,9 +177,6 @@ nLoop:
 						if (digBuff[digsI] > maxDigs[digsI]) {
 							System.arraycopy(digBuff, 0,
 											 maxDigs, 0, 9);
-
-							System.out.println("digBuff: " + Arrays.toString(digBuff));
-							System.out.println("n: 		 " + n);
 						}
 
 						continue nLoop;
@@ -186,8 +187,7 @@ nLoop:
 					digsI++;
 
 					remProd %= remMag;
-					remMag /= 10;
-
+					remMag  /= 10;
 				}
 			}
 		}

@@ -96,96 +96,99 @@ public abstract class Set4 {
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
 	public static String problem38() {
+		int root;
+		int cap;
 		int base;
-		int remBase;
-		int product;
+		int n;
 		int digit;
 
-		// boolean[] digSet = new boolean[10];
 		boolean[] digSet;
-		int[] buff = new int[4];
-		int[] digs = new int[9];
-		int[] maxDigs = new int[]{9, 1, 8, 2, 7, 3, 6, 4, 5};
-		int nextMult;
+		int[] digBuff = new int[9];
+		int[] maxDigs = new int[9];
+		int nextProd;
 		int digsI;
-		int buffI;
-		int numBuffDigs;
+		int remProd;
+		int baseMag;
+		int remMag;
+		int nextMag;
 		int lengthBuff;
 
+rootLoop:
+		for (root = 9876, cap = 10_000, base = 1_000;
+			 base > 0;
+			 root /= 10,  cap = base, 	base /= 10) {
 
-mainLoop:
-		for (base = 19; base < 9876; base += 10) {
+nLoop:
+			for (n = root; n > base; n--) {
 
-			digit = base % 10;
+				digit = n / base;
 
-			if (digit < maxDigs[1] || digit == 0) {
-				continue;
-			}
-
-			digSet = new boolean[10];
-			digSet[0] = true;
-			digSet[digit] = true;
-			buff[3] = digit;
-			digsI = 1;
-			buffI = 2;
-
-			nextMult = 2 * base;
-			remBase = base / 10;
-
-			while (true) {
-
-				if (remBase == 0) {
-					numBuffDigs = 3 - buffI;
-					System.arraycopy(buff, buffI + 1,
-									 digs, digsI - numBuffDigs, numBuffDigs);
-
-					buffI = 3;
-					remBase = nextMult;
-					nextMult += base;
+				if (digit < maxDigs[0]) {
+					continue rootLoop;
 				}
 
-				digit = remBase % 10;
-
-				if (digSet[digit]) {
-					continue mainLoop;
-				}
-
+				digSet 		  = new boolean[10];
+				digSet[0]	  = true;
 				digSet[digit] = true;
-				buff[buffI] = digit;
-				buffI--;
-				digsI++;
+				digBuff[0]	  = digit;
+				digsI		  = 1;
+				nextProd 	  = 2 * n;
+				baseMag 	  = base;
+				nextMag 	  = cap;
 
-				if (digsI == 9) {
-					if (remBase < 10) {
+				remProd = n % baseMag;
+				remMag  = baseMag / 10;
 
-						numBuffDigs = 3 - buffI;
-						System.arraycopy(buff, buffI + 1,
-										 digs, digsI - numBuffDigs, numBuffDigs);
+				while (true) {
 
-						System.out.println("base: " + base);
-						System.out.println("digs:  " + Arrays.toString(digs));
+					if (remMag == 0) {
+						if (nextProd > nextMag) {
+							baseMag = nextMag;
+							nextMag *= 10;
+						}
 
-						digsI = 0;
+						remProd = nextProd;
+						remMag  = baseMag;
+						nextProd += n;
+					}
 
-						while (digs[digsI] == maxDigs[digsI]) {
+					digit = remProd / remMag;
+
+					if (digSet[digit]) {
+						continue nLoop;
+					}
+
+					digBuff[digsI] = digit;
+
+					if (digsI == 8) {
+
+						digsI = 1;
+
+						while (digBuff[digsI] == maxDigs[digsI]) {
 							digsI++;
 
 							if (digsI == 8) {
-								continue mainLoop;
+								continue nLoop;
 							}
 						}
 
-						if (digs[digsI] > maxDigs[digsI]) {
-							System.arraycopy(digs,	  0,
+						if (digBuff[digsI] > maxDigs[digsI]) {
+							System.arraycopy(digBuff, 0,
 											 maxDigs, 0, 9);
 						}
+
+						continue nLoop;
 					}
 
-					continue mainLoop;
+
+					digSet[digit] = true;
+					digsI++;
+
+					remProd %= remMag;
+					remMag /= 10;
 
 				}
 
-				remBase /= 10;
 			}
 
 		}
@@ -198,6 +201,93 @@ mainLoop:
 
 		return maxString.toString();
 	}
+
+
+// mainLoop:
+// 		for (base = 19; base < 9876; base += 10) {
+
+// 			digit = base % 10;
+
+// 			if (digit < maxDigs[1] || digit == 0) {
+// 				continue;
+// 			}
+
+// 			digSet = new boolean[10];
+// 			digSet[0] = true;
+// 			digSet[digit] = true;
+// 			buff[3] = digit;
+// 			digsI = 1;
+// 			buffI = 2;
+
+// 			nextMult = 2 * base;
+// 			remBase = base / 10;
+
+// 			while (true) {
+
+// 				if (remBase == 0) {
+// 					numBuffDigs = 3 - buffI;
+// 					System.arraycopy(buff, buffI + 1,
+// 									 digs, digsI - numBuffDigs, numBuffDigs);
+
+// 					buffI = 3;
+// 					remBase = nextMult;
+// 					nextMult += base;
+// 				}
+
+// 				digit = remBase % 10;
+
+// 				if (digSet[digit]) {
+// 					continue mainLoop;
+// 				}
+
+// 				digSet[digit] = true;
+// 				buff[buffI] = digit;
+// 				buffI--;
+// 				digsI++;
+
+// 				if (digsI == 9) {
+// 					if (remBase < 10) {
+
+// 						numBuffDigs = 3 - buffI;
+// 						System.arraycopy(buff, buffI + 1,
+// 										 digs, digsI - numBuffDigs, numBuffDigs);
+
+// 						System.out.println("base: " + base);
+// 						System.out.println("digs:  " + Arrays.toString(digs));
+
+// 						digsI = 0;
+
+// 						while (digs[digsI] == maxDigs[digsI]) {
+// 							digsI++;
+
+// 							if (digsI == 8) {
+// 								continue mainLoop;
+// 							}
+// 						}
+
+// 						if (digs[digsI] > maxDigs[digsI]) {
+// 							System.arraycopy(digs,	  0,
+// 											 maxDigs, 0, 9);
+// 						}
+// 					}
+
+// 					continue mainLoop;
+
+// 				}
+
+// 				remBase /= 10;
+// 			}
+
+// 		}
+
+// 		StringBuilder maxString = new StringBuilder();
+
+// 		for (int dig : maxDigs) {
+// 			maxString.append(Integer.toString(dig));
+// 		}
+
+// 		return maxString.toString();
+// 	}
 
 
 	/*

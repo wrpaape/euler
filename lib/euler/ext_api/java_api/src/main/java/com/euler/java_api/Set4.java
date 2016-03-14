@@ -144,13 +144,16 @@ nLoop:
 				while (true) {
 
 					if (remMag == 0) {
-						if (nextProd >= nextMag) {
+						if (nextProd < nextMag) {
+							remMag  = baseMag;
+
+						} else {
 							baseMag = nextMag;
+							remMag = nextMag;
 							nextMag *= 10;
 						}
 
 						remProd = nextProd;
-						remMag  = baseMag;
 						nextProd += n;
 					}
 

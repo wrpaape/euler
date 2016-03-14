@@ -104,7 +104,7 @@ public abstract class Set4 {
 		int digit;
 
 		boolean matchingMax;
-		boolean[] dupDig;
+		boolean[] dupSet;
 		int[] digBuff = new int[9];
 		int[] maxDigs = new int[9];
 		int nextProd;
@@ -114,22 +114,21 @@ public abstract class Set4 {
 		int remMag;
 		int nextMag;
 
-rootLoop:
 		for (root = 9876, magUp = 10_000,  baseMag = 1_000,   magDown = 100;
-			 baseMag > 0;
+			 root > 0;
 			 root /= 10,  magUp = baseMag, baseMag = magDown, magDown /= 10) {
 
-nLoop:
 			for (n = root; n > baseMag; n--) {
 
+				//strip leading digit of 'n'
 				digit = n / baseMag;
 
-				// if the most sig digit of 'n' is less than the most sig digit of
-				// running max concatenated 1 through 9 pandigital product, 'maxDigs',
-				// the remaining n in 'nLoop' are doomed to be smaller as well,
+				// if 'digit' is less than the most sig digit of running max
+				// concatenated 1 through 9 pandigital product, 'maxDigs',
+				// the remaining 'n' in this loop are doomed to be smaller as well,
 				// continue to next root
 				if (digit < maxDigs[0]) {
-					continue rootLoop;
+					break;
 				}
 
 				matchingMax = digit == maxDigs[0];
@@ -138,9 +137,9 @@ nLoop:
 				// (and digits of remaining products of 'n')
 
 				// init lookup array for dups
-				dupDig 		  = new boolean[10]; // indices 0-9 default to 'false'
-				dupDig[0]	  = true;			 // exclude '0' by default
-				dupDig[digit] = true;			 // mark 'digit'
+				dupSet 		  = new boolean[10]; // indices 0-9 default to 'false'
+				dupSet[0]	  = true;			 // exclude '0' by default
+				dupSet[digit] = true;			 // mark 'digit'
 
 				// set first digit of buffer, update index 'digsI'
 				digBuff[0] = digit;
@@ -171,7 +170,7 @@ nLoop:
 							nextMag *= 10;
 						}
 
-						// reset product to next multiple of 'n'
+						// reset product to next multiple of 'n' and continue
 						remMag    = prodMag;
 						remProd   = nextProd;
 						nextProd += n;
@@ -181,8 +180,8 @@ nLoop:
 					digit = remProd / remMag;
 
 					// if digit is a dup or 0, bail
-					if (dupDig[digit]) {
-						continue nLoop;
+					if (dupSet[digit]) {
+						break;
 					}
 
 					// if running concatenation is not greater than 'maxDigs' up to
@@ -192,7 +191,7 @@ nLoop:
 						// if next most sig digit is less than next 'maxDigs' digit,
 						// max cannot be exceeded, bail
 						if (digit < maxDigs[digsI]) {
-							continue nLoop;
+							break;
 
 						// if next digit exceeds next 'maxDigs' digit, running
 						// concatenation is safely larger than current max, switch
@@ -205,7 +204,7 @@ nLoop:
 						// 9 pandigital that MATCHES 'maxDigs' completely
 						// (can't exceed), bail
 						} else if (digsI == 7) {
-							continue nLoop;
+							break;
 						}
 					}
 
@@ -226,13 +225,13 @@ nLoop:
 
 						// otherwise more digits remain in last concatenated
 						// product of 'n', solution condition failed, bail
-						continue nLoop;
+						break;
 					}
 
 
 					// remaining product of 'n' has passed the gauntlet, update
 					// accumulators to prepare for next digit
-					dupDig[digit] = true;
+					dupSet[digit] = true;
 					digsI++;
 					remProd %= remMag;
 					remMag  /= 10;

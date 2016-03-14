@@ -96,24 +96,37 @@
   ;;                _______
   ;; p = (a + b) + √a² + b²
   ;;
-  ;;
   ;; c = p²/2(p - b) - b
   ;;
-  ;; => p² must be even
-  ;;
-  ;; abs min value of a = 1, abs min value of c = 
+  ;; => bc a, b, and c must be integers, p² must be even
+  ;; => bc squares of odd numbers must be odd, p must be even
   ;;
   ;; growth of c is dominated by p
-  ;;
-  ;; c² is max when p is max, a & b are min
 
 
 
   (let ((max-sols 0)
-        (sol-p    0)
-        (squares  (loop from 1 to k)))
+        (sol-p    0))
 
-    (loop for p from 1 to 1000
-        do)
+    (loop for p from 2 to 1000 by 2
+          do (let ((half-p-sq  (ash (* p p) -1))
+                   (sols-count 0))
+
+               (loop named b-sweep
+                     for b from 1
+                     do (let ((sq-term (/ half-p-sq (- p b))))
+
+                          (when (integerp sq-term)
+
+                                (if (> sq-term
+                                       (ash b 1))
+
+                                    (incf sols-count)
+
+                                    (progn (when (> sols-count max-sols)
+                                                 (setf max-sols sols-count)
+                                                 (setf sol-p    p))
+
+                                           (return-from b-sweep))))))))
 
   sol-p))

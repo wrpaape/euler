@@ -103,7 +103,8 @@ public abstract class Set4 {
 		int n;
 		int digit;
 
-		boolean[] digSet;
+		boolean matchingMax;
+		boolean[] dupDig;
 		int[] digBuff = new int[9];
 		int[] maxDigs = new int[9];
 		int nextProd;
@@ -131,17 +132,27 @@ nLoop:
 					continue rootLoop;
 				}
 
+				matchingMax = digit == maxDigs[0];
+
 				// initialize state for concatenating remaining digits of 'n'
 				// (and digits of remaining products of 'n')
-				digSet 		  = new boolean[10];
-				digSet[digit] = true;
-				digSet[0]	  = true;
-				digBuff[0]	  = digit;
-				digsI		  = 1;
-				prodMag 	  = baseMag;
-				nextMag 	  = magUp;
-				nextProd 	  = 2 * n;
 
+				// init lookup array for dups
+				dupDig 		  = new boolean[10]; // indices 0-9 default to 'false'
+				dupDig[0]	  = true;			 // exclude '0' by default
+				dupDig[digit] = true;			 // mark 'digit'
+
+				// set first digit of buffer, update index 'digsI'
+				digBuff[0] = digit;
+				digsI	   = 1;
+
+				// init accumulators for generating products of 'n' and stripping
+				// their digits...
+				prodMag  = baseMag;
+				nextMag  = magUp;
+				nextProd = 2 * n;
+
+				// init accumulators for stripping remaining digits of 'n'
 				remProd = n % prodMag;
 				remMag  = magDown;
 
@@ -160,6 +171,7 @@ nLoop:
 							nextMag *= 10;
 						}
 
+						// reset product to next multiple of 'n'
 						remMag    = prodMag;
 						remProd   = nextProd;
 						nextProd += n;
@@ -169,57 +181,66 @@ nLoop:
 					digit = remProd / remMag;
 
 					// if digit is a dup or 0, bail
-					if (digSet[digit]) {
+					if (dupDig[digit]) {
 						continue nLoop;
 					}
 
-					// otherwise copy to buffer
+					// if running concatenation is not greater than 'maxDigs' up to
+					// 'digsI - 1'...
+					if (matchingMax) {
+
+						// if next most sig digit is less than next 'maxDigs' digit,
+						// max cannot be exceeded, bail
+						if (digit < maxDigs[digsI]) {
+							continue nLoop;
+
+						// if next digit exceeds next 'maxDigs' digit, running
+						// concatenation is safely larger than current max, switch
+						// flag and continue
+						} else if (digit > maxDigs[digsI]) {
+							matchingMax = false;
+
+						// if 'digBuff' matches 'maxDigs' up to the second to last
+						// digit, at best running concatenation is an even 1 through
+						// 9 pandigital that MATCHES 'maxDigs' completely
+						// (can't exceed), bail
+						} else if (digsI == 7) {
+							continue nLoop;
+						}
+					}
+
+					// otherwise copy digit to buffer
 					digBuff[digsI] = digit;
 
 					// if buffer has been completely filled, concatenation is
 					// complete, bail...
 					if (digsI == 8) {
 
-						// if more digits remain in last concatenated product of
-						// 'n', it cannot be 1 through 9 pandigital, bail immediately
-						if (remProd > 9) {
-							continue nLoop;
-						}
-
-						// compare concatenated product with running max
-						for (digsI = 1; digBuff[digsI] == maxDigs[digsI]; digsI++) {
-
-							// if 'digBuff' and 'maxDigs' are identical up to
-							// second-to-last digit, they must be completely
-							// identical, no need to update
-							if (digsI == 7) {
-								continue nLoop;
-							}
-						}
-
-						// if first non-match is greater in 'digBuff',
-						// its concatenated product must be greater than
-						// old 'maxDigs''s, update
-						if (digBuff[digsI] > maxDigs[digsI]) {
+						// if last remaining product is single digit then digBuff MUST
+						// be 1 through 9 pandigital AND greater than the current
+						// running max, update then bail
+						if (remProd < 10) {
 							System.arraycopy(digBuff, 0,
 											 maxDigs, 0, 9);
 						}
 
+						// otherwise more digits remain in last concatenated
+						// product of 'n', solution condition failed, bail
 						continue nLoop;
 					}
 
 
-					// product of 'n' has passed the gauntlet, update accumulators
-					// to prepare for next digit strip
-					digSet[digit] = true;
+					// remaining product of 'n' has passed the gauntlet, update
+					// accumulators to prepare for next digit
+					dupDig[digit] = true;
 					digsI++;
-
 					remProd %= remMag;
 					remMag  /= 10;
 				}
 			}
 		}
 
+		// build string representation of 'maxDigs' digit array and return
 		StringBuilder maxString = new StringBuilder();
 
 		for (int dig : maxDigs) {

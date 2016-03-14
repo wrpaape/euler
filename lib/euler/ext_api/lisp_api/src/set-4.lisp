@@ -87,26 +87,13 @@
   ;;
   ;; a + b + c = p
   ;;
-  ;; p² - 2(a + b)p + 2ab = 0
-  ;;                _______
-  ;; p = (a + b) ± √a² + b²
-  ;;             →(   c    )←
-  ;;
-  ;; '-' not valid bc p = a + b + c
-  ;;                _______
-  ;; p = (a + b) + √a² + b²
-  ;;
   ;; c = p²/2(p - b) - b
   ;;
   ;; => bc a, b, and c must be integers, p² must be even
   ;; => bc squares of odd numbers must be odd, p must be even
-  ;;
-  ;; growth of c is dominated by p
 
-
-
-  (let ((max-sols 0)
-        (sol-p    0))
+  (let ((max-count 0)
+        (max-sol-p 0))
 
     (loop for p from 2 to 1000 by 2
           do (let ((half-p-sq  (ash (* p p) -1))
@@ -118,15 +105,14 @@
 
                           (when (integerp sq-term)
 
-                                (if (> sq-term
-                                       (ash b 1))
+                                (if (> sq-term (ash b 1))
 
                                     (incf sols-count)
 
-                                    (progn (when (> sols-count max-sols)
-                                                 (setf max-sols sols-count)
-                                                 (setf sol-p    p))
+                                    (progn (when (> sols-count max-count)
+                                                 (setf max-count sols-count)
+                                                 (setf max-sol-p p))
 
                                            (return-from b-sweep))))))))
 
-  sol-p))
+  max-sol-p))

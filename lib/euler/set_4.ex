@@ -164,6 +164,11 @@ defmodule Euler.Set4 do
   {20, 48, 52}, {24, 45, 51}, {30, 40, 50}
 
   For which value of p ≤ 1000, is the number of solutions maximised?
+
+  03/14/16
+
+  iex> Euler.Set4.problem_39 |> elem(1)
+  840
   """
   def problem_39, do: LispAPI.call(~w(4 39))
 end

@@ -111,7 +111,6 @@ public abstract class Set4 {
 		int baseMag;
 		int remMag;
 		int nextMag;
-		int lengthBuff;
 
 rootLoop:
 		for (root = 9876, cap = 10_000, base = 1_000;
@@ -161,7 +160,6 @@ nLoop:
 					digBuff[digsI] = digit;
 
 					if (digsI == 8) {
-
 						digsI = 1;
 
 						while (digBuff[digsI] == maxDigs[digsI]) {
@@ -175,6 +173,9 @@ nLoop:
 						if (digBuff[digsI] > maxDigs[digsI]) {
 							System.arraycopy(digBuff, 0,
 											 maxDigs, 0, 9);
+
+							System.out.println("digBuff: " + Arrays.toString(digBuff));
+							System.out.println("n: 		 " + n);
 						}
 
 						continue nLoop;
@@ -188,9 +189,7 @@ nLoop:
 					remMag /= 10;
 
 				}
-
 			}
-
 		}
 
 		StringBuilder maxString = new StringBuilder();

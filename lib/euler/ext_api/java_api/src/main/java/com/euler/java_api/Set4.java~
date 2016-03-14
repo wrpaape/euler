@@ -97,9 +97,9 @@ public abstract class Set4 {
 	 ************************************************************************/
 	public static String problem38() {
 		int root;
-		int ceil;
-		int base;
-		int floor;
+		int magUp;
+		int baseMag;
+		int magDown;
 		int n;
 		int digit;
 
@@ -109,74 +109,97 @@ public abstract class Set4 {
 		int nextProd;
 		int digsI;
 		int remProd;
-		int baseMag;
+		int prodMag;
 		int remMag;
 		int nextMag;
 
 rootLoop:
-		for (root = 9876, ceil = 10_000, base = 1_000, floor = 100;
-			 base > 0;
-			 root /= 10,  ceil = base, 	 base = floor, floor /= 10) {
+		for (root = 9876, magUp = 10_000,  baseMag = 1_000,   magDown = 100;
+			 baseMag > 0;
+			 root /= 10,  magUp = baseMag, baseMag = magDown, magDown /= 10) {
 
 nLoop:
-			for (n = root; n > base; n--) {
+			for (n = root; n > baseMag; n--) {
 
-				digit = n / base;
+				digit = n / baseMag;
 
+				// if the most sig digit of 'n' is less than the most sig digit of
+				// running max concatenated 1 through 9 pandigital product, 'maxDigs',
+				// the remaining n in 'nLoop' are doomed to be smaller as well,
+				// continue to next root
 				if (digit < maxDigs[0]) {
 					continue rootLoop;
 				}
 
-
+				// initialize state for concatenating remaining digits of 'n'
+				// (and digits of remaining products of 'n')
 				digSet 		  = new boolean[10];
 				digSet[digit] = true;
 				digSet[0]	  = true;
 				digBuff[0]	  = digit;
 				digsI		  = 1;
-				baseMag 	  = base;
-				nextMag 	  = ceil;
+				prodMag 	  = baseMag;
+				nextMag 	  = magUp;
 				nextProd 	  = 2 * n;
 
-				remProd = n % baseMag;
-				remMag  = floor;
+				remProd = n % prodMag;
+				remMag  = magDown;
 
 
+				// unconditional loop for concatenating remaining products because
+				// there are several short circuit opportunities mid loop
 				while (true) {
 
-					if (remMag == 0) {
-						if (nextProd < nextMag) {
-							remMag  = baseMag;
-
-						} else {
-							baseMag = nextMag;
-							remMag = nextMag;
+					// if product has been completely stripped of its digits...
+					if (remProd == 0) {
+						// check if next product jumps an order of magnitude
+						// (i.e. from 5 * 1 = 5 to 5 * 2 = 10) and adjust
+						// mags accordingly
+						if (nextProd >= nextMag) {
+							prodMag  = nextMag;
 							nextMag *= 10;
 						}
 
-						remProd = nextProd;
+						remMag    = prodMag;
+						remProd   = nextProd;
 						nextProd += n;
 					}
 
+					// strip next most sig digit from remaining product of 'n'
 					digit = remProd / remMag;
 
-
+					// if digit is a dup or 0, bail
 					if (digSet[digit]) {
 						continue nLoop;
 					}
 
+					// otherwise copy to buffer
 					digBuff[digsI] = digit;
 
+					// if buffer has been completely filled, concatenation is
+					// complete, bail...
 					if (digsI == 8) {
-						digsI = 1;
 
-						while (digBuff[digsI] == maxDigs[digsI]) {
-							digsI++;
+						// if more digits remain in last concatenated product of
+						// 'n', it cannot be 1 through 9 pandigital, bail immediately
+						if (remProd > 9) {
+							continue nLoop;
+						}
 
-							if (digsI == 8) {
+						// compare concatenated product with running max
+						for (digsI = 1; digBuff[digsI] == maxDigs[digsI]; digsI++) {
+
+							// if 'digBuff' and 'maxDigs' are identical up to
+							// second-to-last digit, they must be completely
+							// identical, no need to update
+							if (digsI == 7) {
 								continue nLoop;
 							}
 						}
 
+						// if first non-match is greater in 'digBuff',
+						// its concatenated product must be greater than
+						// old 'maxDigs''s, update
 						if (digBuff[digsI] > maxDigs[digsI]) {
 							System.arraycopy(digBuff, 0,
 											 maxDigs, 0, 9);
@@ -186,6 +209,8 @@ nLoop:
 					}
 
 
+					// product of 'n' has passed the gauntlet, update accumulators
+					// to prepare for next digit strip
 					digSet[digit] = true;
 					digsI++;
 
@@ -203,93 +228,6 @@ nLoop:
 
 		return maxString.toString();
 	}
-
-
-// mainLoop:
-// 		for (base = 19; base < 9876; base += 10) {
-
-// 			digit = base % 10;
-
-// 			if (digit < maxDigs[1] || digit == 0) {
-// 				continue;
-// 			}
-
-// 			digSet = new boolean[10];
-// 			digSet[0] = true;
-// 			digSet[digit] = true;
-// 			buff[3] = digit;
-// 			digsI = 1;
-// 			buffI = 2;
-
-// 			nextMult = 2 * base;
-// 			remBase = base / 10;
-
-// 			while (true) {
-
-// 				if (remBase == 0) {
-// 					numBuffDigs = 3 - buffI;
-// 					System.arraycopy(buff, buffI + 1,
-// 									 digs, digsI - numBuffDigs, numBuffDigs);
-
-// 					buffI = 3;
-// 					remBase = nextMult;
-// 					nextMult += base;
-// 				}
-
-// 				digit = remBase % 10;
-
-// 				if (digSet[digit]) {
-// 					continue mainLoop;
-// 				}
-
-// 				digSet[digit] = true;
-// 				buff[buffI] = digit;
-// 				buffI--;
-// 				digsI++;
-
-// 				if (digsI == 9) {
-// 					if (remBase < 10) {
-
-// 						numBuffDigs = 3 - buffI;
-// 						System.arraycopy(buff, buffI + 1,
-// 										 digs, digsI - numBuffDigs, numBuffDigs);
-
-// 						System.out.println("base: " + base);
-// 						System.out.println("digs:  " + Arrays.toString(digs));
-
-// 						digsI = 0;
-
-// 						while (digs[digsI] == maxDigs[digsI]) {
-// 							digsI++;
-
-// 							if (digsI == 8) {
-// 								continue mainLoop;
-// 							}
-// 						}
-
-// 						if (digs[digsI] > maxDigs[digsI]) {
-// 							System.arraycopy(digs,	  0,
-// 											 maxDigs, 0, 9);
-// 						}
-// 					}
-
-// 					continue mainLoop;
-
-// 				}
-
-// 				remBase /= 10;
-// 			}
-
-// 		}
-
-// 		StringBuilder maxString = new StringBuilder();
-
-// 		for (int dig : maxDigs) {
-// 			maxString.append(Integer.toString(dig));
-// 		}
-
-// 		return maxString.toString();
-// 	}
 
 
 	/*

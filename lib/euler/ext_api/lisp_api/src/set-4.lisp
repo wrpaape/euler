@@ -83,14 +83,50 @@
 (defun problem-39 ()
   "Solves Project Euler problem 39: 'Integer Right Triangles'"
 
-  ;; a² + b² = c²
+  ;; triangle solution conditions:
   ;;
-  ;; a + b + c = p
+  ;;   (1) right triangle with sides a, b, c where:
+  ;;         => c > a
+  ;;         => c > b
+  ;;         => a, b, and c are positive integers
   ;;
-  ;; c = p²/2(p - b) - b
+  ;;   (2) a + b + c = p  (triangle)
   ;;
-  ;; => bc a, b, and c must be integers, p² must be even
-  ;; => bc squares of odd numbers must be odd, p must be even
+  ;;   (3) a² + b² = c²   (right triangle)
+  ;;
+  ;;   from the above eqs, can subsitute 'a' and simplify:
+  ;;
+  ;;   (4) c = p²/2(p - b) - b
+  ;;
+  ;;         → 'sq-term' ←
+  ;;
+  ;;         (*) 'sq-term' must be integer
+  ;;
+  ;;         => p² must be even (divide evenly by 2)
+  ;;
+  ;;         (*) p must be even (squares of odd numbers are odd)
+  ;;
+  ;;         => 'sq-term' must be greater than 2b (c is greater than b)
+  ;;
+  ;;         (*) when 'sq-term' is less than or equal to 2b,
+  ;;             b has met or surpassed c
+  ;;
+  ;; sweep method:
+  ;;
+  ;;   for all even values of 'p'
+  ;;   if b in range 1, 2, ... B where
+  ;;   
+  ;;     p²/2(p - B) < 2b
+  ;;
+  ;;   produces a 'sq-term' that is:
+  ;;
+  ;;     i.  integer value
+  ;;     ii. less than or equal to 2b
+  ;;
+  ;;   a solution fitting problem conditions has been found
+  ;;
+  ;;   'max-sol-p' corresponds to p that produces the greatest
+  ;;   number of these solutions, 'max-count'
 
   (let ((max-count 0)
         (max-sol-p 0))

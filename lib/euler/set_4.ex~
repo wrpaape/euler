@@ -166,5 +166,4 @@ defmodule Euler.Set4 do
   For which value of p ≤ 1000, is the number of solutions maximised?
   """
   def problem_39, do: LispAPI.call(~w(4 39))
-
 end

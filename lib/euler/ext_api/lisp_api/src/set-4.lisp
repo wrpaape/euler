@@ -72,10 +72,47 @@
 ;;; *                              - problem-39 -                              *
 ;;; *                                                                          *
 ;;; * If p is the perimeter of a right angle triangle with integral length     *
-;;; * sides, {a,b,c}, there are exactly three solutions for p = 120.           *
+;;; * sides, {a, b, c}, there are exactly three solutions for p = 120.           *
 ;;; *                                                                          *
-;;; * {20,48,52}, {24,45,51}, {30,40,50}                                       *
+;;; * {20, 48, 52}, {24, 45, 51}, {30, 40, 50}                                       *
 ;;; *                                                                          *
 ;;; * For which value of p ≤ 1000, is the number of solutions maximised?       *
 ;;; ****************************************************************************
 
+
+(defun problem-39 ()
+  "Solves Project Euler problem 39: 'Integer Right Triangles'"
+
+  ;; a² + b² = c²
+  ;;
+  ;; a + b + c = p
+  ;;
+  ;; p² - 2(a + b)p + 2ab = 0
+  ;;                _______
+  ;; p = (a + b) ± √a² + b²
+  ;;             →(   c    )←
+  ;;
+  ;; '-' not valid bc p = a + b + c
+  ;;                _______
+  ;; p = (a + b) + √a² + b²
+  ;;
+  ;; c = p²/2(p - b) - b
+  ;;
+  ;; => p² must be even
+  ;;
+  ;; abs min value of a = 1, abs min value of c = 
+  ;;
+  ;; growth of c is dominated by p
+  ;;
+  ;; c² is max when p is max, a & b are min
+
+
+
+  (let ((max-sols 0)
+        (sol-p    0)
+        (squares  (loop from 1 to k)))
+
+    (loop for p from 1 to 1000
+        do)
+
+  sol-p))

@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.LinkedHashSet;
 
 public abstract class Set4 {
   	/****************************************************************************
@@ -96,18 +95,16 @@ public abstract class Set4 {
 	 * (1, 2, ... , n) where n > 1?											*
 	 ************************************************************************/
 	public static String problem38() {
+		boolean[] dupSet;
+		boolean matchingMax;
+		int[] digBuff = new int[9];
+		int[] maxDigs = new int[9];
 		int root;
 		int magUp;
 		int baseMag;
 		int magDown;
 		int n;
 		int digit;
-
-		boolean matchingMax;
-		boolean[] dupSet;
-		int[] digBuff = new int[9];
-		int[] maxDigs = new int[9];
-		int nextProd;
 		int digsI;
 		int remProd;
 		int prodMag;

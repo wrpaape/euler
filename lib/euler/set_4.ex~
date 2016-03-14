@@ -154,4 +154,17 @@ defmodule Euler.Set4 do
   932718654
   """
   def problem_38, do: JavaAPI.call(~w(4 38))
+
+
+  @doc """
+  39) Integer Right Triangles
+
+  If p is the perimeter of a right angle triangle with integral length sides, {a, b, c}, there are exactly three solutions for p = 120.
+
+  {20, 48, 52}, {24, 45, 51}, {30, 40, 50}
+
+  For which value of p ≤ 1000, is the number of solutions maximised?
+  """
+  def problem_39, do: LispAPI.call(~w(4 39))
+
 end

@@ -187,43 +187,100 @@ defmodule Euler.Set4 do
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
   """
   def problem_40 do
-    {10, 1, 1, 1, 1, 10}
+    {1, 10, 1, 10, 1, 1}
     |> Stream.unfold(fn
       ({10_000_000, _, _, _, _, _}) -> nil
 
-      ({next_n, n, dpn, num, mag, next_mag}) ->
+      ({n, next_n, mag, next_mag, num, dpn}) ->
 
-      dig_step = next_n - n
+        next_n_tup = {next_n, next_n * 10}
+          
+        dig_step = next_n - n
 
-      num_step  = div(dig_step, dpn)
+        num + div(dig_step, dpn)
+        |> case do
+          next_num when next_num < next_mag ->
 
-      next_num = num + num_step
-
-      if next_num < next_mag do
-
-        overshoot = rem(dig_step, dpn)
-
-        dig_mag = Sets.nth_pow(10, overshoot)
-
-      else
-
-        delta_num = next_mag - num
-
-        dig_step = dig_step - (delta_num * dpn)
-
-
-        num_step = div(dig_step, dpn)
-
-        next_num = next_mag + num_step
-      end
+            next_state =
+              next_n_tup
+              |> Tuple.append(mag)
+              |> Tuple.append(next_mag)
+              |> Tuple.append(dpn)
 
 
 
-      
-      delta_num = num_state.next_mag - num_state.num
+              dig_step
+              |> rem(dpn)
+              |> case do
+                0         ->
+                  {div(next_num, mag), next_state}
+
+                overshoot ->
+
+                  mag_digit = Sets.nth_power(10, overshoot)
+
+                  digit =
+                    next_num
+                    |> rem(mag_digit * 10)
+                    |> div(mag_digit)
+
+                  {digit, next_state}
+              end
 
 
+          next_num ->
 
+            next_tens_tup =
+              next_n_tup
+              |> Tuple.append(next_mag)
+              |> Tuple.append(next_mag * 10)
+              
+            next_num
+            |> case do
+              ^next_mag ->
+
+                shared_tup =
+                  next_tens_tup
+                  |> Tuple.append(next_num)
+
+                dig_step * dpn
+                |> case do
+                  ^next_n -> {1, Tuple.append(shared_tup, dpn + 1)}
+                  _______ -> {9, Tuple.append(shared_tup, dpn)}
+                end
+
+
+              _________ ->
+
+                rem_digs = dig_step - (dpn * (next_mag - num))
+                dpn      = dpn + 1
+                next_num = next_mag + div(rem_digs, dpn)
+
+                next_state =
+                  next_tens_tup
+                  |> Tuple.append(next_num)
+                  |> Tuple.append(dpn)
+
+                rem_digs
+                |> rem(dpn)
+                |> case do
+                  0         ->
+                    {div(next_num, next_mag), next_state}
+
+                  overshoot ->
+
+                    mag_digit = Sets.nth_power(10, overshoot)
+
+                    digit =
+                      next_num
+                      |> rem(mag_digit * 10)
+                      |> div(mag_digit)
+
+                    {digit, shared_tup}
+                end
+            end
+        end
     end)
+    |> Enum.reduce(&*/2)
   end
 end

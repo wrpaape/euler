@@ -189,16 +189,13 @@ defmodule Euler.Set4 do
   def problem_40 do
     1
     |> Stream.iterate(&(&1 + 1))
-    |> Stream.transform({1, 10, 1}) fn
+    |> Stream.transform({1, 10, 1}, fn
       (next_mag, {_mag_num, next_mag, dpn}) ->
-
           dpn = dpn + 1
-
           {[{dpn, :bubble}], {next_mag, next_mag * 10, dpn}}
 
 
         (num, num_tup = {mag_num, _next_mag, dpn}) ->
-
           {[{dpn, {num, mag_num}}], num_tup}
     end)
     |> Stream.transform({1, 10}, fn
@@ -206,8 +203,10 @@ defmodule Euler.Set4 do
       ({dpn, _num_info}, {under, stop}) when under < stop ->
         {[], {under + dpn, stop}}
 
+
       ({dpn, :bubble}, {stop, stop}) -> process_digit(1, stop, stop, dpn)
-      ({dpn, :bubble}, {over, stop}) -> process_digit(9, over, stop, dpn)
+      ({dpn, :bubble}, {over, stop}) -> process_digit(9, stop, over, dpn)
+
 
       ({dpn, {num, mag_num}}, {stop, stop}) ->
         num
@@ -215,24 +214,22 @@ defmodule Euler.Set4 do
         |> process_digit(stop, stop, dpn)
 
 
-      ({dpn, {num, mag_num}}, {over, stop}) ->
-
-        prev_num = num - 1
-
-        overshoot = over - stop
-
-        offset_prev = over
-
-        num_tup
-        |> handle_overshoot(over_n - stop)
-        |> process_digit(over_n, stop, dpn)
+      ({dpn, {num, _mag_num}}, {over, stop}) ->
+        10
+        |> Sets.nth_pow(stop - 1)
+        |> pluck_digit(num - 1)
+        |> process_digit(stop, over, dpn)
     end)
+    # |> Enum.each(&IO.inspect/1)
     |> Enum.reduce(&*/2)
   end
 
-  def first_digit(:bubble), do: 1
-  def first_digit({num,     mag}), do: div(num, mag)
+  def pluck_digit(mag_digit, num) do
+    num
+    |> rem(mag_digit * 10)
+    |> div(mag_digit)
+  end
 
-  def process_digit(digit, 1_000_000, _, ___), do: {:halt, digit}
-  def process_digit(digit, last_stop, n, dpn), do: {digit, {n + dpn, last_stop * 10}}
+  def process_digit(digit, 10_000_000, _, ___), do: IO.inspect({:halt, digit})
+  def process_digit(digit, stop,       n, dpn), do: IO.inspect({[digit], {n + dpn, stop * 10}})
 end

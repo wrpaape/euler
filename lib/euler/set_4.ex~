@@ -191,7 +191,9 @@ defmodule Euler.Set4 do
     |> Stream.unfold(fn
       ({10_000_000, _, _, _, _, _}) -> nil
 
-      ({n, next_n, mag, next_mag, num, dpn}) ->
+      (tup = {n, next_n, mag, next_mag, num, dpn}) ->
+
+        IO.inspect(tup)
 
         next_n_tup = {next_n, next_n * 10}
           
@@ -205,9 +207,8 @@ defmodule Euler.Set4 do
               next_n_tup
               |> Tuple.append(mag)
               |> Tuple.append(next_mag)
+              |> Tuple.append(next_num)
               |> Tuple.append(dpn)
-
-
 
               dig_step
               |> rem(dpn)
@@ -217,7 +218,7 @@ defmodule Euler.Set4 do
 
                 overshoot ->
 
-                  mag_digit = Sets.nth_power(10, overshoot)
+                  mag_digit = Sets.nth_pow(10, overshoot)
 
                   digit =
                     next_num
@@ -246,7 +247,7 @@ defmodule Euler.Set4 do
                 dig_step * dpn
                 |> case do
                   ^next_n -> {1, Tuple.append(shared_tup, dpn + 1)}
-                  _______ -> {9, Tuple.append(shared_tup, dpn)}
+                  _______ -> {9, Tuple.append(shared_tup, dpn + 1)}
                 end
 
 
@@ -269,14 +270,14 @@ defmodule Euler.Set4 do
 
                   overshoot ->
 
-                    mag_digit = Sets.nth_power(10, overshoot)
+                    mag_digit = Sets.nth_pow(10, overshoot)
 
                     digit =
                       next_num
                       |> rem(mag_digit * 10)
                       |> div(mag_digit)
 
-                    {digit, shared_tup}
+                    {digit, next_state}
                 end
             end
         end

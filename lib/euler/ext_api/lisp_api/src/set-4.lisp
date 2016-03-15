@@ -36,10 +36,11 @@
 
 (defun add-change (rem-total change num-combs)
   ;; when no 'change' remains, the remaining total can only be balanced in one
-  ;; way: with pennies
+  ;; way (with pennies)
+  ;;
   ;; when 'rem-total' reaches zero, 200p has been counted evenly
   ;;
-  ;; In either of these cases, a new unique combination of coins totaling 200p
+  ;; in either of these cases, a new unique combination of coins totaling 200p
   ;; has been discovered, increment the solution accumulator, 'num-combs' and
   ;; return immediately
   (when (or (null change)
@@ -72,9 +73,9 @@
 ;;; *                              - problem-39 -                              *
 ;;; *                                                                          *
 ;;; * If p is the perimeter of a right angle triangle with integral length     *
-;;; * sides, {a, b, c}, there are exactly three solutions for p = 120.           *
+;;; * sides, {a, b, c}, there are exactly three solutions for p = 120.         *
 ;;; *                                                                          *
-;;; * {20, 48, 52}, {24, 45, 51}, {30, 40, 50}                                       *
+;;; * {20, 48, 52}, {24, 45, 51}, {30, 40, 50}                                 *
 ;;; *                                                                          *
 ;;; * For which value of p ≤ 1000, is the number of solutions maximised?       *
 ;;; ****************************************************************************
@@ -86,11 +87,18 @@
   ;; triangle solution conditions:
   ;;
   ;;   (1) right triangle with sides a, b, c where:
-  ;;         => c > a
-  ;;         => c > b
+  ;;  
+  ;;         => c > a, b
+  ;;  
   ;;         => a, b, and c are positive integers
+  ;;  
+  ;;            (*) a, b >= 1
+  ;;  
+  ;;            (*) c >= 2
   ;;
   ;;   (2) a + b + c = p  (triangle)
+  ;;  
+  ;;        (*) p >= 4 (from naive min values for a, b, c)
   ;;
   ;;   (3) a² + b² = c²   (right triangle)
   ;;
@@ -113,17 +121,16 @@
   ;;
   ;; sweep method:
   ;;
-  ;;   for all even values of 'p'
+  ;;   for all even values of 'p' where
+  ;;
+  ;;     4 <= p <= 1000
+  ;;
   ;;   if b in range 1, 2, ... B where
   ;;   
-  ;;     p²/2(p - B) < 2b
+  ;;     p²/2(p - B) < 2B
   ;;
-  ;;   produces a 'sq-term' that is:
-  ;;
-  ;;     i.  integer value
-  ;;     ii. less than or equal to 2b
-  ;;
-  ;;   a solution fitting problem conditions has been found
+  ;;   produces an integer 'sq-term', a solution fitting problem
+  ;;   conditions has been found
   ;;
   ;;   'max-sol-p' corresponds to p that produces the greatest
   ;;   number of these solutions, 'max-count'
@@ -131,7 +138,7 @@
   (let ((max-count 0)
         (max-sol-p 0))
 
-    (loop for p from 2 to 1000 by 2
+    (loop for p from 4 to 1000 by 2
           do (let ((half-p-sq  (ash (* p p) -1))
                    (sols-count 0))
 

@@ -1,6 +1,7 @@
 defmodule EulerTest do
   use ExUnit.Case
   doctest Euler
+  doctest Euler.Sets
   doctest Euler.Set1
   doctest Euler.Set2
   doctest Euler.Set3

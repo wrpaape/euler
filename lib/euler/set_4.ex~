@@ -2,6 +2,7 @@ defmodule Euler.Set4 do
   alias Euler.ExtAPI.{LispAPI,
                       JavaAPI,
                       CAPI}
+  alias Euler.Sets
 
   @moduledoc """
   Set4 houses solutions to problems 31 - 40.
@@ -171,4 +172,81 @@ defmodule Euler.Set4 do
   840
   """
   def problem_39, do: LispAPI.call(~w(4 39))
+
+  @doc """
+  40) Champernowne's Constant
+
+  An irrational decimal fraction is created by concatenating the positive integers:
+
+  0.123456789101112131415161718192021...
+
+  It can be seen that the 12th digit of the fractional part is 1.
+
+  If dn represents the nth digit of the fractional part, find the value of the following expression.
+
+  d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
+  """
+  def problem_40 do
+    11..1_000_000
+    |> Enum.reduce_while({12, 98, 2, 1, 10, 1}, fn
+
+      (___, {n, stop_n, digs_per_num, mag_next, mag_num, digs_prod}) when n < stop_n ->
+
+        {:cont, {n + digs_per_num,
+                 stop_n,
+                 digs_per_num,
+                 mag_next,
+                 mag_num,
+                 digs_prod}}
+
+      (num, {n, stop_n, digs_per_num, mag_next, mag_num, digs_prod}) when num < mag_next ->
+
+        # next_n - n < digs_per_num
+
+        mag_offset =
+          10
+          |> Sets.nth_pow(n - stop_n)
+
+        div_mag =
+          next_n
+          |> div(mag_offset)
+
+        d_n =
+          num
+          |> rem(div_mag * 10)
+          |> div(div_mag)
+
+        digs_prod = digs_prod * d_n
+
+        next_n
+        |> case do
+           1_000_000 ->
+             {:halt, digs_prod}
+
+           _________ ->
+
+
+             next_n = (stop_n + digs_per_num) * 10
+
+             {:cont, {n + digs_per_num,
+                      next_n - (digs_per_num + 1),
+                      digs_per_num,
+                      mag_next,
+                      mag_num,
+                      digs_prod}}
+        end
+
+      (___, {n, stop_n, digs_per_num, mag_next, ______, digs_prod})                    ->
+
+             digs_per_num = digs_per_num + 1
+
+             {:cont, {n + digs_per_num,
+                      stop_n,
+                      digs_per_num,
+                      mag_next * 10,
+                      mag_next,
+                      digs_prod}}
+
+    end)
+  end
 end

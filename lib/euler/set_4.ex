@@ -187,57 +187,52 @@ defmodule Euler.Set4 do
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
   """
   def problem_40 do
-    {1, 2}
-    |> Stream.iterate(fn({_num, next_num}) ->
+    1
+    |> Stream.iterate(&(&1 + 1))
+    |> Stream.transform({1, 10, 1}) fn
+      (next_mag, {_mag_num, next_mag, dpn}) ->
 
-      {next_num, next_num + 1}
-    end
-    |> Stream.transform({{1, 10}, {1, 1}}) fn
-      ({num, next_mag}, {mag_num, next_mag}) ->
+          dpn = dpn + 1
 
-          {[{{:bubble, num, next_mag}}], {next_mag, next_mag * 10}}
+          {[{dpn, :bubble}], {next_mag, next_mag * 10, dpn}}
 
 
-        ({num, _next_num}, mag_tup = {mag_num, _next_mag}) ->
+        (num, num_tup = {mag_num, _next_mag, dpn}) ->
 
-          {[{num, mag_num}]}
+          {[{dpn, {num, mag_num}}], num_tup}
     end)
-    |> Stream.transform({0, 10}, fn
+    |> Stream.transform({1, 10}, fn
 
-      ({digits_per_num, _num_tup}, {n, next_stop}) when n < next_stop->
+      ({dpn, _num_info}, {under, stop}) when under < stop ->
+        {[], {under + dpn, stop}}
 
-        {n + digits_per_num, next_stop}
+      ({dpn, :bubble}, {stop, stop}) -> process_digit(1, stop, stop, dpn)
+      ({dpn, :bubble}, {over, stop}) -> process_digit(9, over, stop, dpn)
+
+      ({dpn, {num, mag_num}}, {stop, stop}) ->
+        num
+        |> div(mag_num)
+        |> process_digit(stop, stop, dpn)
 
 
-      ({digits_per_num, num_tup}, {n, next_stop}) ->
+      ({dpn, {num, mag_num}}, {over, stop}) ->
 
+        prev_num = num - 1
 
+        overshoot = over - stop
 
-        next_stop
-        |> case do
-          1_000_000 -> {:halt, digit}
-          _________ -> {[digit], {n + dpn, next_stop * 10}}
-        end
-      
+        offset_prev = over
+
+        num_tup
+        |> handle_overshoot(over_n - stop)
+        |> process_digit(over_n, stop, dpn)
     end)
     |> Enum.reduce(&*/2)
-    # |> Enum.reduce(1, fn(next_digit, product) ->
-      
-    #   product * next_digit
-    # end)
   end
 
-  def process_product(product, 1_000_000, _, ___), do: {:halt, product}
-  def process_product(product, last_stop, n, dpn)  do
-    {:cont, {n + dpn, last_stop * 10, product}}
-  end
+  def first_digit(:bubble), do: 1
+  def first_digit({num,     mag}), do: div(num, mag)
 
-  def handle_overshoot(true, mag_num, num, overshoot, product) do
-
-
-
-  end
-
-
-  end
+  def process_digit(digit, 1_000_000, _, ___), do: {:halt, digit}
+  def process_digit(digit, last_stop, n, dpn), do: {digit, {n + dpn, last_stop * 10}}
 end

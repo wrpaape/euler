@@ -187,73 +187,53 @@ defmodule Euler.Set4 do
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
   """
   def problem_40 do
-    {1, {10, 1, 1}}
+    {1, 0, 1, false, 10}
     |> Stream.iterate(fn
-      ({mag, {mag, _, dpn}}) -> {mag + 1, {mag * 10, mag, dpn + 1}}
+      ({dpn, next_mag, _mag_num, _on_bubble, next_mag}) ->
 
-      ({num, num_state_tup}) -> {num + 1, num_state_tup}
+        {dpn + 1, next_mag + 1, next_mag, true,  next_mag * 10}
+
+      ({dpn, num, mag_num, _on_bubble, next_mag}) ->
+
+        {dpn,     num + 1,      mag_num,  false, next_mag}
     end)
-    |> Enum.reduce_while({0, 0, 1, 1, 1, 10, 1}, fn
+    |> Enum.reduce_while({0, 1, 1}, fn
 
-      (num, {dig_count,
-             stop_n,
-             next_n,
-             digs_prod}) when dig_count < stop_n ->
+      ({dpn, _num, _mag_tup, _on_bubble}, {n, stop, product}) when n < stop ->
 
-        if num === next_mag do
-          digs_per_num = digs_per_num + 1
-          stop_n = stop_n - 1
-        end
+        {:cont, {n + dpn, stop, product}}
 
-        {:cont, {dig_count + digs_per_num,
-                 stop_n,
-                 next_n,
-                 digs_per_num,
-                 mag_num,
-                 next_mag,
-                 digs_prod}}
+      ({dpn, num, mag_num, _on_bubble, _next_mag}, {stop, stop, product}) ->
 
+        product * num
+        |> div(mag_num)
+        |> process_product(stop, stop, dpn)
 
-      (num, {dig_count,
-             stop_n,
-             next_n,
-             digs_per_num,
-             mag_num,
-             next_mag,
-             digs_prod})                         ->
+      ({dpn, num, mag_num, on_bubble, _next_mag}, {n, stop, product}) ->
 
-        mag_offset =
-          10
-          |> Sets.nth_pow(dig_count - stop_n)
+        # bubble_num
+        # |> case do
+        #   true -> div(mag_num, 10)
+        #   ___  -> mag_num
+        # end
+        bubble_num
+        |> handle_overshoot(mag_num, num, n - stop, product)
+        |> process_product(stop, n, dpn)
 
-        div_mag =
-          next_n
-          |> div(mag_offset)
-
-        d_n =
-          num
-          |> rem(div_mag * 10)
-          |> div(div_mag)
-
-        digs_prod = digs_prod * d_n
-
-        next_n
-        |> case do
-           1_000_000 ->
-             {:halt, digs_prod}
-
-           _________ ->
-
-
-             next_n = (stop_n + digs_per_num) * 10
-
-             {:cont, {dig_count + digs_per_num,
-                      next_n - (digs_per_num + 1),
-                      digs_per_num,
-                      next_mag,
-                      mag_num,
-                      digs_prod}}
-        end
     end)
+  end
+
+  def process_product(product, 1_000_000, _, ___), do: {:halt, product}
+  def process_product(product, last_stop, n, dpn)  do
+    {:cont, {n + dpn, last_stop * 10, product}}
+  end
+
+  def handle_overshoot(true, mag_num, num, overshoot, product) do
+
+
+
+  end
+
+
   end
 end

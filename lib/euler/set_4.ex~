@@ -187,25 +187,45 @@ defmodule Euler.Set4 do
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
   """
   def problem_40 do
-    11..1_000_000
-    |> Enum.reduce_while({12, 98, 2, 1, 10, 1}, fn
+    {1, {10, 1, 1}}
+    |> Stream.iterate(fn
+      ({mag, {mag, _, dpn}}) -> {mag + 1, {mag * 10, mag, dpn + 1}}
 
-      (___, {n, stop_n, digs_per_num, mag_next, mag_num, digs_prod}) when n < stop_n ->
+      ({num, num_state_tup}) -> {num + 1, num_state_tup}
+    end)
+    |> Enum.reduce_while({0, 0, 1, 1, 1, 10, 1}, fn
 
-        {:cont, {n + digs_per_num,
+      (num, {dig_count,
+             stop_n,
+             next_n,
+             digs_per_num,
+             digs_prod}) when dig_count < stop_n ->
+
+        if num === next_mag do
+          digs_per_num = digs_per_num + 1
+          stop_n = stop_n - 1
+        end
+
+        {:cont, {dig_count + digs_per_num,
                  stop_n,
+                 next_n,
                  digs_per_num,
-                 mag_next,
                  mag_num,
+                 next_mag,
                  digs_prod}}
 
-      (num, {n, stop_n, digs_per_num, mag_next, mag_num, digs_prod}) when num < mag_next ->
 
-        # next_n - n < digs_per_num
+      (num, {dig_count,
+             stop_n,
+             next_n,
+             digs_per_num,
+             mag_num,
+             next_mag,
+             digs_prod})                         ->
 
         mag_offset =
           10
-          |> Sets.nth_pow(n - stop_n)
+          |> Sets.nth_pow(dig_count - stop_n)
 
         div_mag =
           next_n
@@ -228,25 +248,13 @@ defmodule Euler.Set4 do
 
              next_n = (stop_n + digs_per_num) * 10
 
-             {:cont, {n + digs_per_num,
+             {:cont, {dig_count + digs_per_num,
                       next_n - (digs_per_num + 1),
                       digs_per_num,
-                      mag_next,
+                      next_mag,
                       mag_num,
                       digs_prod}}
         end
-
-      (___, {n, stop_n, digs_per_num, mag_next, ______, digs_prod})                    ->
-
-             digs_per_num = digs_per_num + 1
-
-             {:cont, {n + digs_per_num,
-                      stop_n,
-                      digs_per_num,
-                      mag_next * 10,
-                      mag_next,
-                      digs_prod}}
-
     end)
   end
 end

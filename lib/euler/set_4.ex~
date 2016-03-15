@@ -187,49 +187,44 @@ defmodule Euler.Set4 do
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
   """
   def problem_40 do
-    # {1, 1, 10, false}
-    1
-    |> Stream.iterate(&(&1 + 1))
-    |> Stream.transform({1, 10}, fn
-      (next_mag, {_mag_num, next_mag}) ->
+    {1, 2}
+    |> Stream.iterate(fn({_num, next_num}) ->
 
-        {[bubble: next_mag], {next_mag, next_mag * 10}}
+      {next_num, next_num + 1}
+    end
+    |> Stream.transform({{1, 10}, {1, 1}) fn
+      ({num, next_mag}, {mag_num, next_mag}) ->
 
-        (number, mag_tup = {mag_num, _next_mag}) ->
+          {[{{:bubble, num, next_mag}}], {next_mag, next_mag * 10}}
 
-          {[{number, mag_num}], mag_tup}
+
+        ({num, _next_num}, mag_tup = {mag_num, _next_mag}) ->
+
+          {[{num, mag_num}]}
     end)
-    |> Stream.transform({0, 1, 10}, fn
+    |> Stream.transform({0, 10}, fn
 
-      ({:bubble, num}, {n, digits_per_num, next_n}) ->
+      ({digits_per_num, _num_tup}, {n, next_stop}) when n < next_stop->
 
-        {[{n, num, num}]
+        {n + digits_per_num, next_stop}
+
+
+      ({digits_per_num, num_tup}, {n, next_stop}) ->
+
+
+
+        next_stop
+        |> case do
+          1_000_000 -> {:halt, digit}
+          _________ -> {[digit], {n + dpn, next_stop * 10}}
+        end
       
     end)
-    |> Enum.reduce_while({0, 1, 1}, fn
-
-      ({dpn, _num, _mag_tup, _on_bubble}, {n, stop, product}) when n < stop ->
-
-        {:cont, {n + dpn, stop, product}}
-
-      ({dpn, num, mag_num, _on_bubble, _next_mag}, {stop, stop, product}) ->
-
-        product * num
-        |> div(mag_num)
-        |> process_product(stop, stop, dpn)
-
-      ({dpn, num, mag_num, on_bubble, _next_mag}, {n, stop, product}) ->
-
-        # bubble_num
-        # |> case do
-        #   true -> div(mag_num, 10)
-        #   ___  -> mag_num
-        # end
-        bubble_num
-        |> handle_overshoot(mag_num, num, n - stop, product)
-        |> process_product(stop, n, dpn)
-
-    end)
+    |> Enum.reduce(&*/2)
+    # |> Enum.reduce(1, fn(next_digit, product) ->
+      
+    #   product * next_digit
+    # end)
   end
 
   def process_product(product, 1_000_000, _, ___), do: {:halt, product}

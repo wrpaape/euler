@@ -187,101 +187,61 @@ defmodule Euler.Set4 do
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
   """
   def problem_40 do
-    {1, 10, 1, 10, 1, 1}
-    |> Stream.unfold(fn
-      ({10_000_000, _, _, _, _, _}) -> nil
+    10
+    |> Stream.iterate(&(&1 * 10))
+    |> Stream.transform(1, fn(next_n, prev_n) ->
+      delta_n = next_n - prev_n
 
-      (tup = {n, next_n, mag, next_mag, num, dpn}) ->
+      next_n
+      |> case do
+        10_000_000 -> {:halt,     delta_n}
+        __________ -> {[delta_n], next_n}
+      end
+    end)
+    |> Stream.transform({1, 1, 1, 10}, fn(delta_n, {prev_num, dpn, mag_num, next_mag}) ->
+      delta_n
+      |> div(dpn)
+      |> + prev_num
+      |> case do
+        next_num when next_num < next_mag ->
 
-        IO.inspect(tup)
+          delta_n
+          |> rem(dpn)
+          |> strip_next_digit({next_num, dpn, mag_num, next_mag})
+      ######################################################
+      ######################################################
 
-        next_n_tup = {next_n, next_n * 10}
-          
-        dig_step = next_n - n
+        next_num when next_num > next_mag ->
+          rem_delta_n = delta_n - (next_mag - prev_n) * dpn
 
-        num + div(dig_step, dpn)
-        |> case do
-          next_num when next_num < next_mag ->
+          dpn = dpn + 1
 
-            next_state =
-              next_n_tup
-              |> Tuple.append(mag)
-              |> Tuple.append(next_mag)
-              |> Tuple.append(next_num)
-              |> Tuple.append(dpn)
+          next_num =
+            rem_delta_n
+            |> div(dpn)
+            |> + next_mag
 
-              dig_step
-              |> rem(dpn)
-              |> case do
-                0         ->
-                  {div(next_num, mag), next_state}
-
-                overshoot ->
-
-                  mag_digit = Sets.nth_pow(10, overshoot)
-
-                  digit =
-                    next_num
-                    |> rem(mag_digit * 10)
-                    |> div(mag_digit)
-
-                  {digit, next_state}
-              end
-
-
-          next_num ->
-
-            next_tens_tup =
-              next_n_tup
-              |> Tuple.append(next_mag)
-              |> Tuple.append(next_mag * 10)
-              
-            next_num
-            |> case do
-              ^next_mag ->
-
-                shared_tup =
-                  next_tens_tup
-                  |> Tuple.append(next_num)
-
-                dig_step * dpn
-                |> case do
-                  ^next_n -> {1, Tuple.append(shared_tup, dpn + 1)}
-                  _______ -> {9, Tuple.append(shared_tup, dpn + 1)}
-                end
-
-
-              _________ ->
-
-                rem_digs = dig_step - (dpn * (next_mag - num))
-                dpn      = dpn + 1
-                next_num = next_mag + div(rem_digs, dpn)
-
-                next_state =
-                  next_tens_tup
-                  |> Tuple.append(next_num)
-                  |> Tuple.append(dpn)
-
-                rem_digs
-                |> rem(dpn)
-                |> case do
-                  0         ->
-                    {div(next_num, next_mag), next_state}
-
-                  overshoot ->
-
-                    mag_digit = Sets.nth_pow(10, overshoot)
-
-                    digit =
-                      next_num
-                      |> rem(mag_digit * 10)
-                      |> div(mag_digit)
-
-                    {digit, next_state}
-                end
-            end
-        end
+          rem_delta_n
+          |> rem(dpn)
+          |> strip_next_digit({next_num, dpn, next_mag, next_mag * 10})
+      end
     end)
     |> Enum.reduce(&*/2)
   end
-end
+
+  def strip_next_digit(0, next_state = {next_num, _dpn, mag_num, _next_mag}) do
+    {div(next_num, mag_num), next_state}
+  end
+
+  def strip_next_digit(undershoot, next_state = {next_num, dpn, _mag_num, _next_mag}) do
+    mag_digit =
+      10
+      |> Sets.nth_pow(dpn - undershoot)
+
+    next_digit =
+      next_num
+      |> rem(mag_digit * 10)
+      |> div(mag_digit)
+
+    {[next_digit], next_state}
+  end

@@ -199,6 +199,9 @@ defmodule Euler.Set4 do
       end
     end)
     |> Stream.transform({1, 1, 1, 10}, fn(delta_n, {prev_num, dpn, mag_num, next_mag}) ->
+
+      IO.inspect prev_num
+
       delta_n
       |> div(dpn)
       |> + prev_num
@@ -210,8 +213,8 @@ defmodule Euler.Set4 do
           |> strip_next_digit({next_num, dpn, mag_num, next_mag})
       ######################################################
       ######################################################
-        next_num when next_num > next_mag ->
-          rem_delta_n = delta_n - (next_mag - prev_n) * dpn
+        next_num ->
+          rem_delta_n = delta_n - (next_mag - prev_num) * dpn
 
           dpn = dpn + 1
 
@@ -228,9 +231,7 @@ defmodule Euler.Set4 do
     |> Enum.reduce(&*/2)
   end
 
-  def strip_next_digit(0, next_state = {next_num, _dpn, mag_num, _next_mag}) do
-    {div(next_num, mag_num), next_state}
-  end
+  def strip_next_digit(0, next_state = {next_num, _dpn, mag_num, _next_mag}), do: {[div(next_num, mag_num)], next_state}
 
   def strip_next_digit(undershoot, next_state = {next_num, dpn, _mag_num, _next_mag}) do
     mag_digit =
@@ -244,3 +245,4 @@ defmodule Euler.Set4 do
 
     {[next_digit], next_state}
   end
+end

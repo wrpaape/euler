@@ -78,7 +78,7 @@ void problem_33(char *result_buffer)
 
 		for (num = 10; num < den; ++num) {
 
-			gcd = greatest_common_divisor(num, den, divisors_map);
+			gcd = gcd_from_map(num, den, divisors_map);
 
 			if (gcd == 1 || gcd % 10 == 0)
 				continue;
@@ -673,7 +673,7 @@ inline bool mult_match(int base_num, int match_num, int base_den, int match_den)
  * returns the greatest common divisor bewtween 'num' and 'den' by traversing
  * their lists of divisors
  */
-int greatest_common_divisor(int num, int den, struct DivNode **divisors_map)
+int gcd_from_map(int num, int den, struct DivNode **divisors_map)
 {
 	/* skip identity DivNode for denominator */
 	struct DivNode *div_den = divisors_map[den]->next;

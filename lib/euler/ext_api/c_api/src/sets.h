@@ -49,12 +49,14 @@ struct SieveArg {
 struct IntNode *prime_sieve(const int sup);
 struct IntNode *atkin_sieve(const int sup);
 bool bpsw_prime_test(const uint64_t n);
+int greatest_common_divisor(int x, int y);
 void *sieve_range(void *arg);
 static inline bool flp1(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp2(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
 static inline int priv_nth_pow(int small_base, int large_base, int n);
 static bool not_base_2_strong_probable_prime(const uint64_t n);
+static int jacobi_symbol(int64_t top, int64_t bot);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/

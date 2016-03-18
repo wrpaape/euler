@@ -28,7 +28,7 @@ struct DivNode **init_mult_map(void);
 bool is_bin_palindrome(const int n);
 int **init_digits_map(void);
 struct DivNode **init_divisors_map(void);
-int greatest_common_divisor(int num, int den, struct DivNode **mult_map);
+int gcd_from_map(int num, int den, struct DivNode **mult_map);
 bool is_curious(int num, int den, int base_num, int base_den, int **digs_map);
 static inline bool mult_match(int base_num, int match_num,
 			      int base_den, int match_den);

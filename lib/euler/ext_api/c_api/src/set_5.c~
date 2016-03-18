@@ -22,11 +22,13 @@
  ************************************************************************/
 void problem_41(char *result_buffer)
 {
-	if (bpsw_prime_test(96)) {
-		sprintf(result_buffer, "%s", "prime");
-	} else {
-		sprintf(result_buffer, "%s", "composite");
-	}
+	/* if (bpsw_prime_test(97)) { */
+	/* 	sprintf(result_buffer, "%s", "prime"); */
+	/* } else { */
+	/* 	sprintf(result_buffer, "%s", "composite"); */
+	/* } */
+
+	sprintf(result_buffer, "%d", greatest_common_divisor(81, 27));
 }
 /************************************************************************
  *				HELPERS					*

@@ -43,14 +43,75 @@ bool bpsw_prime_test(const uint64_t n)
 	if (not_base_2_strong_probable_prime(n))
 		return false;
 
-	int64_t d;
+	int64_t d = 5;
+	int64_t d_mod_8 = 5 & 7;
 
-	for (d = 5)
+	while (1) {
+		if (jacobi_symbol(d, n) == -1)
+			break;
+
+		d = -(d + 2);
+
+		if (jacobi_symbol(d, n) == -1)
+			break;
+
+		d = -(d - 2);
+	}
+
+
 
 
 
 
 	return is_prime;
+}
+
+int jacobi_symbol(int64_t top, int64_t bot)
+{
+	int num_facts_2 = 0;
+	bot %= top;
+
+	while ((bot & 1) == 0) {
+		++num_facts_2;
+		bot /= 2;
+	}
+
+
+	if ((num_facts_2 & 1) == 1) {
+
+		unsigned int top_mod_8 = (unsigned int) (top & 7);
+
+		if ((top_mod_8 == 3u) || (top_mod_8 == 5u))
+			bot = -bot;
+	}
+
+	if (bot == 1)
+		return 1;
+
+
+	return 1;
+}
+
+
+int greatest_common_divisor(int x, int y)
+{
+	if (y == 0)
+		return x;
+
+	int gcd = y;
+	int next_rem = x % y;
+	int prev_rem;
+
+	while (next_rem != 0) {
+
+		prev_rem = next_rem;
+
+		next_rem = gcd % next_rem;
+
+		gcd = prev_rem;
+	}
+
+	return gcd;
 }
 
 bool not_base_2_strong_probable_prime(const uint64_t n)
@@ -82,10 +143,6 @@ bool not_base_2_strong_probable_prime(const uint64_t n)
 	 return true; /* 'n' is not a base 2 strong provable prime */
 }
 
-
-/* bool base_2_strong_probable_prime(const uint64_t n) */
-/* { */
-/* } */
 
 struct IntNode *prime_sieve(const int sup)
 {

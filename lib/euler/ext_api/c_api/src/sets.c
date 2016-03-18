@@ -50,31 +50,24 @@ bool bpsw_prime_test(const uint64_t n)
 
 		d += 2;
 
-		if (jacobi_symbol(d, n, neg_jacobi) == -1)
+		if (jacobi_symbol(d, n, neg_jacobi) == -1) {
+			d = -d;
 			break;
+		}
 
 		d += 2;
 	}
 
+	return is_strong_lucas_pseudoprime(1, (1 - d) / 4, n);
+}
 
-	printf("j(-5, 1): %d\n", jacobi_symbol(5, 1, -1));
-	printf("j(5,  1): %d\n", jacobi_symbol(5, 1, 1));
-	printf("j(5,  3): %d\n", jacobi_symbol(5, 3, 1));
-	printf("j(5,  5): %d\n", jacobi_symbol(5, 5, 1));
-	printf("j(5,  7): %d\n", jacobi_symbol(5, 7, 1));
-	printf("j(5,  9): %d\n", jacobi_symbol(5, 9, 1));
-	printf("j(5, 11): %d\n", jacobi_symbol(5, 11, 1));
+bool is_strong_lucas_pseudoprime(int p, int q, uint64_t n)
+{
+	int u_k = 1;
+	int v_k = p;
 
-	/* for (int k = 1; k < 10; ++k) { */
-	/* 	for (int n = 1; n < 10; n += 2) { */
-	/* 		printf("j(%d, %d): %d\n", k, n, jacobi_symbol(k, n, ((n & 3) == 3) ? -1: 1)); */
-	/* 	} */
-	/* } */
+	const uint64_t n_plus_one = n + 1;
 
-
-
-
-	return false;
 }
 
 int jacobi_symbol(int64_t top, int64_t bot, int jacobi)

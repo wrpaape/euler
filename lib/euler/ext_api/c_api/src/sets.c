@@ -35,13 +35,53 @@ extern inline uint64_t next_power_of_2(uint64_t i);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
-bool elliptic_curve_primality(const int n)
+bool bpsw_prime_test(const uint64_t n)
 {
 	bool is_prime = false;
+
+
+	if (not_base_2_strong_probable_prime(n))
+		return false;
+	else
+		return true;
+
 
 	return is_prime;
 }
 
+bool not_base_2_strong_probable_prime(const uint64_t n)
+{
+	/*
+	 * find first odd strong pseudoprime 'd' and exponent 's' s.t.
+	 * n = d * 2^s + 1
+	 */
+	const uint64_t n_minus_one = n - 1;
+	uint64_t d = n_minus_one;
+	uint64_t s = 0;
+	/* while d is even... */
+	while (d & 1) {
+	    ++s;
+	    d = n_minus_one >> s;
+	}
+
+	/* for base 'a' = 2, if a^d % n = 1...*/
+	 if ((1 << d) % n == 1)
+		 return false; /* 'n' is a base 2 strong provable prime, bail */
+
+	 /* otherwise test second condition: 2^(3 * 2^r) % n = n - 1 for 0 ≤ r < s */
+
+	 for (uint64_t r = 0; r < s; ++r) {
+		 if (((1 << (3 << r)) % n) == n_minus_one)
+			 return false;
+	 }
+
+	 return true;
+}
+
+
+/* bool base_2_strong_probable_prime(const uint64_t n) */
+/* { */
+/* } */
 
 struct IntNode *prime_sieve(const int sup)
 {

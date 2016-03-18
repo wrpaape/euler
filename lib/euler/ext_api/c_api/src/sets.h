@@ -48,11 +48,13 @@ struct SieveArg {
  ************************************************************************************/
 struct IntNode *prime_sieve(const int sup);
 struct IntNode *atkin_sieve(const int sup);
-bool elliptic_curve_primality(const int n);
+bool bpsw_prime_test(const uint64_t n);
 void *sieve_range(void *arg);
 static inline bool flp1(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp2(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
+static inline int priv_nth_pow(int small_base, int large_base, int n);
+static bool not_base_2_strong_probable_prime(const uint64_t n);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/
@@ -124,15 +126,20 @@ inline void handle_pthread_join(pthread_t thread, void **return_value)
 
 inline int nth_pow(int base, int n)
 {
-  int result = base;
-
-  do {
-    result *= base;
-    --n;
-  } while (n > 1);
-
-  return result;
+	return priv_nth_pow(1, base, n);
 }
+
+inline int priv_nth_pow(int lil, int big, int n)
+{
+	if (n == 0) return lil;
+
+	if (n == 1) return big * lil;
+
+	if (n & 1)  return priv_nth_pow(big * lil, big * big, (n - 1) / 2);
+
+	else	    return priv_nth_pow(lil,       big * big, n / 2);
+}
+
 
 /* http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog */
 #define _LOG2A(s) ((s &0xffffffff00000000) ? (32 + _LOG2B(s >> 32)) : (_LOG2B(s)))

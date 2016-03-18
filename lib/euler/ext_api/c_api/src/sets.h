@@ -56,7 +56,7 @@ static inline bool flp2(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
 static inline int priv_nth_pow(int small_base, int large_base, int n);
 static bool not_base_2_strong_probable_prime(const uint64_t n);
-static int jacobi_symbol(int64_t top, int64_t bot);
+static int jacobi_symbol(int64_t top, int64_t bot, int jacobi);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/

@@ -37,59 +37,91 @@ extern inline uint64_t next_power_of_2(uint64_t i);
  ************************************************************************************/
 bool bpsw_prime_test(const uint64_t n)
 {
-	bool is_prime = false;
+	/* if (not_base_2_strong_probable_prime(n)) */
+	/* 	return false; */
+
+	/* int64_t d = 5; */
+
+	/* int neg_jacobi = ((n & 3) == 3) ? -1 : 1; */
+
+	/* while (1) { */
+	/* 	if (jacobi_symbol(d, n, 1) == -1) */
+	/* 		break; */
+
+	/* 	d = -(d + 2); */
+
+	/* 	if (jacobi_symbol(d, n, neg_jacobi) == -1) */
+	/* 		break; */
+
+	/* 	d = -(d - 2); */
+	/* } */
 
 
-	if (not_base_2_strong_probable_prime(n))
-		return false;
+	printf("j(8,  5): %d\n", jacobi_symbol(8, 5, 1));
+	printf("j(8,  7): %d\n", jacobi_symbol(8, 7, 1));
+	printf("j(12, 3): %d\n", jacobi_symbol(12, 3, 1));
+	printf("j(-5, 15): %d\n", jacobi_symbol(-5, 15, -1));
+	printf("j(-7, 15): %d\n", jacobi_symbol(-7, 15, -1));
+	printf("j(5, 15): %d\n", jacobi_symbol(5, 15, -1));
+	printf("j(7, 15): %d\n", jacobi_symbol(7, 15, -1));
 
-	int64_t d = 5;
-	int64_t d_mod_8 = 5 & 7;
-
-	while (1) {
-		if (jacobi_symbol(d, n) == -1)
-			break;
-
-		d = -(d + 2);
-
-		if (jacobi_symbol(d, n) == -1)
-			break;
-
-		d = -(d - 2);
-	}
+	/* for (int k = 1; k < 10; ++k) { */
+	/* 	for (int n = 1; n < 10; n += 2) { */
+	/* 		printf("j(%d, %d): %d\n", k, n, jacobi_symbol(k, n, ((n & 3) == 3) ? -1: 1)); */
+	/* 	} */
+	/* } */
 
 
 
 
-
-
-	return is_prime;
+	return false;
 }
 
-int jacobi_symbol(int64_t top, int64_t bot)
+int jacobi_symbol(int64_t top, int64_t bot, int jacobi)
 {
-	int num_facts_2 = 0;
-	bot %= top;
+	int num_facts_2;
+	int temp;
+	unsigned int top_mod_8;
 
-	while ((bot & 1) == 0) {
-		++num_facts_2;
-		bot /= 2;
+	while (1) {
+		bot %= top;
+		num_facts_2 = 0;
+
+		while ((bot & 1) == 0) {
+			++num_facts_2;
+			bot /= 2;
+		}
+
+		/* if an odd number of '2's were factored from 'bot'... */
+		if (num_facts_2 & 1) {
+
+		 top_mod_8 = (unsigned int) (top & 7);
+
+			/* if 'top mod 8' = 3 or 5... */
+			if ((top_mod_8 == 3u) || (top_mod_8 == 5u))
+				jacobi = -jacobi; /* flip sign */
+		}
+
+
+		if (((top & 3) == 3) && ((bot & 3) == 3))
+			jacobi = -jacobi;
+
+
+		top %= bot;
+
+		if (top == 0)
+			return (bot == 1) ? jacobi : 0;
+
+
+		temp = bot;
+		bot  = top;
+		top  = temp;
 	}
 
+	/* if (greatest_common_divisor(top, bot) != 1) */
+	/* 	return 0; */
 
-	if ((num_facts_2 & 1) == 1) {
-
-		unsigned int top_mod_8 = (unsigned int) (top & 7);
-
-		if ((top_mod_8 == 3u) || (top_mod_8 == 5u))
-			bot = -bot;
-	}
-
-	if (bot == 1)
-		return 1;
-
-
-	return 1;
+	/* return jacobi; */
 }
 
 
@@ -114,6 +146,7 @@ int greatest_common_divisor(int x, int y)
 	return gcd;
 }
 
+
 bool not_base_2_strong_probable_prime(const uint64_t n)
 {
 	/*
@@ -123,8 +156,9 @@ bool not_base_2_strong_probable_prime(const uint64_t n)
 	const uint64_t n_minus_one = n - 1;
 	uint64_t d = n_minus_one;
 	uint64_t s = 0;
+
 	/* while d is even... */
-	while (d & 1) {
+	while ((d & 1) == 0) {
 	    ++s;
 	    d = n_minus_one >> s;
 	}
@@ -134,9 +168,9 @@ bool not_base_2_strong_probable_prime(const uint64_t n)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
 
 	 /* otherwise test second condition: */
-	 for (uint64_t r = 0; r < s; ++r) {
+	 for (uint64_t r = 0u; r < s; ++r) {
 		 /* if 2^(3 * 2^r) % n = n - 1 for 0 ≤ r < s... */
-		 if (((1 << (3 << r)) % n) == n_minus_one)
+		 if (((1u << (3u << r)) % n) == n_minus_one)
 			 return false; /* 'n' is a base 2 strong provable prime, bail */
 	 }
 

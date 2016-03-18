@@ -31,6 +31,7 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
+extern inline uint64_t nth_pow_u64(uint64_t base, int n);
 extern inline uint64_t next_power_of_2(uint64_t i);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
@@ -46,27 +47,57 @@ bool bpsw_prime_test(const uint64_t n)
 
 	while (1) {
 		if (jacobi_symbol(d, n, 1) == -1)
-			break;
+			return is_strong_lucas_pseudoprime(d, n);
 
 		d += 2;
 
-		if (jacobi_symbol(d, n, neg_jacobi) == -1) {
-			d = -d;
-			break;
-		}
+		if (jacobi_symbol(d, n, neg_jacobi) == -1)
+			return is_strong_lucas_pseudoprime(-d, n);
 
 		d += 2;
 	}
 
-	return is_strong_lucas_pseudoprime(1, (1 - d) / 4, n);
 }
 
-bool is_strong_lucas_pseudoprime(int p, int q, uint64_t n)
+bool is_strong_lucas_pseudoprime(const uint64_t d, const uint64_t n)
 {
-	int u_k = 1;
-	int v_k = p;
+	/* p = 1 */
 
-	const uint64_t n_plus_one = n + 1;
+	const uint64_t q = (1llu - d) / 4llu;
+	const uint64_t n_plus_one = n + 1llu;
+
+	uint64_t u_prev;
+	uint64_t u_next = 1llu;
+	uint64_t v_next = 1llu;
+	int k = 1;
+
+	int shift = 63 - __builtin_clzll(n_plus_one);
+
+	while (1) {
+		u_next *= v_next;
+		v_next = (v_next * v_next) - (nth_pow_u64(q, k) * 2llu);
+
+		k *= 2;
+
+		if ((n_plus_one >> shift) & 1) {
+			u_prev = u_next;
+			u_next = ((u_prev       + v_next) / 2llu);
+			v_next = (((d * u_prev) + v_next) / 2llu);
+			++k;
+		}
+
+		printf("%d\n", k);
+		printf("%d\n", k);
+
+		if (k == n_plus_one) {
+			return ((u_next % n == 0) || (v_next % n == 0));
+		}
+
+		--shift
+	}
+
+
+	/* const uint64_t n_plus_one = n + 1; */
 
 }
 

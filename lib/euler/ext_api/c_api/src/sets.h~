@@ -54,10 +54,11 @@ void *sieve_range(void *arg);
 static inline bool flp1(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp2(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
-static inline int priv_nth_pow(int small_base, int large_base, int n);
+static inline int priv_nth_pow(int lil, int big, int n);
+static inline uint64_t priv_nth_pow_u64(uint64_t lil, uint64_t big, int n);
 static bool not_base_2_strong_probable_prime(const uint64_t n);
 static int jacobi_symbol(int64_t top, int64_t bot, int jacobi);
-static bool is_strong_lucas_pseudoprime(int p, int q, uint64_t n)
+bool is_strong_lucas_pseudoprime(const uint64_t d, const uint64_t n);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/
@@ -133,6 +134,22 @@ inline int nth_pow(int base, int n)
 }
 
 inline int priv_nth_pow(int lil, int big, int n)
+{
+	if (n == 0) return lil;
+
+	if (n == 1) return big * lil;
+
+	if (n & 1)  return priv_nth_pow(big * lil, big * big, (n - 1) / 2);
+
+	else	    return priv_nth_pow(lil,       big * big, n / 2);
+}
+
+inline uint64_t nth_pow_u64(uint64_t base, int n)
+{
+	return priv_nth_pow64(1, base, n);
+}
+
+inline uint64_t priv_nth_pow_u64(uint64_t lil, uint64_t big, int n)
 {
 	if (n == 0) return lil;
 

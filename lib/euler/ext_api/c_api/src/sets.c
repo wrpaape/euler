@@ -41,64 +41,99 @@ bool bpsw_prime_test(const uint64_t n)
 	if (not_base_2_strong_probable_prime(n))
 		return false;
 
-	int64_t d = 5;
+	int64_t big_d = 5;
 
 	int neg_jacobi = ((n & 3) == 3) ? -1 : 1;
 
 	while (1) {
-		if (jacobi_symbol(d, n, 1) == -1)
-			return is_strong_lucas_pseudoprime(d, n);
+		if (jacobi_symbol(big_d, n, 1) == -1)
+			return is_strong_lucas_pseudoprime(big_d, n);
 
-		d += 2;
+		big_d += 2;
 
-		if (jacobi_symbol(d, n, neg_jacobi) == -1)
-			return is_strong_lucas_pseudoprime(-d, n);
+		if (jacobi_symbol(big_d, n, neg_jacobi) == -1)
+			return is_strong_lucas_pseudoprime(-big_d, n);
 
-		d += 2;
+		big_d += 2;
 	}
 
 }
 
-bool is_strong_lucas_pseudoprime(const int64_t d, const uint64_t n)
+bool is_strong_lucas_pseudoprime(const int64_t big_d, const uint64_t n)
 {
 	const uint64_t n_plus_one = n + 1ll;
-	const int64_t q = (1ll - d) / 4ll;
+	const int64_t q = (1ll - big_d) / 4ll;
 
-	printf("q:  %lld\n", q);
+	uint64_t d = n_plus_one;
+	uint64_t s = 0llu;
+
+	/* while d is even... */
+	while ((d & 1) == 0) {
+		++s;
+		d = n_plus_one >> s;
+	}
+
 
 	int64_t u_prev;
-	int64_t u_next = 1ll;
-	int64_t v_next = 1ll;
+	int64_t u_k = 1ll;
+	int64_t v_k = 1ll;
 	int k = 1;
-
-	int shift = 62 - __builtin_clzll(n_plus_one);
-	/* printf("shift: %d\n", shift); */
+	int shift = 62 - __builtin_clzll(d);
+	printf("shift: %d\n", shift);
+	printf("d: %llu\n", d);
+	printf("q: %lld\n", q);
+	printf("s: %llu\n", s);
 
 	while (1) {
-		u_next *= v_next;
-		v_next = (v_next * v_next) - (nth_pow64(q, k) * 2ll);
+		u_k *= v_k;
+		v_k = (v_k * v_k) - (nth_pow64(q, k) * 2ll);
 
 		k *= 2;
 
-		if ((n_plus_one >> shift) & 1) {
-			u_prev = u_next;
-			u_next = ((u_prev       + v_next) / 2ll);
-			v_next = (((d * u_prev) + v_next) / 2ll);
+		if ((d >> shift) & 1) {
+			u_prev = u_k;
+			u_k = ((u_prev       + v_k) / 2ll);
+			v_k = (((big_d * u_prev) + v_k) / 2ll);
 			++k;
 		}
 
+	printf("k:   %d\n", k);
+	printf("u_k: %lld\n", u_k);
+	printf("v_k: %lld\n", v_k);
 
-		if (k == n_plus_one) {
-
-		printf("u_next:  %lld\n", u_next);
-		printf("v_next:  %lld\n", v_next);
-		printf("k:	 %d\n", k);
-		printf("u mod:	 %lld\n", u_next % n);
-		printf("v mod:	 %lld\n", v_next % n);
-			return ((u_next % n == 0ll) || (v_next % n == 0ll));
-		}
+		if (k == d)
+			break;
 
 		--shift;
+	}
+
+	printf("k:   %d\n", k);
+	printf("u_k: %lld\n", u_k);
+	printf("v_k: %lld\n", v_k);
+	printf("LLM: %lld\n", LLONG_MAX);
+
+	if ((u_k % n) == 0ll)
+		return true;
+
+	if (s == 0llu)
+		return false;
+
+	if ((v_k % n) == 0ll)
+		return true;
+
+
+	while (1) {
+		v_k = (v_k * v_k) - (nth_pow64(q, k) * 2ll);
+
+		if ((v_k % n) == 0ll)
+			return true;
+
+		--s;
+
+		if (s == 0llu)
+			return false;
+
+		k *= 2;
 	}
 }
 

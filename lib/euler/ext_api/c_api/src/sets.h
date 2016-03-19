@@ -55,10 +55,10 @@ static inline bool flp1(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp2(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
 static inline int priv_nth_pow(int lil, int big, int n);
-static inline uint64_t priv_nth_pow_u64(uint64_t lil, uint64_t big, int n);
+static inline int64_t priv_nth_pow64(int64_t lil, int64_t big, int n);
 static bool not_base_2_strong_probable_prime(const uint64_t n);
 static int jacobi_symbol(int64_t top, int64_t bot, int jacobi);
-bool is_strong_lucas_pseudoprime(const uint64_t d, const uint64_t n);
+bool is_strong_lucas_pseudoprime(const int64_t d, const uint64_t n);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/
@@ -144,20 +144,20 @@ inline int priv_nth_pow(int lil, int big, int n)
 	else	    return priv_nth_pow(lil,       big * big, n / 2);
 }
 
-inline uint64_t nth_pow_u64(uint64_t base, int n)
+inline int64_t nth_pow64(int64_t base, int n)
 {
-	return priv_nth_pow64(1, base, n);
+	return priv_nth_pow64(1ll, base, n);
 }
 
-inline uint64_t priv_nth_pow_u64(uint64_t lil, uint64_t big, int n)
+inline int64_t priv_nth_pow64(int64_t lil, int64_t big, int n)
 {
 	if (n == 0) return lil;
 
 	if (n == 1) return big * lil;
 
-	if (n & 1)  return priv_nth_pow(big * lil, big * big, (n - 1) / 2);
+	if (n & 1)  return priv_nth_pow64(big * lil, big * big, (n - 1) / 2);
 
-	else	    return priv_nth_pow(lil,       big * big, n / 2);
+	else	    return priv_nth_pow64(lil,       big * big, n / 2);
 }
 
 

@@ -22,7 +22,7 @@
  ************************************************************************/
 void problem_41(char *result_buffer)
 {
-	if (bpsw_prime_test(97)) {
+	if (bpsw_prime_test(19)) {
 		sprintf(result_buffer, "%s", "prime");
 	} else {
 		sprintf(result_buffer, "%s", "composite");

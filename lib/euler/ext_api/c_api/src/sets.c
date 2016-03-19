@@ -31,15 +31,15 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
-extern inline uint64_t nth_pow_u64(uint64_t base, int n);
+extern inline int64_t nth_pow64(int64_t base, int n);
 extern inline uint64_t next_power_of_2(uint64_t i);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
 bool bpsw_prime_test(const uint64_t n)
 {
-	if (not_base_2_strong_probable_prime(n))
-		return false;
+	/* if (not_base_2_strong_probable_prime(n)) */
+	/* 	return false; */
 
 	int64_t d = 5;
 
@@ -59,30 +59,29 @@ bool bpsw_prime_test(const uint64_t n)
 
 }
 
-bool is_strong_lucas_pseudoprime(const uint64_t d, const uint64_t n)
+bool is_strong_lucas_pseudoprime(const int64_t d, const uint64_t n)
 {
-	/* p = 1 */
+	const uint64_t n_plus_one = n + 1ll;
+	const int64_t q = (1ll - d) / 4ll;
 
-	const uint64_t q = (1llu - d) / 4llu;
-	const uint64_t n_plus_one = n + 1llu;
-
-	uint64_t u_prev;
-	uint64_t u_next = 1llu;
-	uint64_t v_next = 1llu;
+	int64_t u_prev;
+	int64_t u_next = 1ll;
+	int64_t v_next = 1ll;
 	int k = 1;
 
-	int shift = 63 - __builtin_clzll(n_plus_one);
+	int shift = 62 - __builtin_clzll(n_plus_one);
+	printf("shift: %d\n", shift);
 
 	while (1) {
 		u_next *= v_next;
-		v_next = (v_next * v_next) - (nth_pow_u64(q, k) * 2llu);
+		v_next = (v_next * v_next) - (nth_pow64(q, k) * 2ll);
 
 		k *= 2;
 
 		if ((n_plus_one >> shift) & 1) {
 			u_prev = u_next;
-			u_next = ((u_prev       + v_next) / 2llu);
-			v_next = (((d * u_prev) + v_next) / 2llu);
+			u_next = ((u_prev       + v_next) / 2ll);
+			v_next = (((d * u_prev) + v_next) / 2ll);
 			++k;
 		}
 
@@ -93,12 +92,8 @@ bool is_strong_lucas_pseudoprime(const uint64_t d, const uint64_t n)
 			return ((u_next % n == 0) || (v_next % n == 0));
 		}
 
-		--shift
+		--shift;
 	}
-
-
-	/* const uint64_t n_plus_one = n + 1; */
-
 }
 
 int jacobi_symbol(int64_t top, int64_t bot, int jacobi)

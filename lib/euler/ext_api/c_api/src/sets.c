@@ -38,8 +38,8 @@ extern inline uint64_t next_power_of_2(uint64_t i);
  ************************************************************************************/
 bool bpsw_prime_test(const uint64_t n)
 {
-	/* if (not_base_2_strong_probable_prime(n)) */
-	/* 	return false; */
+	if (not_base_2_strong_probable_prime(n))
+		return false;
 
 	int64_t d = 5;
 
@@ -64,13 +64,15 @@ bool is_strong_lucas_pseudoprime(const int64_t d, const uint64_t n)
 	const uint64_t n_plus_one = n + 1ll;
 	const int64_t q = (1ll - d) / 4ll;
 
+	printf("q:  %lld\n", q);
+
 	int64_t u_prev;
 	int64_t u_next = 1ll;
 	int64_t v_next = 1ll;
 	int k = 1;
 
 	int shift = 62 - __builtin_clzll(n_plus_one);
-	printf("shift: %d\n", shift);
+	/* printf("shift: %d\n", shift); */
 
 	while (1) {
 		u_next *= v_next;
@@ -85,11 +87,15 @@ bool is_strong_lucas_pseudoprime(const int64_t d, const uint64_t n)
 			++k;
 		}
 
-		printf("%d\n", k);
-		printf("%d\n", k);
 
 		if (k == n_plus_one) {
-			return ((u_next % n == 0) || (v_next % n == 0));
+
+		printf("u_next:  %lld\n", u_next);
+		printf("v_next:  %lld\n", v_next);
+		printf("k:	 %d\n", k);
+		printf("u mod:	 %lld\n", u_next % n);
+		printf("v mod:	 %lld\n", v_next % n);
+			return ((u_next % n == 0ll) || (v_next % n == 0ll));
 		}
 
 		--shift;
@@ -136,6 +142,37 @@ int jacobi_symbol(int64_t top, int64_t bot, int jacobi)
 }
 
 
+bool not_base_2_strong_probable_prime(const uint64_t n)
+{
+	/*
+	 * find first odd strong pseudoprime 'd' and exponent 's' s.t.
+	 * n = d * 2^s + 1
+	 */
+	const uint64_t n_minus_one = n - 1;
+	uint64_t d = n_minus_one;
+	uint64_t s = 0;
+
+	/* while d is even... */
+	while ((d & 1) == 0) {
+		++s;
+		d = n_minus_one >> s;
+	}
+
+	/* for base 'a' = 2, if a^d % n = 1...*/
+	 if (((1llu << d) % n) == 1llu)
+		 return false; /* 'n' is a base 2 strong provable prime, bail */
+
+	 /* otherwise test second condition: */
+	 for (uint64_t r = 0llu; r < s; ++r) {
+		 /* if 2^(d * 2^r) % n = n - 1 for 0 ≤ r < s... */
+		 if (((1llu << (d << r)) % n) == n_minus_one)
+			 return false; /* 'n' is a base 2 strong provable prime */
+	 }
+
+	 return true; /* 'n' is not a base 2 strong provable prime */
+}
+
+
 int greatest_common_divisor(int x, int y)
 {
 	if (y == 0)
@@ -157,36 +194,6 @@ int greatest_common_divisor(int x, int y)
 	return gcd;
 }
 
-
-bool not_base_2_strong_probable_prime(const uint64_t n)
-{
-	/*
-	 * find first odd strong pseudoprime 'd' and exponent 's' s.t.
-	 * n = d * 2^s + 1
-	 */
-	const uint64_t n_minus_one = n - 1;
-	uint64_t d = n_minus_one;
-	uint64_t s = 0;
-
-	/* while d is even... */
-	while ((d & 1) == 0) {
-	    ++s;
-	    d = n_minus_one >> s;
-	}
-
-	/* for base 'a' = 2, if a^d % n = 1...*/
-	 if ((1 << d) % n == 1)
-		 return false; /* 'n' is a base 2 strong provable prime, bail */
-
-	 /* otherwise test second condition: */
-	 for (uint64_t r = 0u; r < s; ++r) {
-		 /* if 2^(3 * 2^r) % n = n - 1 for 0 ≤ r < s... */
-		 if (((1u << (3u << r)) % n) == n_minus_one)
-			 return false; /* 'n' is a base 2 strong provable prime, bail */
-	 }
-
-	 return true; /* 'n' is not a base 2 strong provable prime */
-}
 
 
 struct IntNode *prime_sieve(const int sup)

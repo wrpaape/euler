@@ -195,8 +195,9 @@ bool not_base_2_strong_probable_prime(const uint64_t n)
 	 if (a_raised_d_mod_n == n_minus_one)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
 
+
 	 /* otherwise test second condition: */
-	 for (uint64_t r = 1llu; r < s; ++r) {
+	 for (uint64_t r = 0llu; r < s; ++r) {
 		 /* if 2^(d * 2^r) % n = n - 1 for 0 ≤ r < s... */
 		 if (((1llu << (d << r)) % n) == n_minus_one)
 			 return false; /* 'n' is a base 2 strong provable prime */

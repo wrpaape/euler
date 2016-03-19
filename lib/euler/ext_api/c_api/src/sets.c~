@@ -169,30 +169,45 @@ bool not_base_2_strong_probable_prime(const uint64_t n)
 	 * find first odd strong pseudoprime 'd' and exponent 's' s.t.
 	 * n = d * 2^s + 1
 	 */
-	const uint64_t n_minus_one = n - 1;
-	uint64_t d = n_minus_one;
-	uint64_t s = 0;
+	const mp_bitcnt_t n_minus_one = n - 1lu;
+	mp_bitcnt_t d = n_minus_one;
+	mp_bitcnt_t s = 0lu;
+	unsigned long mod_val;
+	mpz_t a_exp;
+	mpz_t base;
 
 	/* while d is even... */
-	/* while ((d > 63) || (d & 1) == 0) { */
-	while ((d & 1) == 0) {
+	while ((d & 1lu) == 0lu) {
 		++s;
 		d = n_minus_one >> s;
 	}
 
-	printf("d: %llu\n", d);
-	printf("s: %llu\n", s);
+	mpz_inits(base, a_exp);
+
+	mpz_set_ui(base, 1lu);
+
+	mpz_mul_2exp(a_exp, base, d);
+
+	mod_val = mpz_fdiv_ui(a_exp, (unsigned long) d);
+
+
+	/* mpz_out_str(stdout, 10, big_int); */
+	/* mpz_congruent_2exp_p(const mpz_t n, const mpz_t c, mp_bitcnt_t b) */
+
+	/* printf("d: %llu\n", d); */
+	/* printf("s: %llu\n", s); */
+
 
 	/* for base 'a' = 2, if a^d % n = 1... */
-	uint64_t a_raised_d_mod_n = (1llu << d) % n;
+	/* uint64_t a_raised_d_mod_n = (1llu << d) % n; */
 
-	 if (a_raised_d_mod_n == 1llu)
+	 if (mod_val == 1llu)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
 
 	 if (s == 0)
 		 return true;
 
-	 if (a_raised_d_mod_n == n_minus_one)
+	 if (mod_val == n_minus_one)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
 
 	 /* otherwise test second condition: */

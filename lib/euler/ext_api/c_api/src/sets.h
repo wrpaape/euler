@@ -57,6 +57,9 @@ static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
 static inline int priv_nth_pow(int lil, int big, int n);
 static inline long long int priv_nth_powll(long long int lil,
 					   long long int big, int n);
+static inline unsigned long long int priv_nth_powull(unsigned long long int lil,
+						     unsigned long long int big,
+						     int n);
 static bool not_base_2_strong_probable_prime(const unsigned long long n);
 int jacobi_symbol(unsigned long long int top,
 		  unsigned long long int bot,
@@ -132,27 +135,23 @@ inline void handle_pthread_join(pthread_t thread, void **return_value)
   }
 }
 
+#define ULL_BITS (sizeof(unsigned long long int) * CHAR_BIT)
 inline unsigned long long int two_exp_mod(unsigned long long int n,
-					  unsigned long long int mod)
+					  unsigned long long int div)
 {
+	if (n >= ULL_BITS)
+		return (1llu << n) % div;
 
-	return mod;
+	unsigned long long int max_mod = ULLONG_MAX % div;
+
+
+	return 5llu;
 }
+#undef ULL_BITS
 
 inline int nth_pow(int base, int n)
 {
 	return priv_nth_pow(1, base, n);
-}
-
-inline int priv_nth_pow(int lil, int big, int n)
-{
-	if (n == 0) return lil;
-
-	if (n == 1) return big * lil;
-
-	if (n & 1)  return priv_nth_pow(big * lil, big * big, (n - 1) / 2);
-
-	else	    return priv_nth_pow(lil,       big * big, n / 2);
 }
 
 inline long long int nth_powll(long long int base, int n)
@@ -160,17 +159,32 @@ inline long long int nth_powll(long long int base, int n)
 	return priv_nth_powll(1ll, base, n);
 }
 
-inline long long int priv_nth_powll(long long int lil,
-				    long long int big, int n)
+inline unsigned long long int nth_powull(unsigned long long int base, int n)
 {
-	if (n == 0) return lil;
-
-	if (n == 1) return big * lil;
-
-	if (n & 1)  return priv_nth_powll(big * lil, big * big, (n - 1) / 2);
-
-	else	    return priv_nth_powll(lil,       big * big, n / 2);
+	return priv_nth_powull(1llu, base, n);
 }
+
+#define priv_nth_pow_body(fun)						\
+do {									\
+	if (n == 0) return lil;						\
+	if (n == 1) return big * lil;					\
+	if (n & 1)  return fun(big * lil, big * big, (n - 1) / 2);	\
+	else	    return fun(lil,       big * big, n / 2);		\
+} while (0)
+inline int priv_nth_pow(int lil, int big, int n)
+{
+	priv_nth_pow_body(priv_nth_pow);
+}
+inline long long int priv_nth_powll(long long int lil, long long int big, int n)
+{
+	priv_nth_pow_body(priv_nth_powll);
+}
+inline unsigned long long int priv_nth_powull(unsigned long long int lil,
+					      unsigned long long int big, int n)
+{
+	priv_nth_pow_body(priv_nth_powull);
+}
+#undef priv_nth_pow_body
 
 
 /* http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog */

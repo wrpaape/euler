@@ -32,9 +32,11 @@ extern inline void handle_pthread_create(pthread_t *thread,
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
 extern inline long long int nth_powll(long long int base, int n);
+extern inline unsigned long long int nth_powull(unsigned long long int base,
+						int n);
 extern inline uint64_t next_power_of_2(uint64_t i);
 extern inline unsigned long long int two_exp_mod(unsigned long long int n,
-						 unsigned long long int mod);
+						 unsigned long long int div);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/

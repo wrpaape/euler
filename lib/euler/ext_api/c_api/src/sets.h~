@@ -22,7 +22,7 @@
 #include <limits.h>
 #include <pthread.h>
 #include <setjmp.h>
-#include <gmp.h>
+/* #include <gmp.h> */
 
 #define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
 /************************************************************************************

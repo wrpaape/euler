@@ -31,17 +31,19 @@ extern inline void handle_pthread_create(pthread_t *thread,
                                          void *arg);
 extern inline void handle_pthread_join(pthread_t thread, void **return_value);
 extern inline int nth_pow(int base, int n);
-extern inline int64_t nth_pow64(int64_t base, int n);
+extern inline long long int nth_powll(long long int base, int n);
 extern inline uint64_t next_power_of_2(uint64_t i);
+extern inline unsigned long long int two_exp_mod(unsigned long long int n,
+						 unsigned long long int mod);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
  ************************************************************************************/
-bool bpsw_prime_test(const uint64_t n)
+bool bpsw_prime_test(const unsigned long long int n)
 {
 	if (not_base_2_strong_probable_prime(n))
 		return false;
 
-	int64_t big_d = 5;
+	unsigned long long int big_d = 5;
 
 	int neg_jacobi = ((n & 3) == 3) ? -1 : 1;
 
@@ -59,13 +61,14 @@ bool bpsw_prime_test(const uint64_t n)
 
 }
 
-bool is_strong_lucas_pseudoprime(const int64_t big_d, const uint64_t n)
+bool is_strong_lucas_pseudoprime(const long long int big_d,
+				 const unsigned long long int n)
 {
-	const uint64_t n_plus_one = n + 1ll;
-	const int64_t q = (1ll - big_d) / 4ll;
+	const unsigned long long int n_plus_one = n + 1ll;
+	const long long int q = (1ll - big_d) / 4ll;
 
-	uint64_t d = n_plus_one;
-	uint64_t s = 0llu;
+	unsigned long long int d = n_plus_one;
+	unsigned int s = 0u;
 
 	/* while d is even... */
 	while ((d & 1) == 0) {
@@ -74,14 +77,16 @@ bool is_strong_lucas_pseudoprime(const int64_t big_d, const uint64_t n)
 	}
 
 
-	int64_t u_p;
-	int64_t u_k = 1ll;
-	int64_t v_k = 1ll;
+	long long int u_p;
+	long long int u_k = 1ll;
+	long long int v_k = 1ll;
 	int k = 1;
 
-	for (int shift = 62 - __builtin_clzll(d); shift > -1; --shift) {
+	for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d);
+	     shift > -1; --shift) {
+
 		u_k *= v_k;
-		v_k = (v_k * v_k) - (nth_pow64(q, k) * 2ll);
+		v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll);
 
 		k *= 2;
 
@@ -101,7 +106,7 @@ bool is_strong_lucas_pseudoprime(const int64_t big_d, const uint64_t n)
 	if ((u_k % n) == 0ll)
 		return true;
 
-	if (s == 0llu)
+	if (s == 0u)
 		return false;
 
 	if ((v_k % n) == 0ll)
@@ -109,7 +114,7 @@ bool is_strong_lucas_pseudoprime(const int64_t big_d, const uint64_t n)
 
 
 	while (1) {
-		v_k = (v_k * v_k) - (nth_pow64(q, k) * 2ll);
+		v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll);
 
 		if ((v_k % n) == 0ll)
 			return true;
@@ -123,7 +128,9 @@ bool is_strong_lucas_pseudoprime(const int64_t big_d, const uint64_t n)
 	}
 }
 
-int jacobi_symbol(int64_t top, int64_t bot, int jacobi)
+int jacobi_symbol(unsigned long long int top,
+		  unsigned long long int bot,
+		  int jacobi)
 {
 	int num_facts_2;
 	int temp;
@@ -163,18 +170,15 @@ int jacobi_symbol(int64_t top, int64_t bot, int jacobi)
 }
 
 
-bool not_base_2_strong_probable_prime(const uint64_t n)
+bool not_base_2_strong_probable_prime(const unsigned long long int n)
 {
 	/*
 	 * find first odd strong pseudoprime 'd' and exponent 's' s.t.
 	 * n = d * 2^s + 1
 	 */
-	const mp_bitcnt_t n_minus_one = n - 1lu;
-	mp_bitcnt_t d = n_minus_one;
-	mp_bitcnt_t s = 0lu;
-	unsigned long mod_val;
-	mpz_t a_exp;
-	mpz_t base;
+	const unsigned long long int n_minus_one = n - 1llu;
+	unsigned long long int d = n_minus_one;
+	unsigned long long int s = 0lu;
 
 	/* while d is even... */
 	while ((d & 1lu) == 0lu) {
@@ -182,36 +186,24 @@ bool not_base_2_strong_probable_prime(const uint64_t n)
 		d = n_minus_one >> s;
 	}
 
-	mpz_inits(base, a_exp);
-
-	mpz_set_ui(base, 1lu);
-
-	mpz_mul_2exp(a_exp, base, d);
-
-	mod_val = mpz_fdiv_ui(a_exp, (unsigned long) d);
-
-
-	/* mpz_out_str(stdout, 10, big_int); */
-	/* mpz_congruent_2exp_p(const mpz_t n, const mpz_t c, mp_bitcnt_t b) */
-
-	/* printf("d: %llu\n", d); */
-	/* printf("s: %llu\n", s); */
+	printf("d: %llu\n", d);
+	printf("s: %llu\n", s);
 
 
 	/* for base 'a' = 2, if a^d % n = 1... */
-	/* uint64_t a_raised_d_mod_n = (1llu << d) % n; */
+	unsigned long long int a_raised_d_mod_n = (1llu << d) % n;
 
-	 if (mod_val == 1llu)
+	 if (a_raised_d_mod_n == 1llu)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
 
 	 if (s == 0)
 		 return true;
 
-	 if (mod_val == n_minus_one)
+	 if (a_raised_d_mod_n == n_minus_one)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
 
 	 /* otherwise test second condition: */
-	 for (uint64_t r = 1llu; r < s; ++r) {
+	 for (unsigned long long int r = 1llu; r < s; ++r) {
 		 /* if 2^(d * 2^r) % n = n - 1 for 0 ≤ r < s... */
 		 if (((1llu << (d << r)) % n) == n_minus_one)
 			 return false; /* 'n' is a base 2 strong provable prime */

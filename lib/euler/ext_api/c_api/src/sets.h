@@ -22,7 +22,6 @@
 #include <limits.h>
 #include <pthread.h>
 #include <setjmp.h>
-/* #include <gmp.h> */
 
 #define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
 /************************************************************************************
@@ -49,17 +48,21 @@ struct SieveArg {
  ************************************************************************************/
 struct IntNode *prime_sieve(const int sup);
 struct IntNode *atkin_sieve(const int sup);
-bool bpsw_prime_test(const uint64_t n);
+bool bpsw_prime_test(const unsigned long long int n);
 int greatest_common_divisor(int x, int y);
 void *sieve_range(void *arg);
 static inline bool flp1(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp2(const int n, struct SquareTerms *SQ_TERMS);
 static inline bool flp3(const int n, struct SquareTerms *SQ_TERMS);
 static inline int priv_nth_pow(int lil, int big, int n);
-static inline int64_t priv_nth_pow64(int64_t lil, int64_t big, int n);
-static bool not_base_2_strong_probable_prime(const uint64_t n);
-static int jacobi_symbol(int64_t top, int64_t bot, int jacobi);
-bool is_strong_lucas_pseudoprime(const int64_t d, const uint64_t n);
+static inline long long int priv_nth_powll(long long int lil,
+					   long long int big, int n);
+static bool not_base_2_strong_probable_prime(const unsigned long long n);
+int jacobi_symbol(unsigned long long int top,
+		  unsigned long long int bot,
+		  int jacobi);
+bool is_strong_lucas_pseudoprime(const long long int big_d,
+				 const unsigned long long int n);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/
@@ -129,6 +132,13 @@ inline void handle_pthread_join(pthread_t thread, void **return_value)
   }
 }
 
+inline unsigned long long int two_exp_mod(unsigned long long int n,
+					  unsigned long long int mod)
+{
+
+	return mod;
+}
+
 inline int nth_pow(int base, int n)
 {
 	return priv_nth_pow(1, base, n);
@@ -145,20 +155,21 @@ inline int priv_nth_pow(int lil, int big, int n)
 	else	    return priv_nth_pow(lil,       big * big, n / 2);
 }
 
-inline int64_t nth_pow64(int64_t base, int n)
+inline long long int nth_powll(long long int base, int n)
 {
-	return priv_nth_pow64(1ll, base, n);
+	return priv_nth_powll(1ll, base, n);
 }
 
-inline int64_t priv_nth_pow64(int64_t lil, int64_t big, int n)
+inline long long int priv_nth_powll(long long int lil,
+				    long long int big, int n)
 {
 	if (n == 0) return lil;
 
 	if (n == 1) return big * lil;
 
-	if (n & 1)  return priv_nth_pow64(big * lil, big * big, (n - 1) / 2);
+	if (n & 1)  return priv_nth_powll(big * lil, big * big, (n - 1) / 2);
 
-	else	    return priv_nth_pow64(lil,       big * big, n / 2);
+	else	    return priv_nth_powll(lil,       big * big, n / 2);
 }
 
 

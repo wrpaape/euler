@@ -22,8 +22,6 @@
  ************************************************************************/
 void problem_41(char *result_buffer)
 {
-	puts("EMPTY");
-
 	unsigned long long int mod_val = two_exp_mod(515llu, 1031llu);
 
 	sprintf(result_buffer, "%llu", mod_val);

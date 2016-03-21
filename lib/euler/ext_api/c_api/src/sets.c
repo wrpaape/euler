@@ -103,7 +103,7 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 	long long int v_k = 1ll;
 	int k = 1;
 	int prev_k = 0;
-	int q_raised_k = q;
+	long long int q_raised_k = 1ll;
 
 
 	for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d);
@@ -114,8 +114,6 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 		prev_k = k;
 		k *= 2;
 
-
-		/* v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll); */
 		u_k *= v_k;
 		v_k = (v_k * v_k) - (q_raised_k * 2ll);
 
@@ -127,12 +125,6 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 		}
 	}
 
-	printf("k:   %d\n", k);
-	printf("d:   %lld\n", d);
-	printf("q:   %lld\n", q);
-	printf("u_k:   %lld\n", u_k);
-	printf("v_k:   %lld\n", v_k);
-	printf("LLM: %lld\n", LLONG_MAX);
 
 	if ((u_k % n) == 0ll)
 		return true;
@@ -145,7 +137,16 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 
 
 	while (1) {
-		v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll);
+		q_raised_k *= q_raised_k;
+
+		printf("q_raised_k: %lld\n", q_raised_k);
+		printf("q: %lld\n", q);
+		printf("k: %d\n", k);
+		printf("LLONG_MIN: %lld\n", LLONG_MIN);
+		printf("LLONG_MAX:  %lld\n", LLONG_MAX);
+		printf("v_k:       %lld\n", v_k);
+
+		v_k = (v_k * v_k) - (q_raised_k * 2ll);
 
 		if ((v_k % n) == 0ll)
 			return true;
@@ -154,8 +155,6 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 
 		if (s == 0llu)
 			return false;
-
-		k *= 2;
 	}
 }
 
@@ -216,10 +215,6 @@ bool not_base_2_strong_probable_prime(const unsigned long long int n)
 		++s;
 		d = n_minus_one >> s;
 	}
-
-	printf("d: %llu\n", d);
-	printf("s: %llu\n", s);
-
 
 	/* for base 'a' = 2, if a^d % n = 1... */
 	unsigned long long int a_raised_d_mod_n = two_exp_mod(d, n);

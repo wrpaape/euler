@@ -70,8 +70,8 @@ static bool not_base_2_strong_probable_prime(const unsigned long long n);
 int jacobi_symbol(unsigned long long int top,
 		  unsigned long long int bot,
 		  int jacobi);
-bool is_strong_lucas_pseudoprime(const long long int big_d,
-				 const unsigned long long int n);
+static bool is_strong_lucas_pseudoprime(const long long int big_d,
+					const unsigned long long int n);
 /************************************************************************************
  *                           INLINE FUNCTION DEFINITIONS                            *
  ************************************************************************************/
@@ -185,20 +185,11 @@ inline unsigned long long int two_exp_mod(unsigned long long int n,
 	if (n <= ULL_BITS)
 		return (1llu << n) % div;
 
-
-	/* unsigned long long int max_mod = ULLONG_MAX % div; */
-	/* unsigned long long int max_pow = n / ULL_BITS; */
-	/* unsigned long long int rem_mod = (1llu << (n % ULL_BITS)) % div; */
-
-	/* int max_lead_one_bit  = (ULL_BITS - 1) - __builtin_clzll(max_mod); */
-	/* int rem_lead_one_bit  = (ULL_BITS - 1) - __builtin_clzll(rem_mod); */
-
-	/* if (((max_lead_one_bit * max_pow) + rem_lead_one_bit) <= ULL_BITS) */
-	/* 	return (nth_powull(max_mod, max_pow) * rem_mod) % div; */
-
+	if ((div & 1) == 0)
+		return 0;
 
 	unsigned long long int mod  = 1;
-	unsigned long long int base = 2 % div;
+	unsigned long long int base = 1; /* 2 % div */
 
 	while (1) {
 		if (n & 1)

@@ -98,43 +98,40 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 	}
 
 
-	long long int u_p;
+	long long int u_prev;
 	long long int u_k = 1ll;
 	long long int v_k = 1ll;
-	int prev_k = 0;
 	int k = 1;
+	int prev_k = 0;
 	int q_raised_k = q;
 
-
-	int k_shift;
 
 	for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d);
 	     shift > -1; --shift) {
 
 		q_raised_k *= pow_fun(q_term, k - prev_k);
+
 		prev_k = k;
 		k *= 2;
+
 
 		/* v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll); */
 		u_k *= v_k;
 		v_k = (v_k * v_k) - (q_raised_k * 2ll);
 
-
 		if ((d >> shift) & 1) {
-			u_p = u_k;
-			u_k = ((u_p           + v_k) / 2ll);
-			v_k = (((big_d * u_p) + v_k) / 2ll);
+			u_prev = u_k;
+			u_k = ((u_prev           + v_k) / 2ll);
+			v_k = (((big_d * u_prev) + v_k) / 2ll);
 			++k;
 		}
-
-		printf("u_k: %lld\n", u_k);
-		printf("k:   %d\n", k);
-		printf("v_k: %lld\n", v_k);
 	}
 
 	printf("k:   %d\n", k);
 	printf("d:   %lld\n", d);
 	printf("q:   %lld\n", q);
+	printf("u_k:   %lld\n", u_k);
+	printf("v_k:   %lld\n", v_k);
 	printf("LLM: %lld\n", LLONG_MAX);
 
 	if ((u_k % n) == 0ll)

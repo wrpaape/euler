@@ -173,6 +173,7 @@ inline unsigned long long int priv_nth_powull(unsigned long long int lil,
 #undef priv_nth_pow_body
 
 #define ULL_BITS (sizeof(unsigned long long int) * CHAR_BIT)
+#define SQRT_ULL_MAX (1 << (ULL_BITS / 2))
 inline unsigned long long int two_exp_mod(unsigned long long int n,
 					  unsigned long long int div)
 {
@@ -194,6 +195,7 @@ inline unsigned long long int two_exp_mod(unsigned long long int n,
 	return (max_mod_acc * rem_mod) % div;
 }
 #undef ULL_BITS
+#undef SQRT_ULL_MAX
 
 
 

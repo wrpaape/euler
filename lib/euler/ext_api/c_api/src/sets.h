@@ -180,22 +180,34 @@ inline unsigned long long int two_exp_mod(unsigned long long int n,
 	if (n <= ULL_BITS)
 		return (1llu << n) % div;
 
-	unsigned long long int max_mod_acc;
-	unsigned long long int rem_mod;
+	unsigned long long int max_mod = ULLONG_MAX % div;
 
-	max_mod_acc = nth_powull(ULLONG_MAX % div, n / ULL_BITS);
-	rem_mod	    = (1llu << (n % ULL_BITS)) % div;
+	unsigned long long int rem_mod = (1llu << (n % ULL_BITS)) % div;
 
-	printf("ULL_BITS:    %lu\n", ULL_BITS);
-	printf("ULLONG_MAX:  %llu\n", ULLONG_MAX);
-	printf("max_mod_acc: %llu\n", max_mod_acc);
-	printf("rem_mod:     %llu\n", rem_mod);
-	printf("max_mod:     %llu\n", ULLONG_MAX % div);
+	unsigned long long int max_mod_pow = n / ULL_BITS;
 
-	return (max_mod_acc * rem_mod) % div;
+	int max_lead_one_bit  = (ULL_BITS - 1) - __builtin_clzll(max_mod);
+	int rem_lead_one_bit  = (ULL_BITS - 1) - __builtin_clzll(rem_mod);
+
+	if (((max_lead_one_bit * max_mod_pow) + rem_lead_one_bit) <= ULL_BITS)
+		return (nth_powull(max_mod, max_mod_pow) * rem_mod) % div;
+
+
+
+	return 500;
+
+
 }
 #undef ULL_BITS
 #undef SQRT_ULL_MAX
+
+inline unsigned long long int mod_pow(unsigned long long int base,
+				      unsigned long long int exp,
+				      unsigned long long int div)
+{
+
+	return 10;
+}
 
 
 

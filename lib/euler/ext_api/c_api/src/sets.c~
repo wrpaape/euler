@@ -90,9 +90,6 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 		u_k *= v_k;
 		v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll);
 
-	printf("u_k: %lld\n", u_k);
-	printf("v_k: %lld\n", v_k);
-
 		k *= 2;
 
 		if ((d >> shift) & 1) {
@@ -104,6 +101,8 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 	}
 
 	printf("k:   %d\n", k);
+	printf("u_k: %lld\n", u_k);
+	printf("v_k: %lld\n", v_k);
 	printf("LLM: %lld\n", LLONG_MAX);
 
 	if ((u_k % n) == 0ll)

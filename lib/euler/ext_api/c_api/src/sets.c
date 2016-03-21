@@ -34,9 +34,6 @@ extern inline int nth_pow(int base, int n);
 extern inline long long int nth_powll(long long int base, int n);
 extern inline unsigned long long int nth_powull(unsigned long long int base,
 						int n);
-inline unsigned long long int mod_pow(unsigned long long int base,
-				      unsigned long long int exp,
-				      unsigned long long int div);
 extern inline uint64_t next_power_of_2(uint64_t i);
 extern inline unsigned long long int two_exp_mod(unsigned long long int n,
 						 unsigned long long int div);
@@ -103,10 +100,10 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 		}
 	}
 
-	/* printf("k:   %d\n", k); */
-	/* printf("u_k: %lld\n", u_k); */
-	/* printf("v_k: %lld\n", v_k); */
-	/* printf("LLM: %lld\n", LLONG_MAX); */
+	printf("k:   %d\n", k);
+	printf("u_k: %lld\n", u_k);
+	printf("v_k: %lld\n", v_k);
+	printf("LLM: %lld\n", LLONG_MAX);
 
 	if ((u_k % n) == 0ll)
 		return true;
@@ -196,7 +193,7 @@ bool not_base_2_strong_probable_prime(const unsigned long long int n)
 
 
 	/* for base 'a' = 2, if a^d % n = 1... */
-	unsigned long long int a_raised_d_mod_n = (1llu << d) % n;
+	unsigned long long int a_raised_d_mod_n = two_exp_mod(d, n);
 
 	 if (a_raised_d_mod_n == 1llu)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
@@ -209,8 +206,9 @@ bool not_base_2_strong_probable_prime(const unsigned long long int n)
 
 	 /* otherwise test second condition: */
 	 for (unsigned long long int r = 1llu; r < s; ++r) {
+
 		 /* if 2^(d * 2^r) % n = n - 1 for 0 ≤ r < s... */
-		 if (((1llu << (d << r)) % n) == n_minus_one)
+		 if (two_exp_mod(d << r, n) == n_minus_one)
 			 return false; /* 'n' is a base 2 strong provable prime */
 	 }
 

@@ -60,6 +60,12 @@ static inline long long int priv_nth_powll(long long int lil,
 static inline unsigned long long int priv_nth_powull(unsigned long long int lil,
 						     unsigned long long int big,
 						     int n);
+static inline long long int pow_pos_one(const long long int _, const int ___);
+static inline long long int pow_neg_one(const long long int _, const int pow);
+static inline long long int pow_pos_pow_two(const long long int init_shift,
+					    const int pow);
+static inline long long int pow_neg_pow_two(const long long int init_shift,
+					    const int pow);
 static bool not_base_2_strong_probable_prime(const unsigned long long n);
 int jacobi_symbol(unsigned long long int top,
 		  unsigned long long int bot,

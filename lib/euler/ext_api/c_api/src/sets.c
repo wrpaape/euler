@@ -63,14 +63,33 @@ bool bpsw_prime_test(const unsigned long long int n)
 
 }
 
+
 bool is_strong_lucas_pseudoprime(const long long int big_d,
 				 const unsigned long long int n)
 {
 	const unsigned long long int n_plus_one = n + 1ll;
-	const long long int q = (1ll - big_d) / 4ll;
-
+	const long long int q = (1ll - big_d) / 4ll; /* 75% (naive) of time a power of 2 */
 	unsigned long long int d = n_plus_one;
 	unsigned int s = 0u;
+
+	long long int q_term;
+	long long int (*pow_fun)(const long long int, const int);
+
+	if (q == 1ll) {
+		pow_fun = pow_pos_one;
+
+	} else if (q == -1ll) {
+		pow_fun = pow_neg_one;
+
+	} else if ((q & (q - 1ll)) == 0) {
+		pow_fun = (q < 0) ? pow_neg_pow_two : pow_pos_pow_two;
+		q_term  = __builtin_ctzll(q);
+
+	} else {
+		pow_fun = nth_powll;
+		q_term  = q;
+	}
+
 
 	/* while d is even... */
 	while ((d & 1) == 0) {
@@ -82,18 +101,24 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 	long long int u_p;
 	long long int u_k = 1ll;
 	long long int v_k = 1ll;
+	int prev_k = 0;
 	int k = 1;
+	int q_raised_k = q;
+
+
+	int k_shift;
 
 	for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d);
 	     shift > -1; --shift) {
 
-		u_k *= v_k;
-		v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll);
-
-	printf("u_k: %lld\n", u_k);
-	printf("v_k: %lld\n", v_k);
-
+		q_raised_k *= pow_fun(q_term, k - prev_k);
+		prev_k = k;
 		k *= 2;
+
+		/* v_k = (v_k * v_k) - (nth_powll(q, k) * 2ll); */
+		u_k *= v_k;
+		v_k = (v_k * v_k) - (q_raised_k * 2ll);
+
 
 		if ((d >> shift) & 1) {
 			u_p = u_k;
@@ -101,9 +126,15 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 			v_k = (((big_d * u_p) + v_k) / 2ll);
 			++k;
 		}
+
+		printf("u_k: %lld\n", u_k);
+		printf("k:   %d\n", k);
+		printf("v_k: %lld\n", v_k);
 	}
 
 	printf("k:   %d\n", k);
+	printf("d:   %lld\n", d);
+	printf("q:   %lld\n", q);
 	printf("LLM: %lld\n", LLONG_MAX);
 
 	if ((u_k % n) == 0ll)
@@ -515,4 +546,24 @@ inline bool flp3(const int n, struct SquareTerms *SQ_TERMS)
 		if (y_sq < 1)
 			return is_prime;
 	}
+}
+
+/* for calculating q^(k - k_prev) */
+inline long long int pow_pos_one(const long long int _, const int ___)
+{
+	return 1ll;
+}
+inline long long int pow_neg_one(const long long int _, const int pow)
+{
+	return (pow & 1) ? -1ll : 1ll;
+}
+inline long long int pow_pos_pow_two(const long long int init_shift,
+				     const int pow)
+{
+	return 1ll << (init_shift * pow);
+}
+inline long long int pow_neg_pow_two(const long long int init_shift,
+				     const int pow)
+{
+	return ((pow & 1) ? -1ll : 1ll) << (init_shift * pow);
 }

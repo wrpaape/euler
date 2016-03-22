@@ -24,6 +24,8 @@
 #include <setjmp.h>
 
 #define FORMAT_ERROR(MSG) "\n\e[31m\e[5mERROR\e[25m\n  " #MSG "\e[0m\n"
+#define ULL_BITS (sizeof(unsigned long long) * CHAR_BIT)
+#define LOG2_ULL(x) (ULL_BITS - __builtin_clzll(x) - 1)
 /************************************************************************************
  *                               INTIAL DECLARATIONS                                *
  ************************************************************************************/
@@ -178,7 +180,6 @@ inline unsigned long long int priv_nth_powull(unsigned long long int lil,
 }
 #undef priv_nth_pow_body
 
-#define ULL_BITS (sizeof(unsigned long long) * CHAR_BIT)
 inline unsigned long long int two_pow_mod(unsigned long long int n,
 					  unsigned long long int div)
 {
@@ -204,14 +205,13 @@ inline unsigned long long int two_pow_mod(unsigned long long int n,
 	}
 }
 
-#define LOG2_ULL(x) (ULL_BITS - __builtin_clzll(x) - 1)
 inline unsigned long long int nth_pow_mod(unsigned long long int base,
 					  unsigned long long int n,
 					  unsigned long long int div)
 {
 
 	if ((LOG2_ULL(base) * n) < ULL_BITS)
-		return nth_powull(base, n) % div;
+		return nth_powull(base, (int) n) % div;
 
 	unsigned long long int mod = 1llu;
 
@@ -227,8 +227,6 @@ inline unsigned long long int nth_pow_mod(unsigned long long int base,
 		base = (base * base) % div;
 	}
 }
-#undef ULL_BITS
-#undef LOG2_ULL
 
 /* http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog */
 #define _LOG2A(s) ((s &0xffffffff00000000) ? (32 + _LOG2B(s >> 32)) : (_LOG2B(s)))
@@ -246,11 +244,9 @@ inline unsigned long long int nth_pow_mod(unsigned long long int base,
 inline uint64_t next_power_of_2(uint64_t i)
 {
 #if defined(__GNUC__)
-	return 1UL <<(1 +(63 - __builtin_clzl(i - 1)));
+	return 1UL << (1 +(63 - __builtin_clzl(i - 1)));
 #else
-	i = i - 1;
-	i = LOG2_UINT64(i);
-	return 1UL <<(1 + i);
+	return 1UL << (1 + LOG2_UINT64(i - 1));
 #endif
 }
 

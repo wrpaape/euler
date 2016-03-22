@@ -27,6 +27,7 @@ void problem_41(char *result_buffer)
 
 	/* sprintf(result_buffer, "%llu", mod_val); */
 
+
 	if (bpsw_prime_test(97)) {
 		sprintf(result_buffer, "%s", "prime");
 	} else {

@@ -125,26 +125,22 @@ bool is_strong_lucas_pseudoprime(const long long int big_d,
 		}
 	}
 
+	puts("p:  1");
+	printf("q:  %lld\n", q);
+	printf("D:  %lld\n", big_d);
+	printf("d:  %lld\n", d);
+	printf("k:  %d\n", k);
+	printf("v_k: %lld\n", v_k);
+	printf("u_k: %lld\n", u_k);
 
-	if ((u_k % n) == 0ll)
-		return true;
-
-	if (s == 0u)
-		return false;
-
-	if ((v_k % n) == 0ll)
-		return true;
+	if ((u_k % n) == 0ll) return true;
+	if (s == 0u)	      return false;
+	if ((v_k % n) == 0ll) return true;
 
 
 	while (1) {
 		q_raised_k *= q_raised_k;
 
-		printf("q_raised_k: %lld\n", q_raised_k);
-		printf("q: %lld\n", q);
-		printf("k: %d\n", k);
-		printf("LLONG_MIN: %lld\n", LLONG_MIN);
-		printf("LLONG_MAX:  %lld\n", LLONG_MAX);
-		printf("v_k:       %lld\n", v_k);
 
 		v_k = (v_k * v_k) - (q_raised_k * 2ll);
 

@@ -35,7 +35,10 @@ extern inline long long int nth_powll(long long int base, int n);
 extern inline unsigned long long int nth_powull(unsigned long long int base,
 						int n);
 extern inline uint64_t next_power_of_2(uint64_t i);
-extern inline unsigned long long int two_exp_mod(unsigned long long int n,
+extern inline unsigned long long int two_pow_mod(unsigned long long int n,
+						 unsigned long long int div);
+extern inline unsigned long long int nth_pow_mod(unsigned long long int base,
+						 unsigned long long int n,
 						 unsigned long long int div);
 /************************************************************************************
  *                               TOP LEVEL FUNCTIONS                                *
@@ -66,140 +69,52 @@ bool bpsw_prime_test(const unsigned long long int n)
 bool is_strong_lucas_pseudoprime(const long long int big_d,
 				 const unsigned long long int n)
 {
-	const long long int q = (1ll - big_d) / 4ll; /* 75% (naive) of time a power of 2 */
+	/* const long long int q = (1ll - big_d) / 4ll; /1* 75% (naive) of time a power of 2 *1/ */
 
-	const unsigned long long int q_mod_n = (q < 0ll) ? (q % n) + n : q % n;
+	/* const unsigned long long int q_mod_n = (q < 0ll) ? (q % n) + n : q % n; */
 
-	const unsigned long long int two_mod_n = 2llu;
+	/* const unsigned long long int two_mod_n = 2llu; */
 
-	const unsigned long long int n_plus_one = n + 1ll;
+	/* const unsigned long long int n_plus_one = n + 1ll; */
 
-	unsigned long long int d = n_plus_one;
-	unsigned int s = 0u;
-	/* while d is even... */
-	while ((d & 1) == 0) {
-		++s;
-		d = n_plus_one >> s;
-	}
+	/* unsigned long long int d = n_plus_one; */
+	/* unsigned int s = 0u; */
+	/* /1* while d is even... *1/ */
+	/* while ((d & 1) == 0) { */
+	/* 	++s; */
+	/* 	d = n_plus_one >> s; */
+	/* } */
 
-	unsigned long long int u_k_mod_n_prev;
-	unsigned long long int u_k_mod_n = 1llu;
-	unsigned long long int v_k_mod_n = 1llu;
-	long long int q_raised_k_mod_n = 1ll;
-	int k = 1;
-	int k_prev = 0;
+	/* unsigned long long int u_k_mod_n_prev; */
+	/* unsigned long long int u_k_mod_n = 1llu; */
+	/* unsigned long long int v_k_mod_n = 1llu; */
+	/* long long int q_raised_k_mod_n = 1ll; */
+	/* int k = 1; */
+	/* int k_prev = 0; */
 
-	for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d);
-	     shift > -1; --shift) {
+	/* for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d); */
+	/*      shift > -1; --shift) { */
 
-		q_raised_k *= pow_fun(q_term, k - k_prev);
+	/* 	q_raised_k *= pow_fun(q_term, k - k_prev); */
 
-		k_prev = k;
-		k *= 2;
+	/* 	k_prev = k; */
+	/* 	k *= 2; */
 
-		u_k *= v_k;
-		v_k = (v_k * v_k) - (q_raised_k * 2ll);
+	/* 	u_k *= v_k; */
+	/* 	v_k = (v_k * v_k) - (q_raised_k * 2ll); */
 
-		if ((d >> shift) & 1) {
-			u_prev = u_k;
-			u_k = ((u_prev           + v_k) / 2ll);
-			v_k = (((big_d * u_prev) + v_k) / 2ll);
-			++k;
-		}
-	}
+	/* 	if ((d >> shift) & 1) { */
+	/* 		u_prev = u_k; */
+	/* 		u_k = ((u_prev           + v_k) / 2ll); */
+	/* 		v_k = (((big_d * u_prev) + v_k) / 2ll); */
+	/* 		++k; */
+	/* 	} */
+	/* } */
 
 	return false;
 }
 
-/* bool is_strong_lucas_pseudoprime(const long long int big_d, */
-/* 				 const unsigned long long int n) */
-/* { */
-/* 	const unsigned long long int n_plus_one = n + 1ll; */
-/* 	const long long int q = (1ll - big_d) / 4ll; /1* 75% (naive) of time a power of 2 *1/ */
-/* 	unsigned long long int d = n_plus_one; */
-/* 	unsigned int s = 0u; */
 
-/* 	long long int q_term; */
-/* 	long long int (*pow_fun)(const long long int, const int); */
-
-/* 	if (q == 1ll) { */
-/* 		pow_fun = pow_pos_one; */
-
-/* 	} else if (q == -1ll) { */
-/* 		pow_fun = pow_neg_one; */
-
-/* 	} else if ((q & (q - 1ll)) == 0) { */
-/* 		pow_fun = (q < 0) ? pow_neg_pow_two : pow_pos_pow_two; */
-/* 		q_term  = __builtin_ctzll(q); */
-
-/* 	} else { */
-/* 		pow_fun = nth_powll; */
-/* 		q_term  = q; */
-/* 	} */
-
-
-/* 	/1* while d is even... *1/ */
-/* 	while ((d & 1) == 0) { */
-/* 		++s; */
-/* 		d = n_plus_one >> s; */
-/* 	} */
-
-
-/* 	long long int u_prev; */
-/* 	long long int u_k = 1ll; */
-/* 	long long int v_k = 1ll; */
-/* 	int k = 1; */
-/* 	int prev_k = 0; */
-/* 	long long int q_raised_k = 1ll; */
-
-
-/* 	for (int shift = ((sizeof(d) * CHAR_BIT) - 2) - __builtin_clzll(d); */
-/* 	     shift > -1; --shift) { */
-
-/* 		q_raised_k *= pow_fun(q_term, k - prev_k); */
-
-/* 		prev_k = k; */
-/* 		k *= 2; */
-
-/* 		u_k *= v_k; */
-/* 		v_k = (v_k * v_k) - (q_raised_k * 2ll); */
-
-/* 		if ((d >> shift) & 1) { */
-/* 			u_prev = u_k; */
-/* 			u_k = ((u_prev           + v_k) / 2ll); */
-/* 			v_k = (((big_d * u_prev) + v_k) / 2ll); */
-/* 			++k; */
-/* 		} */
-/* 	} */
-
-/* 	puts("p:  1"); */
-/* 	printf("q:  %lld\n", q); */
-/* 	printf("D:  %lld\n", big_d); */
-/* 	printf("d:  %lld\n", d); */
-/* 	printf("k:  %d\n", k); */
-/* 	printf("v_k: %lld\n", v_k); */
-/* 	printf("u_k: %lld\n", u_k); */
-
-/* 	if ((u_k % n) == 0ll) return true; */
-/* 	if (s == 0u)	      return false; */
-/* 	if ((v_k % n) == 0ll) return true; */
-
-
-/* 	while (1) { */
-/* 		q_raised_k *= q_raised_k; */
-
-
-/* 		v_k = (v_k * v_k) - (q_raised_k * 2ll); */
-
-/* 		if ((v_k % n) == 0ll) */
-/* 			return true; */
-
-/* 		--s; */
-
-/* 		if (s == 0llu) */
-/* 			return false; */
-/* 	} */
-/* } */
 
 int jacobi_symbol(unsigned long long int top,
 		  unsigned long long int bot,
@@ -260,7 +175,7 @@ bool not_base_2_strong_probable_prime(const unsigned long long int n)
 	}
 
 	/* for base 'a' = 2, if a^d % n = 1... */
-	unsigned long long int a_raised_d_mod_n = two_exp_mod(d, n);
+	unsigned long long int a_raised_d_mod_n = two_pow_mod(d, n);
 
 	 if (a_raised_d_mod_n == 1llu)
 		 return false; /* 'n' is a base 2 strong provable prime, bail */
@@ -275,7 +190,7 @@ bool not_base_2_strong_probable_prime(const unsigned long long int n)
 	 for (unsigned long long int r = 1llu; r < s; ++r) {
 
 		 /* if 2^(d * 2^r) % n = n - 1 for 0 ≤ r < s... */
-		 if (two_exp_mod(d << r, n) == n_minus_one)
+		 if (two_pow_mod(d << r, n) == n_minus_one)
 			 return false; /* 'n' is a base 2 strong provable prime */
 	 }
 

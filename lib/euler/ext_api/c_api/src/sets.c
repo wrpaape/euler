@@ -69,47 +69,51 @@ bool bpsw_prime_test(const unsigned long long int n)
 bool is_strong_lucas_pseudoprime(const long long int big_d,
 				 const unsigned long long int n)
 {
-	const long long int q = (1ll - big_d) / 4ll; /* 75% (naive) of time a power of 2 */
-
-	const unsigned long long int q_mod_n = (q < 0ll) ? (q % n) + n : q % n;
-
-	const unsigned long long int two_mod_n = 2llu;
-
-	const unsigned long long int n_plus_one = n + 1ll;
-
-	unsigned long long int d = n_plus_one;
-	unsigned int s = 0u;
-	/* while d is even... */
-	while ((d & 1) == 0) {
-		++s;
-		d /= 2;
-	}
-
-	unsigned long long int u_k_mod_n_prev;
-	unsigned long long int u_k_mod_n = 1llu;
-	unsigned long long int v_k_mod_n = 1llu;
-	unsigned long long int q_raised_k_mod_n = 1llu;
-	int k = 1;
-	int k_prev = 0;
-
-	for (int shift = LOG2_ULL(d) - 1; shift > -1; --shift) {
-		q_raised_k *= pow_fun(q_term, k - k_prev);
-
-		k_prev = k;
-		k *= 2;
-
-		u_k *= v_k;
-		v_k = (v_k * v_k) - (q_raised_k * 2ll);
-
-		if ((d >> shift) & 1) {
-			u_prev = u_k;
-			u_k = ((u_prev           + v_k) / 2ll);
-			v_k = (((big_d * u_prev) + v_k) / 2ll);
-			++k;
-		}
-	}
-
 	return false;
+	/* TODO: big integer implementation */
+
+
+	/* const long long int q = (1ll - big_d) / 4ll; /1* 75% (naive) of time a power of 2 *1/ */
+
+	/* const unsigned long long int q_mod_n = (q < 0ll) ? (q % n) + n : q % n; */
+
+	/* const unsigned long long int two_mod_n = 2llu; */
+
+	/* const unsigned long long int n_plus_one = n + 1ll; */
+
+	/* unsigned long long int d = n_plus_one; */
+	/* unsigned int s = 0u; */
+	/* /1* while d is even... *1/ */
+	/* while ((d & 1) == 0) { */
+	/* 	++s; */
+	/* 	d /= 2; */
+	/* } */
+
+	/* unsigned long long int u_k_mod_n_prev; */
+	/* unsigned long long int u_k_mod_n = 1llu; */
+	/* unsigned long long int v_k_mod_n = 1llu; */
+	/* unsigned long long int q_raised_k_mod_n = 1llu; */
+	/* int k = 1; */
+	/* int k_prev = 0; */
+
+	/* for (int shift = LOG2_ULL(d) - 1; shift > -1; --shift) { */
+	/* 	q_raised_k *= pow_fun(q_term, k - k_prev); */
+
+	/* 	k_prev = k; */
+	/* 	k *= 2; */
+
+	/* 	u_k *= v_k; */
+	/* 	v_k = (v_k * v_k) - (q_raised_k * 2ll); */
+
+	/* 	if ((d >> shift) & 1) { */
+	/* 		u_prev = u_k; */
+	/* 		u_k = ((u_prev           + v_k) / 2ll); */
+	/* 		v_k = (((big_d * u_prev) + v_k) / 2ll); */
+	/* 		++k; */
+	/* 	} */
+	/* } */
+
+	/* return false; */
 }
 
 

@@ -173,6 +173,7 @@ defmodule Euler.Set4 do
   """
   def problem_39, do: LispAPI.call(~w(4 39))
 
+
   @doc """
   40) Champernowne's Constant
 
@@ -185,6 +186,11 @@ defmodule Euler.Set4 do
   If dn represents the nth digit of the fractional part, find the value of the following expression.
 
   d₁ × d₁₀ × d₁₀₀ × d₁₀₀₀ × d₁₀₀₀₀ × d₁₀₀₀₀₀ × d₁₀₀₀₀₀₀
+
+  03/15/16
+
+  iex> Euler.Set4.problem_39
+  210
   """
   def problem_40 do
     10
@@ -199,21 +205,17 @@ defmodule Euler.Set4 do
       end
     end)
     |> Stream.transform({1, 1, 1, 10}, fn(delta_n, {prev_num, dpn, mag_num, next_mag}) ->
-
-      IO.inspect prev_num
-
       delta_n
       |> div(dpn)
       |> + prev_num
       |> case do
-        next_num when next_num < next_mag ->
-
+        next_num when next_num < next_mag                 ->
           delta_n
           |> rem(dpn)
           |> strip_next_digit({next_num, dpn, mag_num, next_mag})
-      ######################################################
-      ######################################################
-        next_num ->
+
+
+        _num_increases_an_order_of_magnitude_over_delta_n ->
           rem_delta_n = delta_n - (next_mag - prev_num) * dpn
 
           dpn = dpn + 1
@@ -231,9 +233,8 @@ defmodule Euler.Set4 do
     |> Enum.reduce(&*/2)
   end
 
-  def strip_next_digit(0, next_state = {next_num, _dpn, mag_num, _next_mag}), do: {[div(next_num, mag_num)], next_state}
-
-  def strip_next_digit(undershoot, next_state = {next_num, dpn, _mag_num, _next_mag}) do
+  def strip_next_digit(0,          next_state = {next_num, ___, mag_num, _}), do: {[div(next_num, mag_num)], next_state}
+  def strip_next_digit(undershoot, next_state = {next_num, dpn, _______, _})  do
     mag_digit =
       10
       |> Sets.nth_pow(dpn - undershoot)

@@ -104,10 +104,9 @@ inline void *handle_calloc(const size_t count, const size_t indiv_bytes)
   return ptr;
 }
 
-inline FILE *handle_fopen(const char *restrict filename,
-			  const char *restrict mode)
+inline FILE *handle_fopen(const char *filename, const char *mode)
 {
-  FILE *ptr = fopen(filename, mode);
+  FILE *ptr = fopen(filename, "r");
 
   if (ptr == NULL) {
     fprintf(stderr,
